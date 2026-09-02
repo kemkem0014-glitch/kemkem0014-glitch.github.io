@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>最新ニュースレポート</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg:#eef3f7; --surface:#fff; --text:#17212b; --muted:#63727e;
+      --line:#d3dde3; --accent:#087cab; --accent2:#055f82;
+      --soft:#e8f4f8; --shadow:0 8px 24px rgba(25,47,66,.07);
+      --error:#b42318;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0; background:var(--bg); color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic UI","Noto Sans JP",sans-serif;
+      line-height:1.65;
+    }
+    main { width:min(1180px,calc(100% - 28px)); margin:0 auto; padding:44px 0 64px; }
+    header {
+      padding:clamp(22px,4vw,38px); margin-bottom:22px; border-radius:14px;
+      background:var(--surface); box-shadow:var(--shadow);
+    }
+    .eyebrow { margin:0 0 6px; color:var(--accent); font-size:.76rem; font-weight:800; letter-spacing:.13em; }
+    h1 { margin:0; font-size:clamp(2rem,5vw,3.15rem); line-height:1.16; }
+    .updated { margin:12px 0 0; color:var(--muted); }
+    .status { margin:6px 0 0; color:var(--muted); font-size:.9rem; }
+    .status.error { color:var(--error); }
+    .section-title {
+      margin:30px 0 12px; padding:10px 14px; border-radius:7px;
+      background:var(--accent); color:#fff; font-size:1.05rem;
+    }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
+    .card {
+      min-width:0; padding:18px 19px; border:1px solid var(--line);
+      border-left:5px solid var(--accent); border-radius:10px;
+      background:var(--surface); box-shadow:var(--shadow);
+    }
+    .code { margin:0 0 3px; color:var(--muted); font:700 .72rem ui-monospace,SFMono-Regular,Menlo,monospace; }
+    .card h2 { margin:0 0 15px; font-size:1.1rem; }
+    .actions { display:flex; flex-wrap:wrap; gap:8px; }
+    .btn {
+      display:inline-flex; align-items:center; min-height:38px; padding:7px 12px;
+      border:1px solid var(--line); border-radius:8px; background:var(--surface);
+      color:var(--text); text-decoration:none; font-size:.84rem; font-weight:700;
+    }
+    .btn:hover { border-color:var(--accent); color:var(--accent); }
+    .btn.primary { border-color:var(--accent); background:var(--accent); color:#fff; }
+    .btn.primary:hover { background:var(--accent2); color:#fff; }
+    details {
+      margin-bottom:10px; border:1px solid var(--line); border-radius:10px;
+      background:var(--surface); overflow:hidden;
+    }
+    summary { padding:13px 15px; cursor:pointer; font-weight:750; }
+    .history-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; padding:0 12px 12px; }
+    .history-item { padding:11px 12px; border:1px solid var(--line); border-radius:8px; }
+    .history-name { font-weight:700; margin-bottom:6px; }
+    .empty { color:var(--muted); }
+    footer { margin-top:28px; color:var(--muted); font-size:.8rem; text-align:center; }
+    @media(max-width:760px) {
+      .grid,.history-grid { grid-template-columns:1fr; }
+      main { width:min(100% - 18px,1180px); padding-top:18px; }
+    }
+    @media(prefers-color-scheme:dark) {
+      :root {
+        --bg:#0d1420; --surface:#151f2e; --text:#edf3fb; --muted:#a5b3c7;
+        --line:#2d3a4d; --accent:#3c91c7; --accent2:#2a76a6; --soft:#17344a;
+        --shadow:none; --error:#ffb4ab;
+      }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">PUBLIC NEWS REPORTS</p>
+    <h1>最新ニュースレポート</h1>
+    <p id="updated" class="updated">最新情報を確認しています…</p>
+    <p id="status" class="status" aria-live="polite"></p>
+  </header>
+
+  <h2 class="section-title">最新レポート</h2>
+  <section id="latest" class="grid"><p class="empty">読み込み中…</p></section>
+
+  <h2 class="section-title">過去のレポート</h2>
+  <section id="history"><p class="empty">履歴を読み込み中…</p></section>
+
+  <footer>表示はGitHub Pages、データはSupabase Storageから取得しています。</footer>
+</main>
+
+<script>
+"use strict";
+
+const SUPABASE_PUBLIC_BASE = "https://hmnbalygfomelhjuscjm.supabase.co/storage/v1/object/public/public-news-reports";
+const MANIFEST_URL = `${SUPABASE_PUBLIC_BASE}/latest/index.json`;
+const HISTORY_URL = `${SUPABASE_PUBLIC_BASE}/latest/history.json`;
+
+const latestEl = document.getElementById("latest");
+const historyEl = document.getElementById("history");
+const updatedEl = document.getElementById("updated");
+const statusEl = document.getElementById("status");
+
+function formatDate(value) {
+  const s = String(value || "");
+  if (!/^\d{8}$/.test(s)) return s || "不明";
+  return `${s.slice(0,4)}年${s.slice(4,6)}月${s.slice(6,8)}日`;
+}
+
+function safeHttpUrl(value) {
+  try {
+    const u = new URL(String(value || ""));
+    return ["http:","https:"].includes(u.protocol) ? u.href : "";
+  } catch (_) {
+    return "";
+  }
+}
+
+function reportPageUrl(report, dateValue, latest=false) {
+  const md = safeHttpUrl(latest
+    ? (report.latest_markdown_url || report.markdown_url)
+    : report.markdown_url);
+  const pdf = safeHttpUrl(latest
+    ? (report.latest_pdf_url || report.pdf_url)
+    : report.pdf_url);
+
+  const p = new URLSearchParams();
+  p.set("type", String(report.report_type || ""));
+  p.set("name", String(report.display_name || report.report_type || "レポート"));
+  p.set("date", String(dateValue || ""));
+  if (md) p.set("md", md);
+  if (pdf) p.set("pdf", pdf);
+  return `report.html?${p.toString()}`;
+}
+
+function makeButton(label, href, primary=false, newTab=false) {
+  const a = document.createElement("a");
+  a.className = `btn${primary ? " primary" : ""}`;
+  a.textContent = label;
+  a.href = href;
+  if (newTab) {
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+  }
+  return a;
+}
+
+function renderLatest(manifest) {
+  latestEl.replaceChildren();
+  const reports = Array.isArray(manifest.reports) ? manifest.reports : [];
+  updatedEl.textContent = `更新対象日: ${formatDate(manifest.report_date)}`;
+
+  for (const report of reports) {
+    const card = document.createElement("article");
+    card.className = "card";
+
+    const code = document.createElement("p");
+    code.className = "code";
+    code.textContent = String(report.report_type || "report");
+
+    const h = document.createElement("h2");
+    h.textContent = String(report.display_name || report.report_type || "レポート");
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+    actions.appendChild(makeButton(
+      "ウェブで読む",
+      reportPageUrl(report, manifest.report_date, true),
+      true
+    ));
+
+    const pdf = safeHttpUrl(report.latest_pdf_url || report.pdf_url);
+    if (pdf) actions.appendChild(makeButton("PDF", pdf, false, true));
+
+    const md = safeHttpUrl(report.latest_markdown_url || report.markdown_url);
+    if (md) actions.appendChild(makeButton("Markdown", md + "?download"));
+
+    card.append(code, h, actions);
+    latestEl.appendChild(card);
+  }
+
+  if (!reports.length) {
+    const p = document.createElement("p");
+    p.className = "empty";
+    p.textContent = "公開済みの最新レポートがありません。";
+    latestEl.appendChild(p);
+  }
+}
+
+function renderHistory(history, currentDate) {
+  historyEl.replaceChildren();
+  const dates = Array.isArray(history.dates) ? history.dates : [];
+  let count = 0;
+
+  for (const item of dates) {
+    if (!item || String(item.report_date || "") === String(currentDate || "")) continue;
+    const reports = Array.isArray(item.reports) ? item.reports : [];
+    if (!reports.length) continue;
+
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    summary.textContent = formatDate(item.report_date);
+
+    const grid = document.createElement("div");
+    grid.className = "history-grid";
+
+    for (const report of reports) {
+      const box = document.createElement("div");
+      box.className = "history-item";
+
+      const name = document.createElement("div");
+      name.className = "history-name";
+      name.textContent = String(report.display_name || report.report_type || "レポート");
+
+      const actions = document.createElement("div");
+      actions.className = "actions";
+      actions.appendChild(makeButton(
+        "ウェブで読む",
+        reportPageUrl(report, item.report_date, false),
+        true
+      ));
+
+      const pdf = safeHttpUrl(report.pdf_url);
+      if (pdf) actions.appendChild(makeButton("PDF", pdf, false, true));
+
+      const md = safeHttpUrl(report.markdown_url);
+      if (md) actions.appendChild(makeButton("Markdown", md + "?download"));
+
+      box.append(name, actions);
+      grid.appendChild(box);
+    }
+
+    details.append(summary, grid);
+    historyEl.appendChild(details);
+    count += 1;
+  }
+
+  if (!count) {
+    const p = document.createElement("p");
+    p.className = "empty";
+    p.textContent = "過去のレポートはまだありません。";
+    historyEl.appendChild(p);
+  }
+}
+
+async function fetchJson(urlValue) {
+  const u = new URL(urlValue);
+  u.searchParams.set("_", String(Date.now()));
+  const r = await fetch(u.href, {
+    cache:"no-store",
+    headers:{Accept:"application/json"}
+  });
+  if (!r.ok) throw new Error(`HTTP ${r.status}: ${u.href}`);
+  return await r.json();
+}
+
+async function load() {
+  const [manifestResult, historyResult] = await Promise.allSettled([
+    fetchJson(MANIFEST_URL),
+    fetchJson(HISTORY_URL),
+  ]);
+
+  if (manifestResult.status !== "fulfilled") {
+    console.error("index.json:", manifestResult.reason);
+    latestEl.innerHTML = '<p class="empty">最新レポートを取得できませんでした。</p>';
+    updatedEl.textContent = "更新対象日: 取得失敗";
+    statusEl.className = "status error";
+    statusEl.textContent = "Supabaseのindex.json取得に失敗しました。";
+  } else {
+    renderLatest(manifestResult.value);
+  }
+
+  if (historyResult.status !== "fulfilled") {
+    console.error("history.json:", historyResult.reason);
+    historyEl.innerHTML = '<p class="empty">過去履歴を取得できませんでした。</p>';
+    if (manifestResult.status === "fulfilled") {
+      statusEl.className = "status error";
+      statusEl.textContent = "最新レポートは表示できましたが、過去履歴の取得に失敗しました。";
+    }
+  } else {
+    renderHistory(
+      historyResult.value,
+      manifestResult.status === "fulfilled" ? manifestResult.value.report_date : ""
+    );
+  }
+
+  if (manifestResult.status === "fulfilled" && historyResult.status === "fulfilled") {
+    statusEl.className = "status";
+    statusEl.textContent = "最新・過去レポートを表示しています。";
+  }
+}
+
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>ニュースレポート</title>
+  <style>
+    :root {
+      color-scheme:light dark;
+      --bg:#eef3f7; --paper:#fff; --text:#17212b; --muted:#63727e;
+      --line:#cfdae1; --accent:#087cab; --accent2:#055f82; --soft:#e8f4f8;
+      --note:#f5f8fa; --shadow:0 8px 24px rgba(25,47,66,.07); --error:#b42318;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0; background:var(--bg); color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic UI","Noto Sans JP",sans-serif;
+      line-height:1.68;
+    }
+    .page { width:min(1180px,calc(100% - 28px)); margin:0 auto; padding:24px 0 64px; }
+    .toolbar { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+    .btn {
+      display:inline-flex; align-items:center; min-height:39px; padding:7px 12px;
+      border:1px solid var(--line); border-radius:8px; background:var(--paper);
+      color:var(--text); text-decoration:none; font-size:.84rem; font-weight:700;
+    }
+    .btn:hover { border-color:var(--accent); color:var(--accent); }
+    .btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .btn.primary:hover { background:var(--accent2); color:#fff; }
+    .header {
+      padding:clamp(22px,4vw,38px); border-radius:14px; background:var(--paper);
+      box-shadow:var(--shadow); margin-bottom:22px;
+    }
+    .eyebrow { margin:0 0 6px; color:var(--accent); font-size:.75rem; font-weight:800; letter-spacing:.13em; }
+    h1 { margin:0; font-size:clamp(1.8rem,4vw,2.7rem); line-height:1.2; }
+    .meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:15px; }
+    .pill { padding:5px 10px; border-radius:999px; background:var(--soft); color:var(--accent2); font-size:.8rem; font-weight:750; }
+    .status { margin:12px 0 0; color:var(--muted); font-size:.86rem; }
+    .status.error { color:var(--error); }
+    .section { margin-top:24px; }
+    .section-title {
+      margin:0 0 12px; padding:10px 14px; border-radius:7px;
+      background:var(--accent); color:#fff; font-size:1.04rem;
+    }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
+    .card {
+      min-width:0; padding:18px 19px; border:1px solid var(--line);
+      border-left:5px solid var(--accent); border-radius:10px;
+      background:var(--paper); box-shadow:var(--shadow);
+    }
+    .card-top { display:flex; align-items:center; gap:9px; margin-bottom:8px; }
+    .num {
+      min-width:31px; height:25px; display:inline-flex; align-items:center; justify-content:center;
+      border-radius:6px; background:var(--soft); color:var(--accent2);
+      font:.8rem ui-monospace,SFMono-Regular,Menlo,monospace; font-weight:800;
+    }
+    .metadata { display:flex; flex-wrap:wrap; gap:5px 10px; min-width:0; }
+    .meta-item { color:var(--muted); font-size:.75rem; font-weight:650; }
+    .score { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+    h3 { margin:0 0 9px; font-size:1.02rem; line-height:1.42; }
+    .summary { margin:0; font-size:.91rem; text-align:justify; }
+    .box { margin-top:13px; padding:11px 12px; border-radius:8px; background:var(--note); }
+    .box-label { margin-bottom:4px; color:var(--accent2); font-size:.73rem; font-weight:800; letter-spacing:.04em; }
+    .box p { margin:0; color:var(--muted); font-size:.84rem; }
+    .box ul { margin:3px 0 0; padding-left:1.2rem; }
+    .box li { margin:3px 0; color:var(--muted); font-size:.84rem; }
+    .card-footer { margin-top:12px; padding-top:9px; border-top:1px solid var(--line); }
+    .source-link { color:var(--accent); font-size:.82rem; font-weight:700; text-decoration:none; }
+    .source-link:hover { text-decoration:underline; }
+    .fallback {
+      padding:18px; white-space:pre-wrap; overflow-wrap:anywhere;
+      background:var(--paper); border-radius:10px; box-shadow:var(--shadow);
+    }
+    footer { margin-top:28px; color:var(--muted); font-size:.8rem; text-align:center; }
+    @media(max-width:760px) {
+      .grid { grid-template-columns:1fr; }
+      .page { width:min(100% - 18px,1180px); padding-top:16px; }
+    }
+    @media(prefers-color-scheme:dark) {
+      :root {
+        --bg:#0d1420; --paper:#151f2e; --text:#edf3fb; --muted:#a5b3c7;
+        --line:#2d3a4d; --accent:#3c91c7; --accent2:#90c9ed;
+        --soft:#17344a; --note:#101a27; --shadow:none; --error:#ffb4ab;
+      }
+    }
+  </style>
+</head>
+<body>
+<main class="page">
+  <nav class="toolbar">
+    <a class="btn" href="index.html">一覧へ戻る</a>
+    <a id="pdfBtn" class="btn primary" href="#" target="_blank" rel="noopener noreferrer" hidden>PDFを開く</a>
+    <a id="mdBtn" class="btn" href="#" hidden>Markdownを保存</a>
+  </nav>
+
+  <header class="header">
+    <p class="eyebrow">PUBLIC NEWS REPORT</p>
+    <h1 id="title">ニュースレポート</h1>
+    <div class="meta">
+      <span id="datePill" class="pill">対象日</span>
+      <span id="countPill" class="pill">記事 0件</span>
+    </div>
+    <p id="status" class="status">Markdownを読み込んでいます…</p>
+  </header>
+
+  <div id="content"></div>
+  <footer>GitHub Pages上でMarkdownを構造化して表示しています。</footer>
+</main>
+
+<script>
+"use strict";
+
+const params = new URLSearchParams(location.search);
+const name = params.get("name") || params.get("type") || "ニュース";
+const dateValue = params.get("date") || "";
+const markdownUrl = params.get("md") || "";
+const pdfUrl = params.get("pdf") || "";
+
+const titleEl = document.getElementById("title");
+const datePill = document.getElementById("datePill");
+const countPill = document.getElementById("countPill");
+const statusEl = document.getElementById("status");
+const contentEl = document.getElementById("content");
+const pdfBtn = document.getElementById("pdfBtn");
+const mdBtn = document.getElementById("mdBtn");
+
+function formatDate(value) {
+  const s = String(value || "");
+  if (!/^\d{8}$/.test(s)) return s || "不明";
+  return `${s.slice(0,4)}年${s.slice(4,6)}月${s.slice(6,8)}日`;
+}
+
+function safeHttpUrl(value) {
+  try {
+    const u = new URL(String(value || ""));
+    return ["http:","https:"].includes(u.protocol) ? u.href : "";
+  } catch (_) {
+    return "";
+  }
+}
+
+function cleanInlineMarkdown(value) {
+  return String(value || "")
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/`(.+?)`/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function parseMarkdown(text) {
+  text = String(text || "").replace(/^\uFEFF/, "");
+  const lines = text.split(/\r?\n/);
+  const articles = [];
+  let section = "ニュース";
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i].trim();
+
+    if (line.startsWith("## ") && !line.startsWith("### ")) {
+      section = cleanInlineMarkdown(line.slice(3)) || "ニュース";
+      i += 1;
+      continue;
+    }
+
+    if (!line.startsWith("### ")) {
+      i += 1;
+      continue;
+    }
+
+    const title = cleanInlineMarkdown(line.slice(4));
+    i += 1;
+
+    const block = [];
+    while (i < lines.length) {
+      const x = lines[i].trim();
+      if (x.startsWith("### ") || (x.startsWith("## ") && !x.startsWith("### "))) break;
+      block.push(lines[i]);
+      i += 1;
+    }
+
+    let score = "";
+    let source = "";
+    let url = "";
+    let mode = "summary";
+    const summary = [];
+    const importance = [];
+    const points = [];
+
+    for (const raw of block) {
+      let s = raw.trim();
+      if (!s || s === "---") continue;
+
+      const meta = s.match(/^スコア[：:]\s*([0-9.]+)\s*[／/]\s*出典[：:]\s*(.+?)\s*$/);
+      if (meta) {
+        score = cleanInlineMarkdown(meta[1]);
+        source = cleanInlineMarkdown(meta[2]);
+        continue;
+      }
+
+      const link = s.match(/\[元記事\]\((https?:\/\/[^)]+)\)/);
+      if (link) {
+        url = link[1].trim();
+        continue;
+      }
+
+      if (s === "**重要性**" || s === "重要性") {
+        mode = "importance";
+        continue;
+      }
+      if (s === "**重要ポイント**" || s === "重要ポイント") {
+        mode = "points";
+        continue;
+      }
+
+      if (mode === "points") {
+        s = s.replace(/^[-*]\s+/, "");
+        s = cleanInlineMarkdown(s);
+        if (s) points.push(s);
+      } else if (mode === "importance") {
+        s = cleanInlineMarkdown(s);
+        if (s) importance.push(s);
+      } else {
+        s = cleanInlineMarkdown(s);
+        if (s) summary.push(s);
+      }
+    }
+
+    if (title) {
+      articles.push({
+        section, title, score, source, url,
+        summary: cleanInlineMarkdown(summary.join(" ")),
+        importance: cleanInlineMarkdown(importance.join(" ")),
+        points,
+      });
+    }
+  }
+
+  return articles;
+}
+
+function el(tag, className="", text="") {
+  const x = document.createElement(tag);
+  if (className) x.className = className;
+  if (text) x.textContent = text;
+  return x;
+}
+
+function renderArticles(articles) {
+  contentEl.replaceChildren();
+
+  if (!articles.length) return false;
+
+  const sections = new Map();
+  for (const a of articles) {
+    if (!sections.has(a.section)) sections.set(a.section, []);
+    sections.get(a.section).push(a);
+  }
+
+  let number = 0;
+  for (const [sectionName, items] of sections) {
+    const section = el("section","section");
+    section.appendChild(el("h2","section-title",sectionName));
+
+    const grid = el("div","grid");
+    for (const a of items) {
+      number += 1;
+      const card = el("article","card");
+
+      const top = el("div","card-top");
+      top.appendChild(el("span","num",String(number).padStart(2,"0")));
+
+      const metadata = el("div","metadata");
+      if (a.source) metadata.appendChild(el("span","meta-item",a.source));
+      if (a.score) metadata.appendChild(el("span","meta-item score",`SCORE ${a.score}`));
+      top.appendChild(metadata);
+      card.appendChild(top);
+
+      card.appendChild(el("h3","",a.title));
+
+      if (a.summary) card.appendChild(el("p","summary",a.summary));
+
+      if (a.importance) {
+        const box = el("div","box");
+        box.appendChild(el("div","box-label","重要性"));
+        box.appendChild(el("p","",a.importance));
+        card.appendChild(box);
+      }
+
+      if (a.points.length) {
+        const box = el("div","box");
+        box.appendChild(el("div","box-label","重要ポイント"));
+        const ul = document.createElement("ul");
+        for (const p of a.points) ul.appendChild(el("li","",p));
+        box.appendChild(ul);
+        card.appendChild(box);
+      }
+
+      const sourceUrl = safeHttpUrl(a.url);
+      if (sourceUrl) {
+        const footer = el("div","card-footer");
+        const link = el("a","source-link","元記事を開く ↗");
+        link.href = sourceUrl;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        footer.appendChild(link);
+        card.appendChild(footer);
+      }
+
+      grid.appendChild(card);
+    }
+
+    section.appendChild(grid);
+    contentEl.appendChild(section);
+  }
+
+  return true;
+}
+
+async function load() {
+  titleEl.textContent = `${name}ニュースレポート`;
+  document.title = `${name}ニュースレポート`;
+  datePill.textContent = `対象日 ${formatDate(dateValue)}`;
+
+  const safePdf = safeHttpUrl(pdfUrl);
+  if (safePdf) {
+    pdfBtn.href = safePdf;
+    pdfBtn.hidden = false;
+  }
+
+  const safeMd = safeHttpUrl(markdownUrl);
+  if (safeMd) {
+    mdBtn.href = safeMd + (safeMd.includes("?") ? "&download" : "?download");
+    mdBtn.hidden = false;
+  }
+
+  if (!safeMd) {
+    statusEl.className = "status error";
+    statusEl.textContent = "Markdown URLが指定されていません。";
+    return;
+  }
+
+  try {
+    const u = new URL(safeMd);
+    u.searchParams.set("_", String(Date.now()));
+    const r = await fetch(u.href, {
+      cache:"no-store",
+      headers:{Accept:"text/markdown,text/plain;q=0.9,*/*;q=0.1"}
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+
+    const markdown = (await r.text()).replace(/^\uFEFF/, "");
+    const articles = parseMarkdown(markdown);
+    countPill.textContent = `記事 ${articles.length}件`;
+
+    if (renderArticles(articles)) {
+      statusEl.className = "status";
+      statusEl.textContent = "Markdownの見出し・記事・出典・要約・重要ポイントを構造化表示しています。";
+    } else {
+      const fallback = el("div","fallback",markdown);
+      contentEl.replaceChildren(fallback);
+      statusEl.className = "status";
+      statusEl.textContent = "Markdown構造を認識できなかったため、本文形式で表示しています。";
+    }
+  } catch (error) {
+    console.error(error);
+    statusEl.className = "status error";
+    statusEl.textContent = `Markdownの取得に失敗しました: ${error.message}`;
+  }
+}
+
+load();
+</script>
+</body>
+</html>
