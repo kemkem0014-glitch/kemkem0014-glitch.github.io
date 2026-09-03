@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>レポート・ダウンロード</title>
+  <style>
+    :root{color-scheme:light dark;--bg:#eef3f7;--paper:#fff;--text:#17212b;--muted:#63727e;--line:#d3dde3;--accent:#087cab;--accent2:#055f82;--soft:#e8f4f8;--shadow:0 8px 24px rgba(25,47,66,.07);--error:#b42318}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic UI","Noto Sans JP",sans-serif;line-height:1.65}
+    main{width:min(1100px,calc(100% - 28px));margin:auto;padding:28px 0 64px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.btn{display:inline-flex;align-items:center;min-height:38px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--text);text-decoration:none;font-size:.84rem;font-weight:700}.btn:hover{border-color:var(--accent);color:var(--accent)}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+    header,.panel{background:var(--paper);border-radius:14px;box-shadow:var(--shadow)}header{padding:clamp(22px,4vw,36px);margin-bottom:22px}.eyebrow{margin:0 0 6px;color:var(--accent);font-size:.75rem;font-weight:800;letter-spacing:.13em}h1{margin:0;font-size:clamp(1.9rem,4vw,2.8rem)}.muted{color:var(--muted)}.section-title{margin:30px 0 12px;padding:10px 14px;border-radius:7px;background:var(--accent);color:#fff;font-size:1.05rem}
+    .panel{padding:18px;border:1px solid var(--line)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{padding:16px;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;background:var(--paper)}.card h2,.card h3{margin:0 0 9px}.code{margin:0 0 3px;color:var(--muted);font:700 .72rem ui-monospace,SFMono-Regular,Menlo,monospace}.actions{display:flex;gap:8px;flex-wrap:wrap}.small{font-size:.82rem;color:var(--muted)}details{margin-bottom:10px;border:1px solid var(--line);border-radius:10px;background:var(--paper);overflow:hidden}summary{padding:13px 15px;cursor:pointer;font-weight:800}.history-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0 12px 12px}.status.error{color:var(--error)}footer{margin-top:28px;text-align:center;color:var(--muted);font-size:.8rem}
+    @media(max-width:760px){.grid,.history-grid{grid-template-columns:1fr}.page{width:min(100% - 18px,1100px)}}
+    @media(prefers-color-scheme:dark){:root{--bg:#0d1420;--paper:#151f2e;--text:#edf3fb;--muted:#a5b3c7;--line:#2d3a4d;--accent:#3c91c7;--accent2:#90c9ed;--soft:#17344a;--shadow:none;--error:#ffb4ab}}
+  </style>
+</head>
+<body>
+<main>
+  <nav class="toolbar"><a class="btn" href="index.html">トップへ戻る</a></nav>
+  <header>
+    <p class="eyebrow">DOWNLOAD ARCHIVE</p>
+    <h1>レポート・ダウンロード</h1>
+    <p id="updated" class="muted">最新情報を確認しています…</p>
+    <p id="status" class="muted"></p>
+  </header>
+
+  <h2 class="section-title">本日の全体要約</h2>
+  <section id="dailyBrief" class="panel"><p class="muted">読み込み中…</p></section>
+
+  <h2 class="section-title">最新カテゴリ別レポート</h2>
+  <section id="latest" class="grid"><p class="muted">読み込み中…</p></section>
+
+  <h2 class="section-title">過去のレポート</h2>
+  <section id="history"><p class="muted">履歴を読み込み中…</p></section>
+
+  <footer>PDF、Markdown、公開評価JSONをまとめて取得できます。</footer>
+</main>
+<script>
+"use strict";
+const BASE="https://hmnbalygfomelhjuscjm.supabase.co/storage/v1/object/public/public-news-reports";
+const URLS={manifest:`${BASE}/latest/index.json`,history:`${BASE}/latest/history.json`,assets:`${BASE}/latest/v5-assets.json`,assessment:`${BASE}/latest/assessment/index.json`};
+const latestEl=document.getElementById("latest"),historyEl=document.getElementById("history"),briefEl=document.getElementById("dailyBrief"),updatedEl=document.getElementById("updated"),statusEl=document.getElementById("status");
+function fmt(v){const s=String(v||"");return /^\d{8}$/.test(s)?`${s.slice(0,4)}年${s.slice(4,6)}月${s.slice(6,8)}日`:s||"不明"}
+function safe(v){try{const u=new URL(String(v||""));return ["http:","https:"].includes(u.protocol)?u.href:""}catch(_){return ""}}
+function btn(label,url,primary=false){const href=safe(url);if(!href)return null;const a=document.createElement("a");a.className=`btn${primary?" primary":""}`;a.textContent=label;a.href=href;a.target="_blank";a.rel="noopener noreferrer";return a}
+function actions(items){const d=document.createElement("div");d.className="actions";for(const item of items){const a=btn(item[0],item[1],item[2]);if(a)d.appendChild(a)}return d}
+async function get(url){const u=new URL(url);u.searchParams.set("_",Date.now());const r=await fetch(u,{cache:"no-store",headers:{Accept:"application/json"}});if(!r.ok)throw new Error(`${r.status}: ${u}`);return r.json()}
+function renderBrief(assets){briefEl.replaceChildren();const b=assets&&assets.daily_brief?assets.daily_brief:{};const h=document.createElement("h2");h.textContent="全体評価・72時間見通し要約";const p=document.createElement("p");p.className="small";p.textContent="横型の日次要約です。PDF版とWeb版を用意しています。";briefEl.append(h,p,actions([["全体要約PDF",b.pdf,true],["HTML版",b.html,false],["要約JSON",b.json,false],["全体評価JSON",assets.assessment_index,false]]))}
+function renderLatest(m,a){latestEl.replaceChildren();updatedEl.textContent=`更新対象日: ${fmt(m.report_date)}`;const cats=a&&a.categories?a.categories:{};for(const r of (m.reports||[])){const rt=String(r.report_type||"");const c=cats[rt]||{};const card=document.createElement("article");card.className="card";const code=document.createElement("p");code.className="code";code.textContent=rt;const h=document.createElement("h2");h.textContent=r.display_name||rt;const p=document.createElement("p");p.className="small";p.textContent=c.assessment?`評価 Lv.${c.assessment_level||"-"}/5 / 確度 ${c.confidence||"—"}`:"カテゴリ評価JSONも取得できます。";const assessmentUrl=`${BASE}/archive/${m.report_date}/assessment/${rt}.json`;card.append(code,h,p,actions([["PDF",r.latest_pdf_url||r.pdf_url,true],["Markdown",r.latest_markdown_url||r.markdown_url,false],["評価JSON",assessmentUrl,false]]));latestEl.appendChild(card)}if(!(m.reports||[]).length)latestEl.innerHTML='<p class="muted">最新レポートがありません。</p>'}
+function renderHistory(h,current){historyEl.replaceChildren();let n=0;for(const d of (h.dates||[])){if(String(d.report_date||"")===String(current||""))continue;const reports=d.reports||[];if(!reports.length)continue;const det=document.createElement("details"),sum=document.createElement("summary"),grid=document.createElement("div");sum.textContent=fmt(d.report_date);grid.className="history-grid";for(const r of reports){const card=document.createElement("div");card.className="card";const h3=document.createElement("h3");h3.textContent=r.display_name||r.report_type;const assessmentUrl=`${BASE}/archive/${d.report_date}/assessment/${r.report_type}.json`;card.append(h3,actions([["PDF",r.pdf_url,true],["Markdown",r.markdown_url,false],["評価JSON",assessmentUrl,false]]));grid.appendChild(card)}det.append(sum,grid);historyEl.appendChild(det);n++}if(!n)historyEl.innerHTML='<p class="muted">過去のレポートはまだありません。</p>'}
+(async()=>{try{const [m,h,x,a]=await Promise.all([get(URLS.manifest),get(URLS.history).catch(()=>({dates:[]})),get(URLS.assets).catch(()=>({})),get(URLS.assessment).catch(()=>({}))]);renderBrief(x);renderLatest(m,a);renderHistory(h,m.report_date);statusEl.textContent="公開済みファイルを一覧表示しています。"}catch(e){console.error(e);statusEl.className="status error";statusEl.textContent="公開ファイル一覧の取得に失敗しました。"}})();
+</script>
+</body>
+</html>
