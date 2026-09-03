@@ -52,7 +52,7 @@
     .confidence { margin:9px 0 0; color:var(--muted); font-size:.83rem; }
     .brief-panel { padding:18px; border:1px solid var(--line); }
     .brief-actions { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
-    .pdf-frame { width:100%; height:720px; border:1px solid var(--line); border-radius:9px; background:#fff; }
+    .brief-frame { width:100%; aspect-ratio:297 / 210; min-height:640px; border:1px solid var(--line); border-radius:9px; background:#fff; }
     .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
     .card {
       min-width:0; padding:18px 19px; border:1px solid var(--line);
@@ -76,7 +76,7 @@
     @media(max-width:760px) {
       .grid,.history-grid { grid-template-columns:1fr; }
       main { width:min(100% - 18px,1180px); padding-top:18px; }
-      .pdf-frame { height:520px; }
+      .brief-frame { min-height:420px; }
     }
     @media(prefers-color-scheme:dark) {
       :root {
@@ -103,11 +103,11 @@
 
   <section id="overall" class="overall" hidden></section>
 
-  <h2 class="section-title">本日の全体要約PDF</h2>
+  <h2 class="section-title">本日の全体要約</h2>
   <section id="briefPanel" class="brief-panel">
-    <p id="briefStatus" class="empty">PDFを読み込み中…</p>
+    <p id="briefStatus" class="empty">全体要約を読み込み中…</p>
     <div id="briefActions" class="brief-actions"></div>
-    <iframe id="briefFrame" class="pdf-frame" title="本日の全体要約PDF" hidden></iframe>
+    <iframe id="briefFrame" class="brief-frame" title="本日の全体要約" hidden></iframe>
   </section>
 
   <h2 class="section-title">最新レポート</h2>
@@ -116,7 +116,7 @@
   <h2 class="section-title">過去のレポート</h2>
   <section id="history"><p class="empty">履歴を読み込み中…</p></section>
 
-  <footer>表示はGitHub Pages、公開データとPDFはSupabase Storageから取得しています。</footer>
+  <footer>表示はGitHub Pages、公開データ・HTML・PDFはSupabase Storageから取得しています。</footer>
 </main>
 
 <script>
@@ -189,7 +189,7 @@ function renderOverall(assessment) {
   const head = document.createElement("div");
   head.className = "overall-head";
   const title = document.createElement("h2");
-  title.textContent = "Chief Fusion 全体コメント";
+  title.textContent = "Chief Fusion 日本への影響評価";
   const level = document.createElement("span");
   level.className = "level";
   level.textContent = `LEVEL ${o.assessment_level || 1}/5`;
@@ -201,7 +201,7 @@ function renderOverall(assessment) {
 
   const forecast = document.createElement("div");
   forecast.className = "forecast";
-  forecast.textContent = `今後72時間：${o.forecast_72h || "—"}`;
+  forecast.textContent = `日本への影響・今後72時間：${o.forecast_72h || "—"}`;
 
   const confidence = document.createElement("p");
   confidence.className = "confidence";
@@ -214,15 +214,22 @@ function renderBrief(assets) {
   const brief = assets && assets.daily_brief ? assets.daily_brief : {};
   const pdf = safeHttpUrl(brief.pdf);
   const web = safeHttpUrl(brief.html);
-  if (!pdf) {
-    briefStatusEl.textContent = "本日の全体要約PDFはまだ公開されていません。";
+  const embedded = web || pdf;
+  if (!embedded) {
+    briefStatusEl.textContent = "本日の全体要約はまだ公開されていません。";
     briefFrameEl.hidden = true;
     return;
   }
-  briefStatusEl.textContent = "本日の全体評価・72時間見通しを含む横型要約PDFです。";
-  briefActionsEl.appendChild(makeButton("PDFを別画面で開く", pdf, true, true));
-  if (web) briefActionsEl.appendChild(makeButton("HTML版を開く", web, false, true));
-  briefFrameEl.src = pdf;
+
+  if (web) {
+    briefStatusEl.textContent = "PDF化前のHTML版を、このページ内に直接表示しています。";
+    briefActionsEl.appendChild(makeButton("HTML版を別画面で開く", web, true, true));
+  } else {
+    briefStatusEl.textContent = "HTML版がないためPDFを表示しています。";
+  }
+  if (pdf) briefActionsEl.appendChild(makeButton("PDFを開く・保存", pdf, false, true));
+
+  briefFrameEl.src = embedded;
   briefFrameEl.hidden = false;
 }
 
@@ -247,9 +254,12 @@ function renderLatest(manifest, assessment) {
 
     const assessmentText = document.createElement("p");
     assessmentText.className = "card-assessment";
-    assessmentText.textContent = category.assessment
-      ? `Lv.${category.assessment_level || "-"}/5　${category.assessment}`
-      : "カテゴリ評価はWeb版で確認できます。";
+    const analyst = Array.isArray(category.analysts) ? category.analysts[0] : null;
+    assessmentText.textContent = analyst && analyst.comment
+      ? `直近3日：${analyst.comment}`
+      : (category.assessment
+          ? `Lv.${category.assessment_level || "-"}/5　${category.assessment}`
+          : "カテゴリ評価はWeb版で確認できます。");
 
     const actions = document.createElement("div");
     actions.className = "actions";
@@ -364,7 +374,7 @@ async function load() {
   if (assetsResult.status === "fulfilled") renderBrief(assetsResult.value);
   else {
     console.error("assets:", assetsResult.reason);
-    briefStatusEl.textContent = "本日の全体要約PDFを取得できませんでした。";
+    briefStatusEl.textContent = "本日の全体要約を取得できませんでした。";
   }
 
   if (historyResult.status !== "fulfilled") {
@@ -380,7 +390,7 @@ async function load() {
   if (manifestResult.status === "fulfilled") {
     statusEl.className = assessmentResult.status === "fulfilled" ? "status" : "status error";
     statusEl.textContent = assessmentResult.status === "fulfilled"
-      ? "最新レポート、全体評価、72時間見通しを表示しています。"
+      ? "最新レポート、日本への影響評価、72時間見通しを表示しています。"
       : "最新レポートは表示できましたが、評価データの取得に失敗しました。";
   }
 }
