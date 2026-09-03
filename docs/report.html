@@ -28,7 +28,7 @@
     .btn:hover { border-color:var(--accent); color:var(--accent); }
     .btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
     .btn.primary:hover { background:var(--accent2); color:#fff; }
-    .header {
+    .header,.analyst-panel {
       padding:clamp(22px,4vw,38px); border-radius:14px; background:var(--paper);
       box-shadow:var(--shadow); margin-bottom:22px;
     }
@@ -38,6 +38,19 @@
     .pill { padding:5px 10px; border-radius:999px; background:var(--soft); color:var(--accent2); font-size:.8rem; font-weight:750; }
     .status { margin:12px 0 0; color:var(--muted); font-size:.86rem; }
     .status.error { color:var(--error); }
+    .analyst-panel { padding:20px 22px; border:1px solid var(--line); }
+    .analyst-panel h2 { margin:0 0 12px; font-size:1.18rem; }
+    .analyst-card { padding:15px 16px; border-left:5px solid var(--accent); border-radius:9px; background:var(--note); }
+    .analyst-card + .analyst-card { margin-top:11px; }
+    .analyst-name { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px; font-weight:800; }
+    .analyst-comment { margin:0; }
+    .forecast-box { margin-top:12px; padding:11px 13px; border-radius:8px; background:var(--soft); }
+    .forecast-title { color:var(--accent2); font-size:.76rem; font-weight:800; letter-spacing:.04em; }
+    .forecast-box p { margin:4px 0 0; }
+    .forecast-meta { color:var(--muted); font-size:.82rem; }
+    .integrated { margin-top:13px; padding-top:13px; border-top:1px solid var(--line); }
+    .integrated-label { color:var(--muted); font-size:.76rem; font-weight:800; }
+    .integrated p { margin:5px 0 0; }
     .section { margin-top:24px; }
     .section-title {
       margin:0 0 12px; padding:10px 14px; border-radius:7px;
@@ -90,6 +103,7 @@
 <main class="page">
   <nav class="toolbar">
     <a class="btn" href="index.html">一覧へ戻る</a>
+    <a class="btn" href="downloads.html">ダウンロード一覧</a>
     <a id="pdfBtn" class="btn primary" href="#" target="_blank" rel="noopener noreferrer" hidden>PDFを開く</a>
     <a id="mdBtn" class="btn" href="#" hidden>Markdownを保存</a>
   </nav>
@@ -101,18 +115,21 @@
       <span id="datePill" class="pill">対象日</span>
       <span id="countPill" class="pill">記事 0件</span>
     </div>
-    <p id="status" class="status">Markdownを読み込んでいます…</p>
+    <p id="status" class="status">レポートを読み込んでいます…</p>
   </header>
 
+  <section id="analystPanel" class="analyst-panel" hidden></section>
   <div id="content"></div>
-  <footer>GitHub Pages上でMarkdownを構造化して表示しています。</footer>
+  <footer>各記事要約に加え、当日の担当分析官コメントと72時間見通しを表示しています。</footer>
 </main>
 
 <script>
 "use strict";
 
+const SUPABASE_PUBLIC_BASE = "https://hmnbalygfomelhjuscjm.supabase.co/storage/v1/object/public/public-news-reports";
 const params = new URLSearchParams(location.search);
-const name = params.get("name") || params.get("type") || "ニュース";
+const reportType = params.get("type") || "";
+const name = params.get("name") || reportType || "ニュース";
 const dateValue = params.get("date") || "";
 const markdownUrl = params.get("md") || "";
 const pdfUrl = params.get("pdf") || "";
@@ -124,6 +141,7 @@ const statusEl = document.getElementById("status");
 const contentEl = document.getElementById("content");
 const pdfBtn = document.getElementById("pdfBtn");
 const mdBtn = document.getElementById("mdBtn");
+const analystPanel = document.getElementById("analystPanel");
 
 function formatDate(value) {
   const s = String(value || "");
@@ -148,6 +166,13 @@ function cleanInlineMarkdown(value) {
     .trim();
 }
 
+function el(tag, className="", text="") {
+  const x = document.createElement(tag);
+  if (className) x.className = className;
+  if (text) x.textContent = text;
+  return x;
+}
+
 function parseMarkdown(text) {
   text = String(text || "").replace(/^\uFEFF/, "");
   const lines = text.split(/\r?\n/);
@@ -157,21 +182,15 @@ function parseMarkdown(text) {
 
   while (i < lines.length) {
     const line = lines[i].trim();
-
     if (line.startsWith("## ") && !line.startsWith("### ")) {
       section = cleanInlineMarkdown(line.slice(3)) || "ニュース";
       i += 1;
       continue;
     }
-
-    if (!line.startsWith("### ")) {
-      i += 1;
-      continue;
-    }
+    if (!line.startsWith("### ")) { i += 1; continue; }
 
     const title = cleanInlineMarkdown(line.slice(4));
     i += 1;
-
     const block = [];
     while (i < lines.length) {
       const x = lines[i].trim();
@@ -180,114 +199,66 @@ function parseMarkdown(text) {
       i += 1;
     }
 
-    let score = "";
-    let source = "";
-    let url = "";
-    let mode = "summary";
-    const summary = [];
-    const importance = [];
-    const points = [];
-
+    let score = "", source = "", url = "", mode = "summary";
+    const summary = [], importance = [], points = [];
     for (const raw of block) {
       let s = raw.trim();
       if (!s || s === "---") continue;
-
       const meta = s.match(/^スコア[：:]\s*([0-9.]+)\s*[／/]\s*出典[：:]\s*(.+?)\s*$/);
-      if (meta) {
-        score = cleanInlineMarkdown(meta[1]);
-        source = cleanInlineMarkdown(meta[2]);
-        continue;
-      }
-
+      if (meta) { score = cleanInlineMarkdown(meta[1]); source = cleanInlineMarkdown(meta[2]); continue; }
       const link = s.match(/\[元記事\]\((https?:\/\/[^)]+)\)/);
-      if (link) {
-        url = link[1].trim();
-        continue;
-      }
-
-      if (s === "**重要性**" || s === "重要性") {
-        mode = "importance";
-        continue;
-      }
-      if (s === "**重要ポイント**" || s === "重要ポイント") {
-        mode = "points";
-        continue;
-      }
-
+      if (link) { url = link[1].trim(); continue; }
+      if (s === "**重要性**" || s === "重要性") { mode = "importance"; continue; }
+      if (s === "**重要ポイント**" || s === "重要ポイント") { mode = "points"; continue; }
       if (mode === "points") {
-        s = s.replace(/^[-*]\s+/, "");
-        s = cleanInlineMarkdown(s);
+        s = cleanInlineMarkdown(s.replace(/^[-*]\s+/, ""));
         if (s) points.push(s);
       } else if (mode === "importance") {
-        s = cleanInlineMarkdown(s);
-        if (s) importance.push(s);
+        s = cleanInlineMarkdown(s); if (s) importance.push(s);
       } else {
-        s = cleanInlineMarkdown(s);
-        if (s) summary.push(s);
+        s = cleanInlineMarkdown(s); if (s) summary.push(s);
       }
     }
-
     if (title) {
-      articles.push({
-        section, title, score, source, url,
-        summary: cleanInlineMarkdown(summary.join(" ")),
-        importance: cleanInlineMarkdown(importance.join(" ")),
-        points,
-      });
+      articles.push({section,title,score,source,url,
+        summary:cleanInlineMarkdown(summary.join(" ")),
+        importance:cleanInlineMarkdown(importance.join(" ")),points});
     }
   }
-
   return articles;
-}
-
-function el(tag, className="", text="") {
-  const x = document.createElement(tag);
-  if (className) x.className = className;
-  if (text) x.textContent = text;
-  return x;
 }
 
 function renderArticles(articles) {
   contentEl.replaceChildren();
-
   if (!articles.length) return false;
-
   const sections = new Map();
   for (const a of articles) {
     if (!sections.has(a.section)) sections.set(a.section, []);
     sections.get(a.section).push(a);
   }
-
   let number = 0;
   for (const [sectionName, items] of sections) {
     const section = el("section","section");
     section.appendChild(el("h2","section-title",sectionName));
-
     const grid = el("div","grid");
     for (const a of items) {
       number += 1;
       const card = el("article","card");
-
       const top = el("div","card-top");
       top.appendChild(el("span","num",String(number).padStart(2,"0")));
-
       const metadata = el("div","metadata");
       if (a.source) metadata.appendChild(el("span","meta-item",a.source));
       if (a.score) metadata.appendChild(el("span","meta-item score",`SCORE ${a.score}`));
       top.appendChild(metadata);
       card.appendChild(top);
-
       card.appendChild(el("h3","",a.title));
-
       if (a.summary) card.appendChild(el("p","summary",a.summary));
-
       if (a.importance) {
         const box = el("div","box");
         box.appendChild(el("div","box-label","重要性"));
         box.appendChild(el("p","",a.importance));
         card.appendChild(box);
       }
-
       if (a.points.length) {
         const box = el("div","box");
         box.appendChild(el("div","box-label","重要ポイント"));
@@ -296,26 +267,79 @@ function renderArticles(articles) {
         box.appendChild(ul);
         card.appendChild(box);
       }
-
       const sourceUrl = safeHttpUrl(a.url);
       if (sourceUrl) {
         const footer = el("div","card-footer");
         const link = el("a","source-link","元記事を開く ↗");
-        link.href = sourceUrl;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        footer.appendChild(link);
-        card.appendChild(footer);
+        link.href = sourceUrl; link.target = "_blank"; link.rel = "noopener noreferrer";
+        footer.appendChild(link); card.appendChild(footer);
       }
-
       grid.appendChild(card);
     }
+    section.appendChild(grid); contentEl.appendChild(section);
+  }
+  return true;
+}
 
-    section.appendChild(grid);
-    contentEl.appendChild(section);
+function renderAnalystAssessment(data) {
+  if (!data || typeof data !== "object") return;
+  const analysts = Array.isArray(data.analysts) ? data.analysts : [];
+  analystPanel.replaceChildren();
+  analystPanel.appendChild(el("h2","","担当分析官コメント・72時間見通し"));
+
+  if (analysts.length) {
+    for (const analyst of analysts) {
+      const card = el("div","analyst-card");
+      const nameRow = el("div","analyst-name");
+      nameRow.appendChild(el("span","",analyst.agent_name || analyst.agent_id || "担当分析官"));
+      if (analyst.analysis_role) nameRow.appendChild(el("span","pill",analyst.analysis_role));
+      if (analyst.perspective) nameRow.appendChild(el("span","pill",analyst.perspective));
+      card.appendChild(nameRow);
+      if (analyst.comment) card.appendChild(el("p","analyst-comment",analyst.comment));
+      const forecast = analyst.forecast_72h || {};
+      if (forecast.development) {
+        const box = el("div","forecast-box");
+        box.appendChild(el("div","forecast-title","72時間見通し"));
+        box.appendChild(el("p","",forecast.development));
+        const metaParts = [];
+        if (forecast.likelihood) metaParts.push(`可能性：${forecast.likelihood}`);
+        if (forecast.rationale) metaParts.push(`根拠：${forecast.rationale}`);
+        if (metaParts.length) box.appendChild(el("p","forecast-meta",metaParts.join(" ／ ")));
+        card.appendChild(box);
+      }
+      analystPanel.appendChild(card);
+    }
+  } else {
+    const card = el("div","analyst-card");
+    card.appendChild(el("div","analyst-name","カテゴリ統合評価"));
+    card.appendChild(el("p","analyst-comment",data.assessment || data.integrated_comment || "評価コメントはありません。"));
+    const forecastText = data.forecast_72h || ((data.integrated_forecast_72h || {}).development || "");
+    if (forecastText) {
+      const box = el("div","forecast-box");
+      box.appendChild(el("div","forecast-title","72時間見通し"));
+      box.appendChild(el("p","",forecastText));
+      card.appendChild(box);
+    }
+    analystPanel.appendChild(card);
   }
 
-  return true;
+  if (data.integrated_comment && analysts.length) {
+    const integrated = el("div","integrated");
+    integrated.appendChild(el("div","integrated-label","統合評価"));
+    integrated.appendChild(el("p","",data.integrated_comment));
+    const forecast = data.integrated_forecast_72h || {};
+    if (forecast.development) integrated.appendChild(el("p","forecast-meta",`統合72時間見通し：${forecast.development}`));
+    analystPanel.appendChild(integrated);
+  }
+  analystPanel.hidden = false;
+}
+
+async function fetchJson(urlValue) {
+  const u = new URL(urlValue);
+  u.searchParams.set("_", String(Date.now()));
+  const r = await fetch(u.href,{cache:"no-store",headers:{Accept:"application/json"}});
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return await r.json();
 }
 
 async function load() {
@@ -324,50 +348,50 @@ async function load() {
   datePill.textContent = `対象日 ${formatDate(dateValue)}`;
 
   const safePdf = safeHttpUrl(pdfUrl);
-  if (safePdf) {
-    pdfBtn.href = safePdf;
-    pdfBtn.hidden = false;
-  }
-
+  if (safePdf) { pdfBtn.href = safePdf; pdfBtn.hidden = false; }
   const safeMd = safeHttpUrl(markdownUrl);
   if (safeMd) {
     mdBtn.href = safeMd + (safeMd.includes("?") ? "&download" : "?download");
     mdBtn.hidden = false;
   }
 
+  const assessmentUrl = (/^\d{8}$/.test(dateValue) && /^[a-z0-9_-]+$/.test(reportType))
+    ? `${SUPABASE_PUBLIC_BASE}/archive/${dateValue}/assessment/${reportType}.json`
+    : "";
+
+  const assessmentPromise = assessmentUrl
+    ? fetchJson(assessmentUrl).then(renderAnalystAssessment).catch(err => console.warn("assessment:",err))
+    : Promise.resolve();
+
   if (!safeMd) {
     statusEl.className = "status error";
     statusEl.textContent = "Markdown URLが指定されていません。";
+    await assessmentPromise;
     return;
   }
 
   try {
     const u = new URL(safeMd);
     u.searchParams.set("_", String(Date.now()));
-    const r = await fetch(u.href, {
-      cache:"no-store",
-      headers:{Accept:"text/markdown,text/plain;q=0.9,*/*;q=0.1"}
-    });
+    const r = await fetch(u.href,{cache:"no-store",headers:{Accept:"text/markdown,text/plain;q=0.9,*/*;q=0.1"}});
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
-
     const markdown = (await r.text()).replace(/^\uFEFF/, "");
     const articles = parseMarkdown(markdown);
     countPill.textContent = `記事 ${articles.length}件`;
-
-    if (renderArticles(articles)) {
-      statusEl.className = "status";
-      statusEl.textContent = "Markdownの見出し・記事・出典・要約・重要ポイントを構造化表示しています。";
+    if (!renderArticles(articles)) {
+      const pre = el("pre","fallback",markdown);
+      contentEl.replaceChildren(pre);
+      statusEl.textContent = "記事構造を検出できなかったためMarkdown本文を表示しています。";
     } else {
-      const fallback = el("div","fallback",markdown);
-      contentEl.replaceChildren(fallback);
-      statusEl.className = "status";
-      statusEl.textContent = "Markdown構造を認識できなかったため、本文形式で表示しています。";
+      statusEl.textContent = "記事要約と担当分析官の評価を表示しています。";
     }
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     statusEl.className = "status error";
-    statusEl.textContent = `Markdownの取得に失敗しました: ${error.message}`;
+    statusEl.textContent = "Markdownの取得または表示に失敗しました。";
+    contentEl.replaceChildren(el("div","fallback","レポート本文を取得できませんでした。PDFから確認してください。"));
   }
+  await assessmentPromise;
 }
 
 load();
