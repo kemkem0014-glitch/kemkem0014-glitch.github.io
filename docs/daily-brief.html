@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>本日の全体要約</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#eef3f7;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic UI","Noto Sans JP",sans-serif;color:#17212b}.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 14px;background:#fff;border-bottom:1px solid #d3dde3;position:sticky;top:0;z-index:2}.bar strong{font-size:.95rem}.actions{display:flex;gap:8px;flex-wrap:wrap}a{display:inline-flex;align-items:center;min-height:36px;padding:6px 11px;border:1px solid #d3dde3;border-radius:8px;color:#17212b;background:#fff;text-decoration:none;font-size:.82rem;font-weight:700}a.primary{background:#087cab;border-color:#087cab;color:#fff}#status{padding:20px;color:#63727e}iframe{display:block;width:100%;height:calc(100vh - 58px);border:0;background:#fff}@media(prefers-color-scheme:dark){html,body{background:#0d1420;color:#edf3fb}.bar{background:#151f2e;border-color:#2d3a4d}a{background:#151f2e;color:#edf3fb;border-color:#2d3a4d}#status{color:#a5b3c7}}
+  </style>
+</head>
+<body>
+  <div class="bar"><strong>本日の全体要約</strong><div class="actions"><a href="./">トップへ戻る</a><a id="pdfLink" class="primary" href="#" target="_blank" rel="noopener noreferrer" hidden>PDFを開く・保存</a></div></div>
+  <div id="status">全体要約を読み込んでいます…</div>
+  <iframe id="frame" title="本日の全体要約" sandbox="allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation" hidden></iframe>
+<script>
+"use strict";
+const BASE="https://hmnbalygfomelhjuscjm.supabase.co/storage/v1/object/public/public-news-reports";const ASSETS=`${BASE}/latest/v5-assets.json`;const statusEl=document.getElementById("status"),frame=document.getElementById("frame"),pdfLink=document.getElementById("pdfLink");
+function allowedReportUrl(value){try{const u=new URL(String(value||""));return u.protocol==="https:"&&u.hostname==="hmnbalygfomelhjuscjm.supabase.co"&&u.pathname.startsWith("/storage/v1/object/public/public-news-reports/")?u.href:""}catch(_){return ""}}
+async function fetchText(url){const u=new URL(url);u.searchParams.set("_",Date.now());const r=await fetch(u.href,{cache:"no-store"});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.text()}
+async function fetchJson(url){const u=new URL(url);u.searchParams.set("_",Date.now());const r=await fetch(u.href,{cache:"no-store",headers:{Accept:"application/json"}});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json()}
+async function main(){try{const params=new URLSearchParams(location.search);let src=allowedReportUrl(params.get("src"));let assets=null;if(!src){assets=await fetchJson(ASSETS);src=allowedReportUrl(assets?.daily_brief?.html)}if(!src)throw new Error("HTML URLがありません");if(!assets)assets=await fetchJson(ASSETS).catch(()=>null);const pdf=allowedReportUrl(assets?.daily_brief?.pdf);if(pdf){pdfLink.href=pdf;pdfLink.hidden=false}const html=await fetchText(src);frame.srcdoc=html;frame.hidden=false;statusEl.hidden=true}catch(e){console.error(e);statusEl.textContent="全体要約を表示できませんでした。PDF版をご利用ください。";try{const assets=await fetchJson(ASSETS);const pdf=allowedReportUrl(assets?.daily_brief?.pdf);if(pdf){pdfLink.href=pdf;pdfLink.hidden=false}}catch(_){}}}
+main();
+</script>
+</body>
+</html>
