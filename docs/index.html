@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <title>最新ニュースレポート</title>
+  <title>最新ニュース・インテリジェンス評価</title>
   <style>
     :root {
       color-scheme: light dark;
@@ -21,28 +21,16 @@
       line-height:1.65;
     }
     main { width:min(1180px,calc(100% - 28px)); margin:0 auto; padding:44px 0 64px; }
-    header {
-      padding:clamp(22px,4vw,38px); margin-bottom:22px; border-radius:14px;
-      background:var(--surface); box-shadow:var(--shadow);
+    header,.overall,.brief-panel {
+      background:var(--surface); box-shadow:var(--shadow); border-radius:14px;
     }
+    header { padding:clamp(22px,4vw,38px); margin-bottom:22px; }
+    .header-row { display:flex; justify-content:space-between; align-items:flex-start; gap:18px; flex-wrap:wrap; }
     .eyebrow { margin:0 0 6px; color:var(--accent); font-size:.76rem; font-weight:800; letter-spacing:.13em; }
     h1 { margin:0; font-size:clamp(2rem,5vw,3.15rem); line-height:1.16; }
     .updated { margin:12px 0 0; color:var(--muted); }
     .status { margin:6px 0 0; color:var(--muted); font-size:.9rem; }
     .status.error { color:var(--error); }
-    .section-title {
-      margin:30px 0 12px; padding:10px 14px; border-radius:7px;
-      background:var(--accent); color:#fff; font-size:1.05rem;
-    }
-    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
-    .card {
-      min-width:0; padding:18px 19px; border:1px solid var(--line);
-      border-left:5px solid var(--accent); border-radius:10px;
-      background:var(--surface); box-shadow:var(--shadow);
-    }
-    .code { margin:0 0 3px; color:var(--muted); font:700 .72rem ui-monospace,SFMono-Regular,Menlo,monospace; }
-    .card h2 { margin:0 0 15px; font-size:1.1rem; }
-    .actions { display:flex; flex-wrap:wrap; gap:8px; }
     .btn {
       display:inline-flex; align-items:center; min-height:38px; padding:7px 12px;
       border:1px solid var(--line); border-radius:8px; background:var(--surface);
@@ -51,6 +39,30 @@
     .btn:hover { border-color:var(--accent); color:var(--accent); }
     .btn.primary { border-color:var(--accent); background:var(--accent); color:#fff; }
     .btn.primary:hover { background:var(--accent2); color:#fff; }
+    .section-title {
+      margin:30px 0 12px; padding:10px 14px; border-radius:7px;
+      background:var(--accent); color:#fff; font-size:1.05rem;
+    }
+    .overall { padding:22px 24px; border:1px solid var(--line); margin-bottom:20px; }
+    .overall-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+    .overall h2 { margin:0; font-size:1.24rem; }
+    .level { display:inline-flex; padding:5px 10px; border-radius:999px; background:var(--soft); color:var(--accent2); font-size:.8rem; font-weight:800; }
+    .overall-comment { margin:0; font-size:1rem; }
+    .forecast { margin:14px 0 0; padding:12px 14px; border-left:4px solid var(--accent); border-radius:0 8px 8px 0; background:var(--soft); }
+    .confidence { margin:9px 0 0; color:var(--muted); font-size:.83rem; }
+    .brief-panel { padding:18px; border:1px solid var(--line); }
+    .brief-actions { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+    .pdf-frame { width:100%; height:720px; border:1px solid var(--line); border-radius:9px; background:#fff; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
+    .card {
+      min-width:0; padding:18px 19px; border:1px solid var(--line);
+      border-left:5px solid var(--accent); border-radius:10px;
+      background:var(--surface); box-shadow:var(--shadow);
+    }
+    .code { margin:0 0 3px; color:var(--muted); font:700 .72rem ui-monospace,SFMono-Regular,Menlo,monospace; }
+    .card h2 { margin:0 0 7px; font-size:1.1rem; }
+    .card-assessment { margin:0 0 12px; color:var(--muted); font-size:.84rem; }
+    .actions { display:flex; flex-wrap:wrap; gap:8px; }
     details {
       margin-bottom:10px; border:1px solid var(--line); border-radius:10px;
       background:var(--surface); overflow:hidden;
@@ -64,11 +76,12 @@
     @media(max-width:760px) {
       .grid,.history-grid { grid-template-columns:1fr; }
       main { width:min(100% - 18px,1180px); padding-top:18px; }
+      .pdf-frame { height:520px; }
     }
     @media(prefers-color-scheme:dark) {
       :root {
         --bg:#0d1420; --surface:#151f2e; --text:#edf3fb; --muted:#a5b3c7;
-        --line:#2d3a4d; --accent:#3c91c7; --accent2:#2a76a6; --soft:#17344a;
+        --line:#2d3a4d; --accent:#3c91c7; --accent2:#90c9ed; --soft:#17344a;
         --shadow:none; --error:#ffb4ab;
       }
     }
@@ -77,11 +90,25 @@
 <body>
 <main>
   <header>
-    <p class="eyebrow">PUBLIC NEWS REPORTS</p>
-    <h1>最新ニュースレポート</h1>
-    <p id="updated" class="updated">最新情報を確認しています…</p>
-    <p id="status" class="status" aria-live="polite"></p>
+    <div class="header-row">
+      <div>
+        <p class="eyebrow">DAILY INTELLIGENCE REPORTS</p>
+        <h1>最新ニュース・インテリジェンス評価</h1>
+        <p id="updated" class="updated">最新情報を確認しています…</p>
+        <p id="status" class="status" aria-live="polite"></p>
+      </div>
+      <a class="btn primary" href="downloads.html">ダウンロードページ</a>
+    </div>
   </header>
+
+  <section id="overall" class="overall" hidden></section>
+
+  <h2 class="section-title">本日の全体要約PDF</h2>
+  <section id="briefPanel" class="brief-panel">
+    <p id="briefStatus" class="empty">PDFを読み込み中…</p>
+    <div id="briefActions" class="brief-actions"></div>
+    <iframe id="briefFrame" class="pdf-frame" title="本日の全体要約PDF" hidden></iframe>
+  </section>
 
   <h2 class="section-title">最新レポート</h2>
   <section id="latest" class="grid"><p class="empty">読み込み中…</p></section>
@@ -89,7 +116,7 @@
   <h2 class="section-title">過去のレポート</h2>
   <section id="history"><p class="empty">履歴を読み込み中…</p></section>
 
-  <footer>表示はGitHub Pages、データはSupabase Storageから取得しています。</footer>
+  <footer>表示はGitHub Pages、公開データとPDFはSupabase Storageから取得しています。</footer>
 </main>
 
 <script>
@@ -98,11 +125,17 @@
 const SUPABASE_PUBLIC_BASE = "https://hmnbalygfomelhjuscjm.supabase.co/storage/v1/object/public/public-news-reports";
 const MANIFEST_URL = `${SUPABASE_PUBLIC_BASE}/latest/index.json`;
 const HISTORY_URL = `${SUPABASE_PUBLIC_BASE}/latest/history.json`;
+const ASSESSMENT_URL = `${SUPABASE_PUBLIC_BASE}/latest/assessment/index.json`;
+const ASSETS_URL = `${SUPABASE_PUBLIC_BASE}/latest/v5-assets.json`;
 
 const latestEl = document.getElementById("latest");
 const historyEl = document.getElementById("history");
 const updatedEl = document.getElementById("updated");
 const statusEl = document.getElementById("status");
+const overallEl = document.getElementById("overall");
+const briefStatusEl = document.getElementById("briefStatus");
+const briefActionsEl = document.getElementById("briefActions");
+const briefFrameEl = document.getElementById("briefFrame");
 
 function formatDate(value) {
   const s = String(value || "");
@@ -126,7 +159,6 @@ function reportPageUrl(report, dateValue, latest=false) {
   const pdf = safeHttpUrl(latest
     ? (report.latest_pdf_url || report.pdf_url)
     : report.pdf_url);
-
   const p = new URLSearchParams();
   p.set("type", String(report.report_type || ""));
   p.set("name", String(report.display_name || report.report_type || "レポート"));
@@ -148,21 +180,76 @@ function makeButton(label, href, primary=false, newTab=false) {
   return a;
 }
 
-function renderLatest(manifest) {
+function renderOverall(assessment) {
+  const o = assessment && assessment.overall;
+  if (!o) return;
+  overallEl.hidden = false;
+  overallEl.replaceChildren();
+
+  const head = document.createElement("div");
+  head.className = "overall-head";
+  const title = document.createElement("h2");
+  title.textContent = "Chief Fusion 全体コメント";
+  const level = document.createElement("span");
+  level.className = "level";
+  level.textContent = `LEVEL ${o.assessment_level || 1}/5`;
+  head.append(title, level);
+
+  const comment = document.createElement("p");
+  comment.className = "overall-comment";
+  comment.textContent = o.assessment || "全体コメントはありません。";
+
+  const forecast = document.createElement("div");
+  forecast.className = "forecast";
+  forecast.textContent = `今後72時間：${o.forecast_72h || "—"}`;
+
+  const confidence = document.createElement("p");
+  confidence.className = "confidence";
+  confidence.textContent = `確度：${o.confidence || "—"}`;
+  overallEl.append(head, comment, forecast, confidence);
+}
+
+function renderBrief(assets) {
+  briefActionsEl.replaceChildren();
+  const brief = assets && assets.daily_brief ? assets.daily_brief : {};
+  const pdf = safeHttpUrl(brief.pdf);
+  const web = safeHttpUrl(brief.html);
+  if (!pdf) {
+    briefStatusEl.textContent = "本日の全体要約PDFはまだ公開されていません。";
+    briefFrameEl.hidden = true;
+    return;
+  }
+  briefStatusEl.textContent = "本日の全体評価・72時間見通しを含む横型要約PDFです。";
+  briefActionsEl.appendChild(makeButton("PDFを別画面で開く", pdf, true, true));
+  if (web) briefActionsEl.appendChild(makeButton("HTML版を開く", web, false, true));
+  briefFrameEl.src = pdf;
+  briefFrameEl.hidden = false;
+}
+
+function renderLatest(manifest, assessment) {
   latestEl.replaceChildren();
   const reports = Array.isArray(manifest.reports) ? manifest.reports : [];
+  const categories = assessment && assessment.categories ? assessment.categories : {};
   updatedEl.textContent = `更新対象日: ${formatDate(manifest.report_date)}`;
 
   for (const report of reports) {
+    const rt = String(report.report_type || "");
+    const category = categories[rt] || {};
     const card = document.createElement("article");
     card.className = "card";
 
     const code = document.createElement("p");
     code.className = "code";
-    code.textContent = String(report.report_type || "report");
+    code.textContent = rt || "report";
 
     const h = document.createElement("h2");
-    h.textContent = String(report.display_name || report.report_type || "レポート");
+    h.textContent = String(report.display_name || rt || "レポート");
+
+    const assessmentText = document.createElement("p");
+    assessmentText.className = "card-assessment";
+    assessmentText.textContent = category.assessment
+      ? `Lv.${category.assessment_level || "-"}/5　${category.assessment}`
+      : "カテゴリ評価はWeb版で確認できます。";
 
     const actions = document.createElement("div");
     actions.className = "actions";
@@ -178,7 +265,7 @@ function renderLatest(manifest) {
     const md = safeHttpUrl(report.latest_markdown_url || report.markdown_url);
     if (md) actions.appendChild(makeButton("Markdown", md + "?download"));
 
-    card.append(code, h, actions);
+    card.append(code, h, assessmentText, actions);
     latestEl.appendChild(card);
   }
 
@@ -210,7 +297,6 @@ function renderHistory(history, currentDate) {
     for (const report of reports) {
       const box = document.createElement("div");
       box.className = "history-item";
-
       const name = document.createElement("div");
       name.className = "history-name";
       name.textContent = String(report.display_name || report.report_type || "レポート");
@@ -222,13 +308,10 @@ function renderHistory(history, currentDate) {
         reportPageUrl(report, item.report_date, false),
         true
       ));
-
       const pdf = safeHttpUrl(report.pdf_url);
       if (pdf) actions.appendChild(makeButton("PDF", pdf, false, true));
-
       const md = safeHttpUrl(report.markdown_url);
       if (md) actions.appendChild(makeButton("Markdown", md + "?download"));
-
       box.append(name, actions);
       grid.appendChild(box);
     }
@@ -249,18 +332,17 @@ function renderHistory(history, currentDate) {
 async function fetchJson(urlValue) {
   const u = new URL(urlValue);
   u.searchParams.set("_", String(Date.now()));
-  const r = await fetch(u.href, {
-    cache:"no-store",
-    headers:{Accept:"application/json"}
-  });
+  const r = await fetch(u.href, {cache:"no-store",headers:{Accept:"application/json"}});
   if (!r.ok) throw new Error(`HTTP ${r.status}: ${u.href}`);
   return await r.json();
 }
 
 async function load() {
-  const [manifestResult, historyResult] = await Promise.allSettled([
+  const [manifestResult, historyResult, assessmentResult, assetsResult] = await Promise.allSettled([
     fetchJson(MANIFEST_URL),
     fetchJson(HISTORY_URL),
+    fetchJson(ASSESSMENT_URL),
+    fetchJson(ASSETS_URL),
   ]);
 
   if (manifestResult.status !== "fulfilled") {
@@ -270,16 +352,24 @@ async function load() {
     statusEl.className = "status error";
     statusEl.textContent = "Supabaseのindex.json取得に失敗しました。";
   } else {
-    renderLatest(manifestResult.value);
+    renderLatest(
+      manifestResult.value,
+      assessmentResult.status === "fulfilled" ? assessmentResult.value : {}
+    );
+  }
+
+  if (assessmentResult.status === "fulfilled") renderOverall(assessmentResult.value);
+  else console.error("assessment:", assessmentResult.reason);
+
+  if (assetsResult.status === "fulfilled") renderBrief(assetsResult.value);
+  else {
+    console.error("assets:", assetsResult.reason);
+    briefStatusEl.textContent = "本日の全体要約PDFを取得できませんでした。";
   }
 
   if (historyResult.status !== "fulfilled") {
     console.error("history.json:", historyResult.reason);
     historyEl.innerHTML = '<p class="empty">過去履歴を取得できませんでした。</p>';
-    if (manifestResult.status === "fulfilled") {
-      statusEl.className = "status error";
-      statusEl.textContent = "最新レポートは表示できましたが、過去履歴の取得に失敗しました。";
-    }
   } else {
     renderHistory(
       historyResult.value,
@@ -287,9 +377,11 @@ async function load() {
     );
   }
 
-  if (manifestResult.status === "fulfilled" && historyResult.status === "fulfilled") {
-    statusEl.className = "status";
-    statusEl.textContent = "最新・過去レポートを表示しています。";
+  if (manifestResult.status === "fulfilled") {
+    statusEl.className = assessmentResult.status === "fulfilled" ? "status" : "status error";
+    statusEl.textContent = assessmentResult.status === "fulfilled"
+      ? "最新レポート、全体評価、72時間見通しを表示しています。"
+      : "最新レポートは表示できましたが、評価データの取得に失敗しました。";
   }
 }
 
