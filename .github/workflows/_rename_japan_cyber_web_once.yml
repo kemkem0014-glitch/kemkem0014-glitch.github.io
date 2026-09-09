@@ -1,0 +1,35 @@
+name: Rename Japan Cyber Web Once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/_rename_japan_cyber_web_once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update web title
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('docs/index.html')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('<title>Japan Cyber Threat Brief</title>', '<title>Japan Cyber Situational Awareness</title>')
+          text = text.replace('<h1 class="title">Japan Cyber Threat Brief</h1>', '<h1 class="title">Japan Cyber Situational Awareness</h1>')
+          assert '<title>Japan Cyber Situational Awareness</title>' in text
+          assert '<h1 class="title">Japan Cyber Situational Awareness</h1>' in text
+          path.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit web title
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/index.html
+          git commit -m "Rename Japan cyber situational awareness web title"
+          git push
