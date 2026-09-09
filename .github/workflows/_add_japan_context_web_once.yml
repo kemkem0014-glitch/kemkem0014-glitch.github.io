@@ -1,0 +1,71 @@
+name: Add Japan Context Web Once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/_add_japan_context_web_once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Add situation context to web dashboard
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('docs/index.html')
+          text = p.read_text(encoding='utf-8')
+
+          css_marker = '.lower-nav{margin-top:14px;'
+          css = '''.situation-panel{margin-bottom:12px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:var(--shadow)}.situation-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid #e2eaf1}.situation-head h2{margin:0;color:var(--ink);font-size:clamp(1.3rem,2.1vw,1.7rem);line-height:1.2}.situation-note{color:var(--muted);font-size:.78rem;font-weight:700;text-align:right}.event-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.event-card{min-width:0;border-radius:11px;padding:12px 13px;border:1px solid #dbe7f0;border-left:5px solid #318bd0;background:#fafdff}.event-card:nth-child(2){border-left-color:#29a873;background:#fbfefc}.event-card:nth-child(3){border-left-color:#7a62ca;background:#fcfbff}.event-summary{margin:0;color:#17345f;font-size:.92rem;line-height:1.5;font-weight:800}.event-sources{margin-top:8px;color:#62738a;font-size:.74rem;line-height:1.45}.event-sources b{color:#29466e}.event-sources a{color:#1768ad;font-weight:850;text-decoration:none}.event-sources a:hover{text-decoration:underline}.assessment-bridge{margin-top:10px;padding:12px 14px;border-radius:10px;background:#eef4fa;border:1px solid #d9e6f0;color:#17355e;font-size:.92rem;line-height:1.55;font-weight:700}.assessment-bridge b{color:#0b2c60}.event-empty{color:var(--muted);font-size:.88rem}
+'''
+          if '.situation-panel{' not in text:
+              if css_marker not in text:
+                  raise RuntimeError('CSS insertion marker not found')
+              text = text.replace(css_marker, css + css_marker, 1)
+
+          mobile_old = '@media(max-width:900px){.dashboard{grid-template-columns:1fr}.panel-head{align-items:flex-start}.impact-grid{grid-template-columns:1fr 1fr}}'
+          mobile_new = '@media(max-width:900px){.event-grid{grid-template-columns:1fr}.dashboard{grid-template-columns:1fr}.panel-head{align-items:flex-start}.impact-grid{grid-template-columns:1fr 1fr}}'
+          if mobile_old in text:
+              text = text.replace(mobile_old, mobile_new, 1)
+
+          html_marker = '<section id="dashboard" class="dashboard hidden">'
+          html = '''<section id="situation" class="situation-panel hidden">
+  <div class="situation-head"><div><h2>本日確認された主なサイバー事象</h2></div><div class="situation-note">分析根拠となった事象から主要3件</div></div>
+  <div id="eventGrid" class="event-grid"></div>
+  <div id="assessmentBridge" class="assessment-bridge"></div>
+</section>
+'''
+          if 'id="situation"' not in text:
+              if html_marker not in text:
+                  raise RuntimeError('HTML insertion marker not found')
+              text = text.replace(html_marker, html + html_marker, 1)
+
+          js_marker = 'function render(report){const overall=report?.japan_impact_overall||{},forecast=report?.forecast_72h||{};'
+          js = '''function renderSituation(report){const root=$("eventGrid");root.replaceChildren();const inputs=Array.isArray(report?.input_sources)?report.input_sources:[];const byId=new Map(inputs.map(x=>[String(x?.article_id||""),x]));const events=(Array.isArray(report?.today_summary)?report.today_summary:[]).filter(x=>x&&String(x.summary||"").trim()).slice(0,3);for(const item of events){const card=document.createElement("article");card.className="event-card";card.appendChild(textEl("p","event-summary",item.summary));const ids=Array.isArray(item.evidence_article_ids)?item.evidence_article_ids.map(String):[];const refs=ids.map(id=>({id,src:byId.get(id)})).filter(x=>x.src);if(refs.length){const meta=document.createElement("div");meta.className="event-sources";const label=document.createElement("b");label.textContent="出典: ";meta.appendChild(label);refs.forEach((ref,i)=>{if(i)meta.appendChild(document.createTextNode(" / "));const name=`${val(ref.src.source,"不明")}（${ref.id}）`;if(ref.src.url){const a=document.createElement("a");a.href=ref.src.url;a.target="_blank";a.rel="noopener noreferrer";a.textContent=name;meta.appendChild(a)}else{meta.appendChild(document.createTextNode(name))}});card.appendChild(meta)}root.appendChild(card)}if(!events.length)root.appendChild(textEl("div","event-empty","本日の主要事象はまだ整理されていません。"));const overall=report?.japan_impact_overall||{};const bridge=$("assessmentBridge");bridge.replaceChildren();const strong=document.createElement("b");strong.textContent="評価への接続: ";bridge.appendChild(strong);bridge.appendChild(document.createTextNode(val(overall.assessment,"総合評価はまだありません。")));$("situation").classList.remove("hidden")}
+'''
+          if 'function renderSituation(report)' not in text:
+              if js_marker not in text:
+                  raise RuntimeError('JS render marker not found')
+              text = text.replace(js_marker, js + 'function render(report){renderSituation(report);const overall=report?.japan_impact_overall||{},forecast=report?.forecast_72h||{};', 1)
+
+          p.write_text(text, encoding='utf-8')
+          PY
+          grep -q 'id="situation"' docs/index.html
+          grep -q 'function renderSituation(report)' docs/index.html
+          grep -q '評価への接続' docs/index.html
+      - name: Commit web dashboard update
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/index.html
+          git commit -m 'Add daily cyber context before Japan assessment'
+          git push
