@@ -1,0 +1,39 @@
+name: Rename Japan Situation Awareness Web Once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/_rename_japan_situation_once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Rename web title
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('docs/index.html')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('Japan Cyber Situational Awareness', 'Japan Cyber Situation Awareness')
+          if 'Japan Cyber Situational Awareness' in text:
+              raise RuntimeError('old title remains')
+          if text.count('Japan Cyber Situation Awareness') < 2:
+              raise RuntimeError('new title was not applied to page title and heading')
+          path.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit web title
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/index.html
+          git commit -m "Rename Japan Cyber Situation Awareness web title"
+          git push
