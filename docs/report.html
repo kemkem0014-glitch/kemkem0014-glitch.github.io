@@ -6,42 +6,483 @@
 <meta name="color-scheme" content="light dark">
 <title>ニュースレポート</title>
 <style>
-:root{color-scheme:light dark;--bg:#eef3f7;--paper:#fff;--text:#17212b;--muted:#63727e;--line:#cfdae1;--accent:#087cab;--accent2:#055f82;--soft:#e8f4f8;--note:#f5f8fa;--shadow:0 8px 24px rgba(25,47,66,.07);--error:#b42318;--eval:#f7f4ea;--forecast:#edf7f1}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic UI","Noto Sans JP",sans-serif;line-height:1.68}.page{width:min(1180px,calc(100% - 28px));margin:0 auto;padding:24px 0 64px}.toolbar,.meta,.analyst-name,.ref-list{display:flex;flex-wrap:wrap;gap:8px}.toolbar{margin-bottom:16px}.btn{display:inline-flex;align-items:center;min-height:39px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--text);text-decoration:none;font-size:.84rem;font-weight:700}.btn:hover{border-color:var(--accent);color:var(--accent)}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.header,.analyst-panel{padding:clamp(22px,4vw,38px);border-radius:14px;background:var(--paper);box-shadow:var(--shadow);margin-bottom:22px}.eyebrow{margin:0 0 6px;color:var(--accent);font-size:.75rem;font-weight:800;letter-spacing:.13em}h1{margin:0;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.2}.meta{margin-top:15px}.pill{padding:5px 10px;border-radius:999px;background:var(--soft);color:var(--accent2);font-size:.8rem;font-weight:750}.status{margin:12px 0 0;color:var(--muted);font-size:.86rem}.status.error{color:var(--error)}
-.analyst-panel{padding:20px 22px;border:1px solid var(--line)}.analyst-panel>h2{margin:0 0 14px;font-size:1.25rem}.analyst-card{padding:16px;border-left:5px solid var(--accent);border-radius:9px;background:var(--note)}.analyst-name{align-items:center;margin-bottom:12px;font-weight:800}.analysis-block{margin-top:12px;padding:14px 15px;border:1px solid var(--line);border-radius:10px;background:#fff}.analysis-block.news{border-left:4px solid #4f9bc5}.analysis-block.eval{border-left:4px solid #b68b35;background:var(--eval)}.analysis-block.forecast{border-left:4px solid #4d9a70;background:var(--forecast)}.analysis-title{margin:0 0 8px;color:var(--accent2);font-size:.86rem;font-weight:900;letter-spacing:.02em}.analysis-main{margin:0;font-size:.95rem}.analysis-item{padding:9px 0;border-top:1px solid rgba(110,130,145,.18)}.analysis-item:first-of-type{border-top:0;padding-top:0}.analysis-item p{margin:0}.basis-list{margin:9px 0 0;padding-left:1.25rem}.basis-list li{margin:8px 0}.basis-conf{color:var(--muted);font-size:.8rem}.ref-list{margin-top:6px;gap:5px}.ref-link{display:inline-flex;align-items:center;max-width:100%;padding:3px 7px;border:1px solid #bfd1dc;border-radius:6px;background:rgba(255,255,255,.8);color:#17658d;text-decoration:none;font-size:.73rem;font-weight:750}.ref-link:hover{border-color:var(--accent);color:var(--accent2)}.forecast-meta{margin-top:7px;color:var(--muted);font-size:.82rem}.legacy-comment{margin:0}
-.section{margin-top:24px}.section-title{margin:0 0 12px;padding:10px 14px;border-radius:7px;background:var(--accent);color:#fff;font-size:1.04rem}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.card{min-width:0;padding:18px 19px;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;background:var(--paper);box-shadow:var(--shadow);scroll-margin-top:16px}.card:target{outline:3px solid rgba(8,124,171,.25);outline-offset:3px}.card-top{display:flex;align-items:center;gap:9px;margin-bottom:8px}.num{min-width:31px;height:25px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;background:var(--soft);color:var(--accent2);font:.8rem ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:800}.metadata{display:flex;flex-wrap:wrap;gap:5px 10px;min-width:0}.meta-item{color:var(--muted);font-size:.75rem;font-weight:650}.score{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}h3{margin:0 0 9px;font-size:1.02rem;line-height:1.42}.summary{margin:0;font-size:.91rem;text-align:justify}.box{margin-top:13px;padding:11px 12px;border-radius:8px;background:var(--note)}.box-label{margin-bottom:4px;color:var(--accent2);font-size:.73rem;font-weight:800}.box p{margin:0;color:var(--muted);font-size:.84rem}.box ul{margin:3px 0 0;padding-left:1.2rem}.box li{margin:3px 0;color:var(--muted);font-size:.84rem}.card-footer{margin-top:12px;padding-top:9px;border-top:1px solid var(--line)}.source-link{color:var(--accent);font-size:.82rem;font-weight:700;text-decoration:none}.source-link:hover{text-decoration:underline}.fallback{padding:18px;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--paper);border-radius:10px;box-shadow:var(--shadow)}footer{margin-top:28px;color:var(--muted);font-size:.8rem;text-align:center}
-@media(max-width:760px){.grid{grid-template-columns:1fr}.page{width:min(100% - 18px,1180px);padding-top:16px}.analysis-block{padding:12px}.ref-link{width:100%}}
-@media(prefers-color-scheme:dark){:root{--bg:#0d1420;--paper:#151f2e;--text:#edf3fb;--muted:#a5b3c7;--line:#2d3a4d;--accent:#3c91c7;--accent2:#90c9ed;--soft:#17344a;--note:#101a27;--shadow:none;--error:#ffb4ab;--eval:#272317;--forecast:#15271e}.analysis-block{background:var(--paper)}.ref-link{background:#172636}}
+:root{
+  color-scheme:light dark;
+  --bg:#eef3f7;--paper:#fff;--text:#17212b;--muted:#63727e;--line:#cfdae1;
+  --accent:#087cab;--accent2:#055f82;--soft:#e8f4f8;--note:#f5f8fa;
+  --shadow:0 8px 24px rgba(25,47,66,.07);--error:#b42318;--eval:#f7f4ea;--forecast:#edf7f1
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic UI","Noto Sans JP",sans-serif;line-height:1.68}
+.page{width:min(1180px,calc(100% - 28px));margin:0 auto;padding:24px 0 64px}
+.toolbar,.meta,.analysis-head,.analyst-meta,.ref-list,.metadata{display:flex;flex-wrap:wrap;gap:8px}
+.toolbar{margin-bottom:16px}
+.btn{display:inline-flex;align-items:center;min-height:39px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--text);text-decoration:none;font-size:.84rem;font-weight:700}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.header,.analyst-panel{padding:clamp(22px,4vw,38px);border-radius:14px;background:var(--paper);box-shadow:var(--shadow);margin-bottom:22px}
+.eyebrow{margin:0 0 6px;color:var(--accent);font-size:.75rem;font-weight:800;letter-spacing:.13em}
+h1{margin:0;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.2}
+.meta{margin-top:15px}
+.pill{padding:5px 10px;border-radius:999px;background:var(--soft);color:var(--accent2);font-size:.8rem;font-weight:750}
+.status{margin:12px 0 0;color:var(--muted);font-size:.86rem}
+.status.error{color:var(--error)}
+
+.analyst-panel{padding:20px 22px;border:1px solid var(--line)}
+.analysis-head{align-items:center;justify-content:space-between;margin-bottom:14px}
+.analysis-head h2{margin:0;font-size:1.25rem}
+.analyst-meta{align-items:center;justify-content:flex-end}
+.analyst-agent{padding:5px 10px;border-radius:999px;background:var(--soft);color:var(--accent2);font-size:.8rem;font-weight:800}
+.analyst-card{padding:0;background:transparent}
+.analysis-block{margin-top:12px;padding:14px 15px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.analysis-block.news{border-left:4px solid #4f9bc5}
+.analysis-block.eval{border-left:4px solid #b68b35;background:var(--eval)}
+.analysis-block.forecast{border-left:4px solid #4d9a70;background:var(--forecast)}
+.analysis-title{margin:0 0 8px;color:var(--accent2);font-size:.86rem;font-weight:900;letter-spacing:.02em}
+.analysis-main{margin:0;font-size:.95rem}
+.analysis-item{padding:9px 0;border-top:1px solid rgba(110,130,145,.18)}
+.analysis-item:first-of-type{border-top:0;padding-top:0}
+.analysis-item p{margin:0}
+.basis-list{margin:9px 0 0;padding-left:1.25rem}
+.basis-list li{margin:8px 0}
+.basis-conf{color:var(--muted);font-size:.8rem}
+.ref-list{margin-top:6px;gap:5px}
+.ref-link{display:inline-flex;align-items:center;max-width:100%;padding:3px 7px;border:1px solid #bfd1dc;border-radius:6px;background:rgba(255,255,255,.8);color:#17658d;text-decoration:none;font-size:.73rem;font-weight:750}
+.ref-link:hover{border-color:var(--accent);color:var(--accent2)}
+.forecast-meta{margin-top:7px;color:var(--muted);font-size:.82rem}
+.legacy-comment{margin:0}
+
+.section{margin-top:24px}
+.section-title{margin:0 0 12px;padding:10px 14px;border-radius:7px;background:var(--accent);color:#fff;font-size:1.04rem}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.card{min-width:0;padding:18px 19px;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;background:var(--paper);box-shadow:var(--shadow);scroll-margin-top:16px}
+.card:target{outline:3px solid rgba(8,124,171,.25);outline-offset:3px}
+.card-top{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.num{min-width:31px;height:25px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;background:var(--soft);color:var(--accent2);font:.8rem ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:800}
+.metadata{gap:5px 10px;min-width:0}
+.meta-item{color:var(--muted);font-size:.75rem;font-weight:650}
+.score{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+h3{margin:0 0 9px;font-size:1.02rem;line-height:1.42}
+.summary{margin:0;font-size:.91rem;text-align:justify}
+.box{margin-top:13px;padding:11px 12px;border-radius:8px;background:var(--note)}
+.box-label{margin-bottom:4px;color:var(--accent2);font-size:.73rem;font-weight:800}
+.box p{margin:0;color:var(--muted);font-size:.84rem}
+.box ul{margin:3px 0 0;padding-left:1.2rem}
+.box li{margin:3px 0;color:var(--muted);font-size:.84rem}
+.card-footer{margin-top:12px;padding-top:9px;border-top:1px solid var(--line)}
+.source-link{color:var(--accent);font-size:.82rem;font-weight:700;text-decoration:none}
+.source-link:hover{text-decoration:underline}
+.fallback{padding:18px;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--paper);border-radius:10px;box-shadow:var(--shadow)}
+footer{margin-top:28px;color:var(--muted);font-size:.8rem;text-align:center}
+
+@media(max-width:760px){
+  .grid{grid-template-columns:1fr}
+  .page{width:min(100% - 18px,1180px);padding-top:16px}
+  .analysis-head{align-items:flex-start;flex-direction:column}
+  .analyst-meta{justify-content:flex-start}
+  .analysis-block{padding:12px}
+  .ref-link{width:100%}
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#0d1420;--paper:#151f2e;--text:#edf3fb;--muted:#a5b3c7;--line:#2d3a4d;--accent:#3c91c7;--accent2:#90c9ed;--soft:#17344a;--note:#101a27;--shadow:none;--error:#ffb4ab;--eval:#272317;--forecast:#15271e}
+  .analysis-block{background:var(--paper)}
+  .ref-link{background:#172636}
+}
 </style>
 </head>
-<body><main class="page">
-<nav class="toolbar"><a class="btn" href="index.html">一覧へ戻る</a><a class="btn" href="downloads.html">ダウンロード一覧</a><a id="pdfBtn" class="btn primary" href="#" target="_blank" rel="noopener noreferrer" hidden>PDFを開く</a><a id="mdBtn" class="btn" href="#" hidden>Markdownを保存</a></nav>
-<header class="header"><p class="eyebrow">PUBLIC NEWS REPORT</p><h1 id="title">ニュースレポート</h1><div class="meta"><span id="datePill" class="pill">対象日</span><span id="countPill" class="pill">記事 0件</span></div><p id="status" class="status">レポートを読み込んでいます…</p></header>
-<section id="analystPanel" class="analyst-panel" hidden></section><div id="content"></div>
+<body>
+<main class="page">
+<nav class="toolbar">
+  <a class="btn" href="index.html">一覧へ戻る</a>
+  <a class="btn" href="downloads.html">ダウンロード一覧</a>
+  <a id="pdfBtn" class="btn primary" href="#" target="_blank" rel="noopener noreferrer" hidden>PDFを開く</a>
+  <a id="mdBtn" class="btn" href="#" hidden>Markdownを保存</a>
+</nav>
+
+<header class="header">
+  <p class="eyebrow">PUBLIC NEWS REPORT</p>
+  <h1 id="title">ニュースレポート</h1>
+  <div class="meta">
+    <span id="datePill" class="pill">対象日</span>
+    <span id="countPill" class="pill">記事 0件</span>
+  </div>
+  <p id="status" class="status">レポートを読み込んでいます…</p>
+</header>
+
+<section id="analystPanel" class="analyst-panel" hidden></section>
+<div id="content"></div>
+
 <footer>本日のニュース、担当分析官の評価、今後72時間の見積もりと、その根拠記事を対応づけて表示しています。</footer>
 </main>
+
 <script>
 "use strict";
+
 const BASE="https://hmnbalygfomelhjuscjm.supabase.co/storage/v1/object/public/public-news-reports";
-const params=new URLSearchParams(location.search),reportType=params.get("type")||"",name=params.get("name")||reportType||"ニュース",dateValue=params.get("date")||"",markdownUrl=params.get("md")||"",pdfUrl=params.get("pdf")||"";
-const $=id=>document.getElementById(id),titleEl=$("title"),datePill=$("datePill"),countPill=$("countPill"),statusEl=$("status"),contentEl=$("content"),pdfBtn=$("pdfBtn"),mdBtn=$("mdBtn"),analystPanel=$("analystPanel");
+const params=new URLSearchParams(location.search);
+const reportType=params.get("type")||"";
+const name=params.get("name")||reportType||"ニュース";
+const dateValue=params.get("date")||"";
+const markdownUrl=params.get("md")||"";
+const pdfUrl=params.get("pdf")||"";
+
+const $=id=>document.getElementById(id);
+const titleEl=$("title"),datePill=$("datePill"),countPill=$("countPill"),statusEl=$("status"),
+  contentEl=$("content"),pdfBtn=$("pdfBtn"),mdBtn=$("mdBtn"),analystPanel=$("analystPanel");
+
 const articleIndex=new Map();
-function formatDate(v){const s=String(v||"");return /^\d{8}$/.test(s)?`${s.slice(0,4)}年${s.slice(4,6)}月${s.slice(6,8)}日`:s||"不明"}
-function safeHttpUrl(v){try{const u=new URL(String(v||""));return ["http:","https:"].includes(u.protocol)?u.href:""}catch(_){return ""}}
-function cleanText(v){return String(v||"").replace(/\*\*(.+?)\*\*/g,"$1").replace(/`(.+?)`/g,"$1").replace(/\s+/g," ").trim()}
-function narrativeText(v){if(v==null)return"";if(typeof v==="object"){for(const k of ["judgment","assessment","conclusion","summary","executive_summary","executive_assessment","development","forecast","rationale"]){const t=narrativeText(v[k]);if(t)return t}return""}const t=cleanText(v);if(t.startsWith("{")){const m=t.match(/['"]judgment['"]\s*:\s*(['"])([\s\S]*?)\1\s*,\s*['"]confidence['"]\s*:/);if(m&&m[2])return m[2].trim()}return t}
-function el(tag,cls="",text=""){const x=document.createElement(tag);if(cls)x.className=cls;if(text)x.textContent=text;return x}
-function hashText(v){let h=2166136261;for(const c of String(v||"")){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return(h>>>0).toString(36)}
-function anchorFor(url,title){return`article-${hashText(safeHttpUrl(url)||cleanText(title))}`}
-function parseMarkdown(text){text=String(text||"").replace(/^\uFEFF/,"");const lines=text.split(/\r?\n/),articles=[];let section="ニュース",i=0;while(i<lines.length){const line=lines[i].trim();if(line.startsWith("## ")&&!line.startsWith("### ")){section=cleanText(line.slice(3))||"ニュース";i++;continue}if(!line.startsWith("### ")){i++;continue}const title=cleanText(line.slice(4));i++;const block=[];while(i<lines.length){const x=lines[i].trim();if(x.startsWith("### ")||(x.startsWith("## ")&&!x.startsWith("### ")))break;block.push(lines[i++])}let score="",source="",url="",mode="summary";const summary=[],importance=[],points=[];for(const raw of block){let s=raw.trim();if(!s||s==="---")continue;const meta=s.match(/^スコア[：:]\s*([0-9.]+)\s*[／/]\s*出典[：:]\s*(.+?)\s*$/);if(meta){score=cleanText(meta[1]);source=cleanText(meta[2]);continue}const link=s.match(/\[元記事\]\((https?:\/\/[^)]+)\)/);if(link){url=link[1].trim();continue}if(s==="**重要性**"||s==="重要性"){mode="importance";continue}if(s==="**重要ポイント**"||s==="重要ポイント"){mode="points";continue}if(mode==="points"){s=cleanText(s.replace(/^[-*]\s+/,""));if(s)points.push(s)}else if(mode==="importance"){s=cleanText(s);if(s)importance.push(s)}else{s=cleanText(s);if(s)summary.push(s)}}if(title)articles.push({section,title,score,source,url,summary:cleanText(summary.join(" ")),importance:cleanText(importance.join(" ")),points})}return articles}
-function renderArticles(articles){contentEl.replaceChildren();articleIndex.clear();if(!articles.length)return false;const sections=new Map();for(const a of articles){if(!sections.has(a.section))sections.set(a.section,[]);sections.get(a.section).push(a)}let number=0;for(const[sectionName,items]of sections){const section=el("section","section");section.appendChild(el("h2","section-title",sectionName));const grid=el("div","grid");for(const a of items){number++;const card=el("article","card"),anchor=anchorFor(a.url,a.title);card.id=anchor;if(safeHttpUrl(a.url))articleIndex.set(`url:${safeHttpUrl(a.url)}`,anchor);articleIndex.set(`title:${cleanText(a.title)}`,anchor);const top=el("div","card-top");top.appendChild(el("span","num",String(number).padStart(2,"0")));const metadata=el("div","metadata");if(a.source)metadata.appendChild(el("span","meta-item",a.source));if(a.score)metadata.appendChild(el("span","meta-item score",`SCORE ${a.score}`));top.appendChild(metadata);card.appendChild(top);card.appendChild(el("h3","",a.title));if(a.summary)card.appendChild(el("p","summary",a.summary));if(a.importance){const box=el("div","box");box.append(el("div","box-label","重要性"),el("p","",a.importance));card.appendChild(box)}if(a.points.length){const box=el("div","box"),ul=document.createElement("ul");box.appendChild(el("div","box-label","重要ポイント"));for(const p of a.points)ul.appendChild(el("li","",p));box.appendChild(ul);card.appendChild(box)}const sourceUrl=safeHttpUrl(a.url);if(sourceUrl){const foot=el("div","card-footer"),link=el("a","source-link","元記事を開く ↗");link.href=sourceUrl;link.target="_blank";link.rel="noopener noreferrer";foot.appendChild(link);card.appendChild(foot)}grid.appendChild(card)}section.appendChild(grid);contentEl.appendChild(section)}return true}
-function addRefs(parent,refs){if(!Array.isArray(refs)||!refs.length)return;const list=el("div","ref-list");for(const ref of refs){if(!ref||typeof ref!=="object")continue;const title=cleanText(ref.title)||cleanText(ref.source)||cleanText(ref.article_id)||"根拠記事",url=safeHttpUrl(ref.url);const key=url?`url:${url}`:`title:${cleanText(ref.title)}`,anchor=articleIndex.get(key);const a=el("a","ref-link",`${cleanText(ref.article_id)?cleanText(ref.article_id)+"・":""}${title}`);if(anchor){a.href=`#${anchor}`;a.title="下の記事一覧へ移動"}else if(url){a.href=url;a.target="_blank";a.rel="noopener noreferrer";a.title="元記事を開く"}else{a.href="#";a.addEventListener("click",e=>e.preventDefault())}list.appendChild(a)}if(list.children.length)parent.appendChild(list)}
-function analysisBlock(cls,title){const box=el("section",`analysis-block ${cls}`);box.appendChild(el("h3","analysis-title",title));return box}
-function renderAnalystAssessment(data){if(!data||typeof data!=="object")return;const analysts=Array.isArray(data.analysts)?data.analysts:[];analystPanel.replaceChildren();analystPanel.appendChild(el("h2","","本日の情勢分析"));if(analysts.length){for(const analyst of analysts){const card=el("div","analyst-card"),nameRow=el("div","analyst-name");nameRow.appendChild(el("span","",analyst.agent_name||analyst.agent_id||"担当分析官"));if(analyst.analysis_role)nameRow.appendChild(el("span","pill",analyst.analysis_role));if(analyst.perspective)nameRow.appendChild(el("span","pill",analyst.perspective));card.appendChild(nameRow);
-const news=Array.isArray(analyst.today_news)?analyst.today_news:[];if(news.length){const box=analysisBlock("news","1. 本日の主要ニュース");for(const item of news){const row=el("div","analysis-item");row.appendChild(el("p","",narrativeText(item.summary)));addRefs(row,item.articles);box.appendChild(row)}card.appendChild(box)}
-const evaluation=analyst.evaluation&&typeof analyst.evaluation==="object"?analyst.evaluation:{};const judgment=narrativeText(evaluation.judgment||analyst.comment);if(judgment){const box=analysisBlock("eval","2. 担当者の評価");box.appendChild(el("p","analysis-main",judgment));if(evaluation.confidence)box.appendChild(el("p","forecast-meta",`確度：${evaluation.confidence}`));const basis=Array.isArray(evaluation.basis)?evaluation.basis:[];if(basis.length){box.appendChild(el("div","analysis-title","評価根拠"));const ul=el("ul","basis-list");for(const item of basis){const li=document.createElement("li");li.appendChild(el("span","",narrativeText(item.assessment)));if(item.confidence)li.appendChild(el("div","basis-conf",`確度：${item.confidence}`));addRefs(li,item.articles);ul.appendChild(li)}box.appendChild(ul)}card.appendChild(box)}
-const forecast=analyst.forecast_72h||{},development=narrativeText(forecast.development);if(development){const box=analysisBlock("forecast","3. 今後72時間の見積もり");box.appendChild(el("p","analysis-main",development));const meta=[];if(forecast.likelihood)meta.push(`蓋然性：${forecast.likelihood}`);const rationale=narrativeText(forecast.rationale);if(rationale)meta.push(`根拠：${rationale}`);if(meta.length)box.appendChild(el("p","forecast-meta",meta.join(" ／ ")));addRefs(box,forecast.articles);card.appendChild(box)}analystPanel.appendChild(card)}}else{const card=el("div","analyst-card"),box=analysisBlock("eval","担当者の評価");box.appendChild(el("p","legacy-comment",narrativeText(data.assessment||data.integrated_comment)||"評価コメントはありません。"));card.appendChild(box);const forecast=narrativeText(data.forecast_72h||((data.integrated_forecast_72h||{}).development||""));if(forecast){const f=analysisBlock("forecast","今後72時間の見積もり");f.appendChild(el("p","analysis-main",forecast));card.appendChild(f)}analystPanel.appendChild(card)}analystPanel.hidden=false}
-async function fetchJson(url){const u=new URL(url);u.searchParams.set("_",Date.now());const r=await fetch(u,{cache:"no-store",headers:{Accept:"application/json"}});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json()}
-async function load(){titleEl.textContent=`${name}ニュースレポート`;document.title=`${name}ニュースレポート`;datePill.textContent=`対象日 ${formatDate(dateValue)}`;const safePdf=safeHttpUrl(pdfUrl),safeMd=safeHttpUrl(markdownUrl);if(safePdf){pdfBtn.href=safePdf;pdfBtn.hidden=false}if(safeMd){mdBtn.href=safeMd+(safeMd.includes("?")?"&download":"?download");mdBtn.hidden=false}const assessmentUrl=(/^\d{8}$/.test(dateValue)&&/^[a-z0-9_-]+$/.test(reportType))?`${BASE}/archive/${dateValue}/assessment/${reportType}.json`:"";const assessmentPromise=assessmentUrl?fetchJson(assessmentUrl).catch(e=>{console.warn("assessment",e);return null}):Promise.resolve(null);let articlesRendered=false;if(safeMd){try{const u=new URL(safeMd);u.searchParams.set("_",Date.now());const r=await fetch(u,{cache:"no-store",headers:{Accept:"text/markdown,text/plain;q=.9,*/*;q=.1"}});if(!r.ok)throw new Error(`HTTP ${r.status}`);const md=(await r.text()).replace(/^\uFEFF/,"");const articles=parseMarkdown(md);countPill.textContent=`記事 ${articles.length}件`;articlesRendered=renderArticles(articles);if(!articlesRendered)contentEl.replaceChildren(el("pre","fallback",md));statusEl.textContent=articlesRendered?"本日のニュースと担当分析官の評価を表示しています。":"記事構造を検出できなかったためMarkdown本文を表示しています。"}catch(e){console.error(e);statusEl.className="status error";statusEl.textContent="Markdownの取得または表示に失敗しました。";contentEl.replaceChildren(el("div","fallback","レポート本文を取得できませんでした。PDFから確認してください。"))}}else{statusEl.className="status error";statusEl.textContent="Markdown URLが指定されていません。"}const assessment=await assessmentPromise;if(assessment)renderAnalystAssessment(assessment)}
+
+function formatDate(v){
+  const s=String(v||"");
+  return /^\d{8}$/.test(s)?`${s.slice(0,4)}年${s.slice(4,6)}月${s.slice(6,8)}日`:s||"不明";
+}
+function safeHttpUrl(v){
+  try{
+    const u=new URL(String(v||""));
+    return ["http:","https:"].includes(u.protocol)?u.href:"";
+  }catch(_){return ""}
+}
+function normalizedUrl(v){
+  try{
+    const u=new URL(String(v||""));
+    if(!["http:","https:"].includes(u.protocol))return "";
+    u.hash="";
+    ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","ref","source"].forEach(k=>u.searchParams.delete(k));
+    let path=u.pathname.replace(/\/+$/ ,"")||"/";
+    return `${u.protocol}//${u.hostname.toLowerCase()}${path}${u.search}`;
+  }catch(_){return ""}
+}
+function sourceFromUrl(v){
+  try{
+    return new URL(String(v||"")).hostname.toLowerCase().replace(/^www\./,"").replace(/\./g,"_");
+  }catch(_){return ""}
+}
+function cleanText(v){
+  return String(v||"").replace(/\*\*(.+?)\*\*/g,"$1").replace(/`(.+?)`/g,"$1").replace(/\s+/g," ").trim();
+}
+function narrativeText(v){
+  if(v==null)return "";
+  if(typeof v==="object"){
+    for(const k of ["judgment","assessment","conclusion","summary","executive_summary","executive_assessment","development","forecast","rationale"]){
+      const t=narrativeText(v[k]);if(t)return t;
+    }
+    return "";
+  }
+  const t=cleanText(v);
+  if(t.startsWith("{")){
+    const m=t.match(/['"]judgment['"]\s*:\s*(['"])([\s\S]*?)\1\s*,\s*['"]confidence['"]\s*:/);
+    if(m&&m[2])return m[2].trim();
+  }
+  return t;
+}
+function el(tag,cls="",text=""){
+  const x=document.createElement(tag);
+  if(cls)x.className=cls;
+  if(text)x.textContent=text;
+  return x;
+}
+function hashText(v){
+  let h=2166136261;
+  for(const c of String(v||"")){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}
+  return (h>>>0).toString(36);
+}
+function anchorFor(url,title){
+  return `article-${hashText(normalizedUrl(url)||cleanText(title))}`;
+}
+
+function parseMarkdown(text){
+  text=String(text||"").replace(/^\uFEFF/,"");
+  const lines=text.split(/\r?\n/),articles=[];
+  let section="ニュース",i=0;
+  while(i<lines.length){
+    const line=lines[i].trim();
+    if(line.startsWith("## ")&&!line.startsWith("### ")){section=cleanText(line.slice(3))||"ニュース";i++;continue}
+    if(!line.startsWith("### ")){i++;continue}
+    const title=cleanText(line.slice(4));i++;
+    const block=[];
+    while(i<lines.length){
+      const x=lines[i].trim();
+      if(x.startsWith("### ")||(x.startsWith("## ")&&!x.startsWith("### ")))break;
+      block.push(lines[i++]);
+    }
+    let score="",source="",url="",mode="summary";
+    const summary=[],importance=[],points=[];
+    for(const raw of block){
+      let s=raw.trim();
+      if(!s||s==="---")continue;
+      const meta=s.match(/^スコア[：:]\s*([0-9.]+)\s*[／/]\s*出典[：:]\s*(.+?)\s*$/);
+      if(meta){score=cleanText(meta[1]);source=cleanText(meta[2]);continue}
+      const link=s.match(/\[元記事\]\((https?:\/\/[^)]+)\)/);
+      if(link){url=link[1].trim();continue}
+      if(s==="**重要性**"||s==="重要性"){mode="importance";continue}
+      if(s==="**重要ポイント**"||s==="重要ポイント"){mode="points";continue}
+      if(mode==="points"){
+        s=cleanText(s.replace(/^[-*]\s+/,""));if(s)points.push(s);
+      }else if(mode==="importance"){
+        s=cleanText(s);if(s)importance.push(s);
+      }else{
+        s=cleanText(s);if(s)summary.push(s);
+      }
+    }
+    if(title)articles.push({section,title,score,source,url,summary:cleanText(summary.join(" ")),importance:cleanText(importance.join(" ")),points});
+  }
+  return articles;
+}
+
+function renderArticles(articles){
+  contentEl.replaceChildren();
+  articleIndex.clear();
+  if(!articles.length)return false;
+
+  const sections=new Map();
+  for(const a of articles){
+    if(!sections.has(a.section))sections.set(a.section,[]);
+    sections.get(a.section).push(a);
+  }
+
+  let number=0;
+  for(const [sectionName,items] of sections){
+    const section=el("section","section");
+    section.appendChild(el("h2","section-title",sectionName));
+    const grid=el("div","grid");
+
+    for(const a of items){
+      number++;
+      const card=el("article","card");
+      const anchor=anchorFor(a.url,a.title);
+      const entry={
+        anchor,
+        number,
+        source:cleanText(a.source)||sourceFromUrl(a.url)||"出典不明",
+        title:cleanText(a.title),
+        url:safeHttpUrl(a.url)
+      };
+
+      card.id=anchor;
+      const u=normalizedUrl(a.url);
+      if(u)articleIndex.set(`url:${u}`,entry);
+      if(entry.title)articleIndex.set(`title:${entry.title}`,entry);
+
+      const top=el("div","card-top");
+      top.appendChild(el("span","num",String(number).padStart(2,"0")));
+      const metadata=el("div","metadata");
+      if(a.source)metadata.appendChild(el("span","meta-item",a.source));
+      if(a.score)metadata.appendChild(el("span","meta-item score",`SCORE ${a.score}`));
+      top.appendChild(metadata);
+      card.appendChild(top);
+
+      card.appendChild(el("h3","",a.title));
+      if(a.summary)card.appendChild(el("p","summary",a.summary));
+
+      if(a.importance){
+        const box=el("div","box");
+        box.append(el("div","box-label","重要性"),el("p","",a.importance));
+        card.appendChild(box);
+      }
+      if(a.points.length){
+        const box=el("div","box"),ul=document.createElement("ul");
+        box.appendChild(el("div","box-label","重要ポイント"));
+        for(const p of a.points)ul.appendChild(el("li","",p));
+        box.appendChild(ul);
+        card.appendChild(box);
+      }
+
+      const sourceUrl=safeHttpUrl(a.url);
+      if(sourceUrl){
+        const foot=el("div","card-footer"),link=el("a","source-link","元記事を開く ↗");
+        link.href=sourceUrl;link.target="_blank";link.rel="noopener noreferrer";
+        foot.appendChild(link);card.appendChild(foot);
+      }
+      grid.appendChild(card);
+    }
+    section.appendChild(grid);
+    contentEl.appendChild(section);
+  }
+  return true;
+}
+
+function findArticleEntry(ref){
+  if(!ref||typeof ref!=="object")return null;
+  const url=normalizedUrl(ref.url);
+  if(url&&articleIndex.has(`url:${url}`))return articleIndex.get(`url:${url}`);
+  const title=cleanText(ref.title);
+  if(title&&articleIndex.has(`title:${title}`))return articleIndex.get(`title:${title}`);
+  return null;
+}
+
+function addRefs(parent,refs){
+  if(!Array.isArray(refs)||!refs.length)return;
+  const list=el("div","ref-list");
+
+  for(const ref of refs){
+    if(!ref||typeof ref!=="object")continue;
+    const entry=findArticleEntry(ref);
+    const url=safeHttpUrl(ref.url);
+    const source=(entry&&entry.source)||cleanText(ref.source)||sourceFromUrl(url)||"出典不明";
+    const fallbackId=cleanText(ref.article_id)||"参照";
+    const displayNo=entry?String(entry.number):fallbackId;
+    const a=el("a","ref-link",`${source}（${displayNo}）`);
+
+    if(entry){
+      a.href=`#${entry.anchor}`;
+      a.title=`Web掲載記事 ${entry.number} へ移動`;
+    }else if(url){
+      a.href=url;a.target="_blank";a.rel="noopener noreferrer";
+      a.title=`元記事を開く / 分析上の参照番号 ${fallbackId}`;
+    }else{
+      a.href="#";a.addEventListener("click",e=>e.preventDefault());
+      a.title=`分析上の参照番号 ${fallbackId}`;
+    }
+    list.appendChild(a);
+  }
+  if(list.children.length)parent.appendChild(list);
+}
+
+function analysisBlock(cls,title){
+  const box=el("section",`analysis-block ${cls}`);
+  box.appendChild(el("h3","analysis-title",title));
+  return box;
+}
+
+function analystHeader(analyst){
+  const head=el("div","analysis-head");
+  head.appendChild(el("h2","","本日の情勢"));
+  const meta=el("div","analyst-meta");
+  if(analyst.analysis_role)meta.appendChild(el("span","pill",analyst.analysis_role));
+  meta.appendChild(el("span","analyst-agent",analyst.agent_name||analyst.agent_id||"担当分析官"));
+  head.appendChild(meta);
+  return head;
+}
+
+function renderAnalystAssessment(data){
+  if(!data||typeof data!=="object")return;
+  const analysts=Array.isArray(data.analysts)?data.analysts:[];
+  analystPanel.replaceChildren();
+
+  if(analysts.length){
+    const analyst=analysts[0];
+    analystPanel.appendChild(analystHeader(analyst));
+    const card=el("div","analyst-card");
+
+    const news=Array.isArray(analyst.today_news)?analyst.today_news:[];
+    if(news.length){
+      const box=analysisBlock("news","1. 本日の主要ニュース");
+      for(const item of news){
+        const row=el("div","analysis-item");
+        row.appendChild(el("p","",narrativeText(item.summary)));
+        addRefs(row,item.articles);
+        box.appendChild(row);
+      }
+      card.appendChild(box);
+    }
+
+    const evaluation=analyst.evaluation&&typeof analyst.evaluation==="object"?analyst.evaluation:{};
+    const judgment=narrativeText(evaluation.judgment||analyst.comment);
+    if(judgment){
+      const box=analysisBlock("eval","2. 担当者の評価");
+      box.appendChild(el("p","analysis-main",judgment));
+      if(evaluation.confidence)box.appendChild(el("p","forecast-meta",`確度：${evaluation.confidence}`));
+      const basis=Array.isArray(evaluation.basis)?evaluation.basis:[];
+      if(basis.length){
+        box.appendChild(el("div","analysis-title","評価根拠"));
+        const ul=el("ul","basis-list");
+        for(const item of basis){
+          const li=document.createElement("li");
+          li.appendChild(el("span","",narrativeText(item.assessment)));
+          if(item.confidence)li.appendChild(el("div","basis-conf",`確度：${item.confidence}`));
+          addRefs(li,item.articles);
+          ul.appendChild(li);
+        }
+        box.appendChild(ul);
+      }
+      card.appendChild(box);
+    }
+
+    const forecast=analyst.forecast_72h||{};
+    const development=narrativeText(forecast.development);
+    if(development){
+      const box=analysisBlock("forecast","3. 今後72時間の見積もり");
+      box.appendChild(el("p","analysis-main",development));
+      const meta=[];
+      if(forecast.likelihood)meta.push(`蓋然性：${typeof forecast.likelihood==="object"?JSON.stringify(forecast.likelihood):forecast.likelihood}`);
+      const rationale=narrativeText(forecast.rationale);
+      if(rationale)meta.push(`根拠：${rationale}`);
+      if(meta.length)box.appendChild(el("p","forecast-meta",meta.join(" ／ ")));
+      addRefs(box,forecast.articles);
+      card.appendChild(box);
+    }
+    analystPanel.appendChild(card);
+  }else{
+    const pseudo={analysis_role:"ジャンル担当専門分析官",agent_name:"担当分析官"};
+    analystPanel.appendChild(analystHeader(pseudo));
+    const card=el("div","analyst-card");
+    const box=analysisBlock("eval","担当者の評価");
+    box.appendChild(el("p","legacy-comment",narrativeText(data.assessment||data.integrated_comment)||"評価コメントはありません。"));
+    card.appendChild(box);
+    const forecast=narrativeText(data.forecast_72h||((data.integrated_forecast_72h||{}).development||""));
+    if(forecast){
+      const f=analysisBlock("forecast","今後72時間の見積もり");
+      f.appendChild(el("p","analysis-main",forecast));
+      card.appendChild(f);
+    }
+    analystPanel.appendChild(card);
+  }
+
+  analystPanel.hidden=false;
+}
+
+async function fetchJson(url){
+  const u=new URL(url);u.searchParams.set("_",Date.now());
+  const r=await fetch(u,{cache:"no-store",headers:{Accept:"application/json"}});
+  if(!r.ok)throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+
+async function load(){
+  titleEl.textContent=`${name}ニュースレポート`;
+  document.title=`${name}ニュースレポート`;
+  datePill.textContent=`対象日 ${formatDate(dateValue)}`;
+
+  const safePdf=safeHttpUrl(pdfUrl),safeMd=safeHttpUrl(markdownUrl);
+  if(safePdf){pdfBtn.href=safePdf;pdfBtn.hidden=false}
+  if(safeMd){mdBtn.href=safeMd+(safeMd.includes("?")?"&download":"?download");mdBtn.hidden=false}
+
+  const assessmentUrl=(/^\d{8}$/.test(dateValue)&&/^[a-z0-9_-]+$/.test(reportType))
+    ?`${BASE}/archive/${dateValue}/assessment/${reportType}.json`
+    :"";
+  const assessmentPromise=assessmentUrl?fetchJson(assessmentUrl).catch(e=>{console.warn("assessment",e);return null}):Promise.resolve(null);
+
+  let articlesRendered=false;
+  if(safeMd){
+    try{
+      const u=new URL(safeMd);u.searchParams.set("_",Date.now());
+      const r=await fetch(u,{cache:"no-store",headers:{Accept:"text/markdown,text/plain;q=.9,*/*;q=.1"}});
+      if(!r.ok)throw new Error(`HTTP ${r.status}`);
+      const md=(await r.text()).replace(/^\uFEFF/,"");
+      const articles=parseMarkdown(md);
+      countPill.textContent=`記事 ${articles.length}件`;
+      articlesRendered=renderArticles(articles);
+      if(!articlesRendered)contentEl.replaceChildren(el("pre","fallback",md));
+      statusEl.textContent=articlesRendered
+        ?"本日のニュースと担当分析官の評価を表示しています。"
+        :"記事構造を検出できなかったためMarkdown本文を表示しています。";
+    }catch(e){
+      console.error(e);
+      statusEl.className="status error";
+      statusEl.textContent="Markdownの取得または表示に失敗しました。";
+      contentEl.replaceChildren(el("div","fallback","レポート本文を取得できませんでした。PDFから確認してください。"));
+    }
+  }else{
+    statusEl.className="status error";
+    statusEl.textContent="Markdown URLが指定されていません。";
+  }
+
+  const assessment=await assessmentPromise;
+  if(assessment)renderAnalystAssessment(assessment);
+}
+
 load();
-</script></body></html>
+</script>
+</body>
+</html>
