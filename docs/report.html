@@ -166,6 +166,25 @@ function cleanInlineMarkdown(value) {
     .trim();
 }
 
+function narrativeText(value) {
+  if (value == null) return "";
+  if (typeof value === "object") {
+    const keys = ["judgment","assessment","conclusion","summary","executive_summary","executive_assessment","development","forecast","rationale"];
+    for (const key of keys) {
+      const text = narrativeText(value[key]);
+      if (text) return text;
+    }
+    return "";
+  }
+  const text = String(value).replace(/\s+/g," ").trim();
+  if (!text) return "";
+  if (text.startsWith("{")) {
+    const judgment = text.match(/['"]judgment['"]\s*:\s*(['"])([\s\S]*?)\1\s*,\s*['"]confidence['"]\s*:/);
+    if (judgment && judgment[2]) return judgment[2].trim();
+  }
+  return text;
+}
+
 function el(tag, className="", text="") {
   const x = document.createElement(tag);
   if (className) x.className = className;
@@ -295,15 +314,18 @@ function renderAnalystAssessment(data) {
       if (analyst.analysis_role) nameRow.appendChild(el("span","pill",analyst.analysis_role));
       if (analyst.perspective) nameRow.appendChild(el("span","pill",analyst.perspective));
       card.appendChild(nameRow);
-      if (analyst.comment) card.appendChild(el("p","analyst-comment",analyst.comment));
+      const analystComment = narrativeText(analyst.comment);
+      if (analystComment) card.appendChild(el("p","analyst-comment",analystComment));
       const forecast = analyst.forecast_72h || {};
-      if (forecast.development) {
+      const forecastDevelopment = narrativeText(forecast.development);
+      if (forecastDevelopment) {
         const box = el("div","forecast-box");
         box.appendChild(el("div","forecast-title","72時間見通し"));
-        box.appendChild(el("p","",forecast.development));
+        box.appendChild(el("p","",forecastDevelopment));
         const metaParts = [];
         if (forecast.likelihood) metaParts.push(`可能性：${forecast.likelihood}`);
-        if (forecast.rationale) metaParts.push(`根拠：${forecast.rationale}`);
+        const rationale = narrativeText(forecast.rationale);
+        if (rationale) metaParts.push(`根拠：${rationale}`);
         if (metaParts.length) box.appendChild(el("p","forecast-meta",metaParts.join(" ／ ")));
         card.appendChild(box);
       }
@@ -312,8 +334,8 @@ function renderAnalystAssessment(data) {
   } else {
     const card = el("div","analyst-card");
     card.appendChild(el("div","analyst-name","カテゴリ統合評価"));
-    card.appendChild(el("p","analyst-comment",data.assessment || data.integrated_comment || "評価コメントはありません。"));
-    const forecastText = data.forecast_72h || ((data.integrated_forecast_72h || {}).development || "");
+    card.appendChild(el("p","analyst-comment",narrativeText(data.assessment || data.integrated_comment) || "評価コメントはありません。"));
+    const forecastText = narrativeText(data.forecast_72h || ((data.integrated_forecast_72h || {}).development || ""));
     if (forecastText) {
       const box = el("div","forecast-box");
       box.appendChild(el("div","forecast-title","72時間見通し"));
@@ -323,12 +345,14 @@ function renderAnalystAssessment(data) {
     analystPanel.appendChild(card);
   }
 
-  if (data.integrated_comment && analysts.length) {
+  const integratedComment = narrativeText(data.integrated_comment);
+  if (integratedComment && analysts.length) {
     const integrated = el("div","integrated");
     integrated.appendChild(el("div","integrated-label","統合評価"));
-    integrated.appendChild(el("p","",data.integrated_comment));
+    integrated.appendChild(el("p","",integratedComment));
     const forecast = data.integrated_forecast_72h || {};
-    if (forecast.development) integrated.appendChild(el("p","forecast-meta",`統合72時間見通し：${forecast.development}`));
+    const integratedForecast = narrativeText(forecast.development);
+    if (integratedForecast) integrated.appendChild(el("p","forecast-meta",`統合72時間見通し：${integratedForecast}`));
     analystPanel.appendChild(integrated);
   }
   analystPanel.hidden = false;
