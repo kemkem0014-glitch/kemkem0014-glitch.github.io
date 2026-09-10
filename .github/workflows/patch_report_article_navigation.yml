@@ -1,0 +1,86 @@
+name: Patch Report Article Navigation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/patch_report_article_navigation.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Apply article highlight and return navigation
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('docs/report.html')
+          s = p.read_text(encoding='utf-8')
+
+          old = '.card:target{outline:3px solid rgba(8,124,171,.25);outline-offset:3px}'
+          new = '''.card:target{
+            border:2px solid #d9a900;
+            border-left:7px solid #d9a900;
+            outline:5px solid #ffd84d;
+            outline-offset:3px;
+            background:#fff7bf;
+            box-shadow:0 0 0 8px rgba(255,216,77,.28),var(--shadow);
+          }
+          .back-analysis{
+            display:none;align-items:center;justify-content:center;margin-left:auto;
+            padding:5px 10px;border:1px solid #b58b00;border-radius:7px;
+            background:#ffd84d;color:#3b2d00;font:inherit;font-size:.76rem;font-weight:850;cursor:pointer
+          }
+          .back-analysis:hover{background:#ffca0a}
+          .card:target .back-analysis{display:inline-flex}'''
+          if old not in s:
+              raise SystemExit('expected target CSS not found')
+          s = s.replace(old, new, 1)
+
+          old_dark = '  .analysis-block{background:var(--paper)}\n  .ref-link{background:#172636}\n}'
+          new_dark = '  .analysis-block{background:var(--paper)}\n  .ref-link{background:#172636}\n  .card:target{background:#3a3108;outline-color:#ffd84d;box-shadow:0 0 0 8px rgba(255,216,77,.2)}\n  .back-analysis{background:#ffd84d;color:#241b00}\n}'
+          if old_dark not in s:
+              raise SystemExit('expected dark-mode CSS not found')
+          s = s.replace(old_dark, new_dark, 1)
+
+          old_fn = 'function renderArticles(articles){\n  contentEl.replaceChildren();'
+          new_fn = '''function clearArticleHighlight(){
+            history.replaceState(null,"",`${location.pathname}${location.search}`);
+            requestAnimationFrame(()=>analystPanel.scrollIntoView({behavior:"smooth",block:"start"}));
+          }
+
+          function renderArticles(articles){
+            contentEl.replaceChildren();'''
+          if old_fn not in s:
+              raise SystemExit('renderArticles anchor not found')
+          s = s.replace(old_fn, new_fn, 1)
+
+          old_top = '      top.appendChild(metadata);\n      card.appendChild(top);'
+          new_top = '''      top.appendChild(metadata);
+                const back=el("button","back-analysis","↑ 本日の情勢に戻る");
+                back.type="button";
+                back.addEventListener("click",clearArticleHighlight);
+                top.appendChild(back);
+                card.appendChild(top);'''
+          if old_top not in s:
+              raise SystemExit('card-top anchor not found')
+          s = s.replace(old_top, new_top, 1)
+
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit patch
+        shell: bash
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/report.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Improve referenced article visibility and return navigation"
+          git push
