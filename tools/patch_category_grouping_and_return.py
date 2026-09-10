@@ -6,6 +6,7 @@ def replace_once(text: str, old: str, new: str, label: str) -> str:
         raise SystemExit(f"expected block not found: {label}")
     return text.replace(old, new, 1)
 
+# One-time patch trigger: category grouping + detail-page category return navigation.
 # -----------------------------------------------------------------------------
 # categories.html
 # - Group space + cyber tech under one top-level "テック" category.
