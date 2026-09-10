@@ -1,0 +1,32 @@
+name: Apply JCSA Report Branding
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - tools/apply_jcsa_report_branding.py
+      - .github/workflows/apply_jcsa_report_branding.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Apply branding
+        run: python tools/apply_jcsa_report_branding.py
+      - name: Verify
+        run: |
+          grep -q 'DAILY INTELLIGENCE REPORT' docs/report.html
+          grep -q 'assets/jcsa-brush-logo.png' docs/report.html
+          grep -q 'linear-gradient(135deg,#061529' docs/report.html
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/report.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Align category report design with JCSA branding"
+          git push
