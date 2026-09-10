@@ -21,7 +21,16 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,B
 .btn{display:inline-flex;align-items:center;min-height:39px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--text);text-decoration:none;font-size:.84rem;font-weight:700}
 .btn:hover{border-color:var(--accent);color:var(--accent)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.header,.analyst-panel{padding:clamp(22px,4vw,38px);border-radius:14px;background:var(--paper);box-shadow:var(--shadow);margin-bottom:22px}
+.header{position:relative;overflow:hidden;display:block;padding:22px;border-radius:20px;background:radial-gradient(circle at 18% 35%,rgba(37,167,228,.22),transparent 32%),linear-gradient(135deg,#061529 0%,#082542 58%,#0b3856 100%);box-shadow:0 14px 40px rgba(3,28,48,.2);color:#fff;margin-bottom:22px}
+.header:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(56,184,238,.06) 48%,transparent 100%);pointer-events:none}
+.header>*{position:relative;z-index:1}
+.header .eyebrow{color:#63d0ff;font-size:.76rem;font-weight:900;letter-spacing:.14em}
+.header h1{color:#fff;font-size:clamp(2rem,4vw,3.25rem);line-height:1.04;letter-spacing:-.035em}
+.header .meta{margin-top:15px}
+.header .pill{border:1px solid rgba(113,210,255,.34);background:rgba(13,68,102,.55);color:#d7f3ff}
+.header .status{margin-top:13px;padding-top:11px;border-top:1px solid rgba(180,218,238,.2);color:#bad0df}
+.header .status.error{color:#ffb7ac}
+.analyst-panel{padding:clamp(22px,4vw,38px);border-radius:14px;background:var(--paper);box-shadow:var(--shadow);margin-bottom:22px}
 .eyebrow{margin:0 0 6px;color:var(--accent);font-size:.75rem;font-weight:800;letter-spacing:.13em}
 h1{margin:0;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.2}
 .meta{margin-top:15px}
@@ -56,7 +65,9 @@ h1{margin:0;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.2}
 .section{margin-top:24px}
 .section-title{margin:0 0 12px;padding:10px 14px;border-radius:7px;background:var(--accent);color:#fff;font-size:1.04rem}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
-.card{min-width:0;padding:18px 19px;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;background:var(--paper);box-shadow:var(--shadow);scroll-margin-top:16px}
+.card{position:relative;min-width:0;padding:18px 19px 18px 116px;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;background:var(--paper);box-shadow:var(--shadow);scroll-margin-top:16px;overflow:hidden}
+.card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:92px;background:radial-gradient(circle at 35% 30%,rgba(37,167,228,.24),transparent 44%),linear-gradient(165deg,#061529 0%,#082542 58%,#0b3856 100%);pointer-events:none}
+.card:after{content:"";position:absolute;left:9px;top:50%;width:74px;height:52px;transform:translateY(-50%);background:url("assets/jcsa-brush-logo.png") center/contain no-repeat;pointer-events:none}
 .card.is-referenced{
   border:2px solid #d9a900;
   border-left:7px solid #d9a900;
@@ -97,6 +108,11 @@ footer{margin-top:28px;color:var(--muted);font-size:.8rem;text-align:center}
   .analyst-meta{justify-content:flex-start}
   .analysis-block{padding:12px}
   .ref-link{width:100%}
+  .header{padding:16px;border-radius:14px}
+  .header h1{font-size:1.65rem}
+  .card{padding:72px 14px 16px}
+  .card:before{left:0;right:0;top:0;bottom:auto;width:auto;height:56px}
+  .card:after{left:14px;top:7px;width:86px;height:42px;transform:none}
 }
 @media(prefers-color-scheme:dark){
   :root{--bg:#0d1420;--paper:#151f2e;--text:#edf3fb;--muted:#a5b3c7;--line:#2d3a4d;--accent:#3c91c7;--accent2:#90c9ed;--soft:#17344a;--note:#101a27;--shadow:none;--error:#ffb4ab;--eval:#272317;--forecast:#15271e}
@@ -117,7 +133,7 @@ footer{margin-top:28px;color:var(--muted);font-size:.8rem;text-align:center}
 </nav>
 
 <header class="header">
-  <p class="eyebrow">PUBLIC NEWS REPORT</p>
+  <p class="eyebrow">DAILY INTELLIGENCE REPORT</p>
   <h1 id="title">ニュースレポート</h1>
   <div class="meta">
     <span id="datePill" class="pill">対象日</span>
