@@ -21,6 +21,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,B
 .btn{display:inline-flex;align-items:center;min-height:39px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--text);text-decoration:none;font-size:.84rem;font-weight:700}
 .btn:hover{border-color:var(--accent);color:var(--accent)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.category-return{border-color:#8fb7cf;background:#eaf5fb;color:#075f86;font-weight:850}.btn.category-return:before{content:"";width:10px;height:10px;border:2px solid #087cab;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 2px #eaf5fb;margin-right:7px}.btn.category-return:hover{background:#d9eef8;color:#044d6e}
 .header{position:relative;overflow:hidden;display:block;padding:22px;border-radius:20px;background:radial-gradient(circle at 18% 35%,rgba(37,167,228,.22),transparent 32%),linear-gradient(135deg,#061529 0%,#082542 58%,#0b3856 100%);box-shadow:0 14px 40px rgba(3,28,48,.2);color:#fff;margin-bottom:22px}
 .header:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(56,184,238,.06) 48%,transparent 100%);pointer-events:none}
 .header>*{position:relative;z-index:1}
@@ -124,7 +125,8 @@ footer{margin-top:28px;color:var(--muted);font-size:.8rem;text-align:center}
 <body>
 <main class="page">
 <nav class="toolbar">
-  <a class="btn" href="index.html">一覧へ戻る</a>
+  <a class="btn" href="index.html">日本向けへ戻る</a>
+  <a class="btn category-return" href="categories.html">カテゴリ別へ戻る</a>
   <a class="btn" href="downloads.html">ダウンロード一覧</a>
   <a id="pdfBtn" class="btn primary" href="#" target="_blank" rel="noopener noreferrer" hidden>PDFを開く</a>
   <a id="mdBtn" class="btn" href="#" hidden>Markdownを保存</a>
