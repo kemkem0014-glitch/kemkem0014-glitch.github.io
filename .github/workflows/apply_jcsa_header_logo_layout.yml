@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - tools/patch_jcsa_header_logos.py
+      - .github/workflows/apply_jcsa_header_logo_layout.yml
 
 permissions:
   contents: write
