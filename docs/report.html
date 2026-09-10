@@ -39,7 +39,7 @@ h1{margin:0;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.2}
 .analysis-block.news{border-left:4px solid #4f9bc5}
 .analysis-block.eval{border-left:4px solid #b68b35;background:var(--eval)}
 .analysis-block.forecast{border-left:4px solid #4d9a70;background:var(--forecast)}
-.analysis-title{margin:0 0 8px;color:var(--accent2);font-size:.86rem;font-weight:900;letter-spacing:.02em}
+.analysis-title{margin:0 0 8px;color:var(--accent2);font-size:1.05rem;font-weight:900;letter-spacing:.02em}
 .analysis-main{margin:0;font-size:.95rem}
 .analysis-item{padding:9px 0;border-top:1px solid rgba(110,130,145,.18)}
 .analysis-item:first-of-type{border-top:0;padding-top:0}
@@ -57,7 +57,7 @@ h1{margin:0;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.2}
 .section-title{margin:0 0 12px;padding:10px 14px;border-radius:7px;background:var(--accent);color:#fff;font-size:1.04rem}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
 .card{min-width:0;padding:18px 19px;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;background:var(--paper);box-shadow:var(--shadow);scroll-margin-top:16px}
-.card:target{
+.card.is-referenced{
   border:2px solid #d9a900;
   border-left:7px solid #d9a900;
   outline:5px solid #ffd84d;
@@ -71,7 +71,7 @@ h1{margin:0;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.2}
   background:#ffd84d;color:#3b2d00;font:inherit;font-size:.76rem;font-weight:850;cursor:pointer
 }
 .back-analysis:hover{background:#ffca0a}
-.card:target .back-analysis{display:inline-flex}
+.card.is-referenced .back-analysis{display:inline-flex}
 .card-top{display:flex;align-items:center;gap:9px;margin-bottom:8px}
 .num{min-width:31px;height:25px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;background:var(--soft);color:var(--accent2);font:.8rem ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:800}
 .metadata{gap:5px 10px;min-width:0}
@@ -102,7 +102,7 @@ footer{margin-top:28px;color:var(--muted);font-size:.8rem;text-align:center}
   :root{--bg:#0d1420;--paper:#151f2e;--text:#edf3fb;--muted:#a5b3c7;--line:#2d3a4d;--accent:#3c91c7;--accent2:#90c9ed;--soft:#17344a;--note:#101a27;--shadow:none;--error:#ffb4ab;--eval:#272317;--forecast:#15271e}
   .analysis-block{background:var(--paper)}
   .ref-link{background:#172636}
-  .card:target{background:#3a3108;outline-color:#ffd84d;box-shadow:0 0 0 8px rgba(255,216,77,.2)}
+  .card.is-referenced{background:#3a3108;outline-color:#ffd84d;box-shadow:0 0 0 8px rgba(255,216,77,.2)}
   .back-analysis{background:#ffd84d;color:#241b00}
 }
 </style>
@@ -247,6 +247,7 @@ function parseMarkdown(text){
 }
 
 function clearArticleHighlight(){
+  document.querySelectorAll(".card.is-referenced").forEach(card=>card.classList.remove("is-referenced"));
   history.replaceState(null,"",`${location.pathname}${location.search}`);
   requestAnimationFrame(()=>analystPanel.scrollIntoView({behavior:"smooth",block:"start"}));
 }
@@ -352,6 +353,15 @@ function addRefs(parent,refs){
     if(entry){
       a.href=`#${entry.anchor}`;
       a.title=`Web掲載記事 ${entry.number} へ移動`;
+      a.addEventListener("click",e=>{
+        e.preventDefault();
+        document.querySelectorAll(".card.is-referenced").forEach(card=>card.classList.remove("is-referenced"));
+        const target=document.getElementById(entry.anchor);
+        if(!target)return;
+        target.classList.add("is-referenced");
+        history.replaceState(null,"",`${location.pathname}${location.search}#${entry.anchor}`);
+        target.scrollIntoView({behavior:"smooth",block:"start"});
+      });
     }else if(url){
       a.href=url;a.target="_blank";a.rel="noopener noreferrer";
       a.title=`元記事を開く / 分析上の参照番号 ${fallbackId}`;
