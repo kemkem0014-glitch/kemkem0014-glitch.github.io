@@ -1,0 +1,37 @@
+name: Apply JCSA Header Logo Layout
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - tools/patch_jcsa_header_logos.py
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Apply header logo layout
+        run: python tools/patch_jcsa_header_logos.py
+      - name: Verify
+        run: |
+          set -e
+          grep -q 'hero-logo' docs/index.html
+          grep -q 'hero-logo' docs/categories.html
+          grep -q 'header-logo' docs/report.html
+          grep -q 'assets/jcsa-brush-logo.png' docs/index.html
+          grep -q 'assets/jcsa-brush-logo.png' docs/categories.html
+          grep -q 'assets/jcsa-brush-logo.png' docs/report.html
+          ! grep -q 'card:before' docs/report.html
+          ! grep -q 'card:after' docs/report.html
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/index.html docs/categories.html docs/report.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Move JCSA logo to page headers and restore article cards"
+          git push
