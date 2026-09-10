@@ -57,7 +57,21 @@ h1{margin:0;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.2}
 .section-title{margin:0 0 12px;padding:10px 14px;border-radius:7px;background:var(--accent);color:#fff;font-size:1.04rem}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
 .card{min-width:0;padding:18px 19px;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;background:var(--paper);box-shadow:var(--shadow);scroll-margin-top:16px}
-.card:target{outline:3px solid rgba(8,124,171,.25);outline-offset:3px}
+.card:target{
+  border:2px solid #d9a900;
+  border-left:7px solid #d9a900;
+  outline:5px solid #ffd84d;
+  outline-offset:3px;
+  background:#fff7bf;
+  box-shadow:0 0 0 8px rgba(255,216,77,.28),var(--shadow);
+}
+.back-analysis{
+  display:none;align-items:center;justify-content:center;margin-left:auto;
+  padding:5px 10px;border:1px solid #b58b00;border-radius:7px;
+  background:#ffd84d;color:#3b2d00;font:inherit;font-size:.76rem;font-weight:850;cursor:pointer
+}
+.back-analysis:hover{background:#ffca0a}
+.card:target .back-analysis{display:inline-flex}
 .card-top{display:flex;align-items:center;gap:9px;margin-bottom:8px}
 .num{min-width:31px;height:25px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;background:var(--soft);color:var(--accent2);font:.8rem ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:800}
 .metadata{gap:5px 10px;min-width:0}
@@ -88,6 +102,8 @@ footer{margin-top:28px;color:var(--muted);font-size:.8rem;text-align:center}
   :root{--bg:#0d1420;--paper:#151f2e;--text:#edf3fb;--muted:#a5b3c7;--line:#2d3a4d;--accent:#3c91c7;--accent2:#90c9ed;--soft:#17344a;--note:#101a27;--shadow:none;--error:#ffb4ab;--eval:#272317;--forecast:#15271e}
   .analysis-block{background:var(--paper)}
   .ref-link{background:#172636}
+  .card:target{background:#3a3108;outline-color:#ffd84d;box-shadow:0 0 0 8px rgba(255,216,77,.2)}
+  .back-analysis{background:#ffd84d;color:#241b00}
 }
 </style>
 </head>
@@ -230,6 +246,11 @@ function parseMarkdown(text){
   return articles;
 }
 
+function clearArticleHighlight(){
+  history.replaceState(null,"",`${location.pathname}${location.search}`);
+  requestAnimationFrame(()=>analystPanel.scrollIntoView({behavior:"smooth",block:"start"}));
+}
+
 function renderArticles(articles){
   contentEl.replaceChildren();
   articleIndex.clear();
@@ -270,6 +291,10 @@ function renderArticles(articles){
       if(a.source)metadata.appendChild(el("span","meta-item",a.source));
       if(a.score)metadata.appendChild(el("span","meta-item score",`SCORE ${a.score}`));
       top.appendChild(metadata);
+      const back=el("button","back-analysis","↑ 本日の情勢に戻る");
+      back.type="button";
+      back.addEventListener("click",clearArticleHighlight);
+      top.appendChild(back);
       card.appendChild(top);
 
       card.appendChild(el("h3","",a.title));
