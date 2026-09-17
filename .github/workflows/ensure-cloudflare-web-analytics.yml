@@ -1,0 +1,60 @@
+name: Ensure Cloudflare Web Analytics
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**/*.html"
+      - ".github/workflows/ensure-cloudflare-web-analytics.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inject-analytics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Inject Cloudflare Web Analytics into published HTML
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          token = "4002fd0c317c4358bb24d5d647032f7a"
+          beacon = """<!-- Cloudflare Web Analytics -->
+          <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"4002fd0c317c4358bb24d5d647032f7a"}'></script>
+          <!-- End Cloudflare Web Analytics -->"""
+
+          changed = []
+          for path in sorted(Path("docs").rglob("*.html")):
+              text = path.read_text(encoding="utf-8")
+              if token in text:
+                  continue
+              if "</body>" in text:
+                  text = text.replace("</body>", beacon + "\n</body>", 1)
+              else:
+                  text = text.rstrip() + "\n" + beacon + "\n"
+              path.write_text(text, encoding="utf-8")
+              changed.append(str(path))
+
+          print("Analytics ensured for:")
+          for item in changed:
+              print(f"- {item}")
+          PY
+
+      - name: Commit analytics injection if needed
+        shell: bash
+        run: |
+          if git diff --quiet -- docs; then
+            echo "No HTML changes required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          git commit -m "Add Cloudflare analytics to published HTML"
+          git push
