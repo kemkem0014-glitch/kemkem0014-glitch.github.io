@@ -18,7 +18,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,B
 .page{width:min(1180px,calc(100% - 28px));margin:0 auto;padding:24px 0 64px}
 .toolbar,.meta,.analysis-head,.analyst-meta,.ref-list,.metadata{display:flex;flex-wrap:wrap;gap:8px}
 .toolbar{margin-bottom:16px}
-.btn{display:inline-flex;align-items:center;min-height:39px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--text);text-decoration:none;font-size:.84rem;font-weight:700}
+.btn{display:inline-flex;align-items:center;min-height:39px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--text);text-decoration:none;font:inherit;font-size:.84rem;font-weight:700;cursor:pointer}
 .btn:hover{border-color:var(--accent);color:var(--accent)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .btn.category-return{border-color:#8fb7cf;background:#eaf5fb;color:#075f86;font-weight:850}.btn.category-return:before{content:"";width:10px;height:10px;border:2px solid #087cab;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 2px #eaf5fb;margin-right:7px}.btn.category-return:hover{background:#d9eef8;color:#044d6e}
@@ -32,6 +32,8 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,B
 .header .pill{border:1px solid rgba(113,210,255,.34);background:rgba(13,68,102,.55);color:#d7f3ff}
 .header .status{margin-top:13px;padding-top:11px;border-top:1px solid rgba(180,218,238,.2);color:#bad0df}
 .header .status.error{color:#ffb7ac}
+.search-panel{margin:0 0 22px;padding:15px 16px;border:1px solid var(--line);border-radius:12px;background:var(--paper);box-shadow:var(--shadow)}
+.search-row{display:flex;gap:9px;align-items:center}.search-input{width:100%;min-height:44px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--text);font:inherit;font-size:.93rem;outline:none}.search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(8,124,171,.13)}.search-help{margin:7px 0 0;color:var(--muted);font-size:.8rem}.search-count{font-weight:850;color:var(--accent2)}
 .analyst-panel{padding:clamp(22px,4vw,38px);border-radius:14px;background:var(--paper);box-shadow:var(--shadow);margin-bottom:22px}
 .eyebrow{margin:0 0 6px;color:var(--accent);font-size:.75rem;font-weight:800;letter-spacing:.13em}
 h1{margin:0;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.2}
@@ -99,6 +101,7 @@ h3{margin:0 0 9px;font-size:1.02rem;line-height:1.42}
 .source-link{color:var(--accent);font-size:.82rem;font-weight:700;text-decoration:none}
 .source-link:hover{text-decoration:underline}
 .fallback{padding:18px;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--paper);border-radius:10px;box-shadow:var(--shadow)}
+.search-no-results{display:none;padding:18px;margin-top:20px;border:1px dashed var(--line);border-radius:10px;background:var(--paper);color:var(--muted)}
 footer{margin-top:28px;color:var(--muted);font-size:.8rem;text-align:center}
 
 @media(max-width:760px){
@@ -112,6 +115,7 @@ footer{margin-top:28px;color:var(--muted);font-size:.8rem;text-align:center}
   .header-brand{gap:10px;align-items:flex-start}
   .header-logo{width:86px;margin-top:3px}
   .header h1{font-size:1.65rem}
+  .search-row{align-items:stretch;flex-direction:column}.search-panel .btn{width:100%;justify-content:center}
 }
 @media(prefers-color-scheme:dark){
   :root{--bg:#0d1420;--paper:#151f2e;--text:#edf3fb;--muted:#a5b3c7;--line:#2d3a4d;--accent:#3c91c7;--accent2:#90c9ed;--soft:#17344a;--note:#101a27;--shadow:none;--error:#ffb4ab;--eval:#272317;--forecast:#15271e}
@@ -144,8 +148,17 @@ footer{margin-top:28px;color:var(--muted);font-size:.8rem;text-align:center}
   </div></div>
 </header>
 
+<section id="articleSearchPanel" class="search-panel" aria-label="記事検索" hidden>
+  <div class="search-row">
+    <input id="articleSearch" class="search-input" type="search" inputmode="search" autocomplete="off" placeholder="記事タイトル・要約・重要性・出典を検索" aria-label="このレポート内の記事を検索">
+    <button id="clearArticleSearch" class="btn" type="button">クリア</button>
+  </div>
+  <p id="articleSearchStatus" class="search-help">このカテゴリの掲載記事を全文検索できます。</p>
+</section>
+
 <section id="analystPanel" class="analyst-panel" hidden></section>
 <div id="content"></div>
+<p id="searchNoResults" class="search-no-results">検索条件に一致する記事はありません。</p>
 
 <footer>本日のニュース、担当分析官の評価、今後72時間の見積もりと、その根拠記事を対応づけて表示しています。</footer>
 </main>
@@ -163,9 +176,12 @@ const pdfUrl=params.get("pdf")||"";
 
 const $=id=>document.getElementById(id);
 const titleEl=$("title"),datePill=$("datePill"),countPill=$("countPill"),statusEl=$("status"),
-  contentEl=$("content"),pdfBtn=$("pdfBtn"),mdBtn=$("mdBtn"),analystPanel=$("analystPanel");
+  contentEl=$("content"),pdfBtn=$("pdfBtn"),mdBtn=$("mdBtn"),analystPanel=$("analystPanel"),
+  articleSearchPanel=$("articleSearchPanel"),articleSearch=$("articleSearch"),clearArticleSearch=$("clearArticleSearch"),
+  articleSearchStatus=$("articleSearchStatus"),searchNoResults=$("searchNoResults");
 
 const articleIndex=new Map();
+let totalArticleCount=0;
 
 function formatDate(v){
   const s=String(v||"");
@@ -195,6 +211,7 @@ function sourceFromUrl(v){
 function cleanText(v){
   return String(v||"").replace(/\*\*(.+?)\*\*/g,"$1").replace(/`(.+?)`/g,"$1").replace(/\s+/g," ").trim();
 }
+function normalizeSearch(v){return String(v||"").normalize("NFKC").toLowerCase().replace(/\s+/g," ").trim()}
 function narrativeText(v){
   if(v==null)return "";
   if(typeof v==="object"){
@@ -224,6 +241,25 @@ function hashText(v){
 function anchorFor(url,title){
   return `article-${hashText(normalizedUrl(url)||cleanText(title))}`;
 }
+
+function applyArticleSearch(){
+  const q=normalizeSearch(articleSearch.value),tokens=q?q.split(" ").filter(Boolean):[];
+  let visible=0;
+  document.querySelectorAll("#content .card[data-search]").forEach(card=>{
+    const hay=card.dataset.search||"";
+    const match=!tokens.length||tokens.every(t=>hay.includes(t));
+    card.hidden=!match;
+    if(match)visible++;
+  });
+  document.querySelectorAll("#content .section").forEach(section=>{
+    const cards=[...section.querySelectorAll(".card[data-search]")];
+    section.hidden=cards.length>0&&cards.every(card=>card.hidden);
+  });
+  searchNoResults.style.display=totalArticleCount>0&&visible===0?"block":"none";
+  articleSearchStatus.innerHTML=q?`検索結果: <span class="search-count">${visible}件</span> / ${totalArticleCount}件`:`<span class="search-count">${totalArticleCount}件</span>の記事を表示中`;
+}
+articleSearch.addEventListener("input",applyArticleSearch);
+clearArticleSearch.addEventListener("click",()=>{articleSearch.value="";applyArticleSearch();articleSearch.focus()});
 
 function parseMarkdown(text){
   text=String(text||"").replace(/^\uFEFF/,"");
@@ -273,6 +309,7 @@ function clearArticleHighlight(){
 function renderArticles(articles){
   contentEl.replaceChildren();
   articleIndex.clear();
+  totalArticleCount=articles.length;
   if(!articles.length)return false;
 
   const sections=new Map();
@@ -300,6 +337,7 @@ function renderArticles(articles){
       };
 
       card.id=anchor;
+      card.dataset.search=normalizeSearch([sectionName,a.title,a.summary,a.importance,(a.points||[]).join(" "),a.source,a.score,sourceFromUrl(a.url)].join(" "));
       const u=normalizedUrl(a.url);
       if(u)articleIndex.set(`url:${u}`,entry);
       if(entry.title)articleIndex.set(`title:${entry.title}`,entry);
@@ -343,6 +381,8 @@ function renderArticles(articles){
     section.appendChild(grid);
     contentEl.appendChild(section);
   }
+  articleSearchPanel.hidden=false;
+  applyArticleSearch();
   return true;
 }
 
@@ -373,6 +413,10 @@ function addRefs(parent,refs){
       a.title=`Web掲載記事 ${entry.number} へ移動`;
       a.addEventListener("click",e=>{
         e.preventDefault();
+        if(entry.anchor){
+          articleSearch.value="";
+          applyArticleSearch();
+        }
         document.querySelectorAll(".card.is-referenced").forEach(card=>card.classList.remove("is-referenced"));
         const target=document.getElementById(entry.anchor);
         if(!target)return;
