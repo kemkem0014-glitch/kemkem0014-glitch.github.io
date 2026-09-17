@@ -7,21 +7,22 @@
 <meta name="robots" content="noindex,nofollow">
 <title>JCSA V8 Actor-First Daily Threat Assessment</title>
 <style>
-html,body{height:100%;margin:0;background:#071525;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Yu Gothic UI",sans-serif}body{display:grid;grid-template-rows:auto 1fr;overflow:hidden}.bar{min-height:44px;display:flex;align-items:center;gap:10px;padding:7px 12px;background:#071525;color:#d9e8f3;border-bottom:1px solid #203a4d;box-sizing:border-box}.brand{font-weight:900;color:#fff;white-space:nowrap}.badge{font-size:.72rem;font-weight:900;padding:4px 8px;border-radius:999px;background:#123c55;color:#75d5ff}.status{font-size:.76rem;color:#9fb8c9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.links{display:flex;gap:7px}.links a{color:#dcebf5;text-decoration:none;font-size:.74rem;font-weight:800;padding:5px 8px;border:1px solid #31556b;border-radius:7px;white-space:nowrap}.links a:hover{background:#123148}.frame-wrap{position:relative;min-height:0;background:#eef3f7}.frame{width:100%;height:100%;border:0;display:block;background:#eef3f7}.loading{position:absolute;inset:0;display:grid;place-items:center;background:#eef3f7;color:#294367;font-weight:800;z-index:2}.loading.hidden{display:none}.error{max-width:680px;padding:24px;border:1px solid #d7e2ea;border-radius:14px;background:#fff;box-shadow:0 10px 30px rgba(20,40,60,.08);line-height:1.8}.error a{color:#1768a0}@media(max-width:700px){.bar{gap:6px;padding:6px 8px}.brand{font-size:.82rem}.badge{font-size:.64rem}.status{display:none}.links a{font-size:.66rem;padding:4px 6px}}
+html,body{height:100%;margin:0;background:#071525;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Yu Gothic UI",sans-serif}body{display:grid;grid-template-rows:auto 1fr;overflow:hidden}.bar{min-height:44px;display:flex;align-items:center;gap:10px;padding:7px 12px;background:#071525;color:#d9e8f3;border-bottom:1px solid #203a4d;box-sizing:border-box}.brand{font-weight:900;color:#fff;white-space:nowrap}.badge{font-size:.72rem;font-weight:900;padding:4px 8px;border-radius:999px;background:#123c55;color:#75d5ff}.status{font-size:.76rem;color:#9fb8c9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.links{display:flex;gap:7px}.links a{color:#dcebf5;text-decoration:none;font-size:.74rem;font-weight:800;padding:5px 8px;border:1px solid #31556b;border-radius:7px;white-space:nowrap}.links a:hover{background:#123148}.frame-wrap{position:relative;min-height:0;background:#eef3f7}.frame{width:100%;height:100%;border:0;display:none;background:#eef3f7}.frame.ready{display:block}.loading{position:absolute;inset:0;display:grid;place-items:center;background:#eef3f7;color:#294367;font-weight:800;z-index:2}.loading.hidden{display:none}.error{max-width:680px;margin:20px;padding:24px;border:1px solid #d7e2ea;border-radius:14px;background:#fff;box-shadow:0 10px 30px rgba(20,40,60,.08);line-height:1.8}.error a{color:#1768a0}@media(max-width:700px){.bar{gap:6px;padding:6px 8px}.brand{font-size:.82rem}.badge{font-size:.64rem}.status{display:none}.links a{font-size:.66rem;padding:4px 6px}}
 </style>
 </head>
 <body>
 <header class="bar">
   <div class="brand">JCSA</div>
   <div class="badge">V8 ACTOR-FIRST</div>
-  <div id="status" class="status">最新のV8分析を読み込んでいます…</div>
+  <div id="status" class="status">最新のV8分析を確認しています…</div>
   <nav class="links">
     <a href="index.html">Main</a>
     <a href="v7-preview.html">V7</a>
+    <a id="direct" href="#" target="_blank" rel="noopener noreferrer">Direct</a>
   </nav>
 </header>
 <div class="frame-wrap">
-  <div id="loading" class="loading">V8 Actor-First Daily Threat Assessment を読み込んでいます…</div>
+  <div id="loading" class="loading">V8 Actor-First Daily Threat Assessment を確認しています…</div>
   <iframe id="report" class="frame" title="JCSA V8 Actor-First Daily Threat Assessment"></iframe>
 </div>
 <script>
@@ -32,32 +33,41 @@ const META=`${BASE}/v8/latest/web_publish.json`;
 const frame=document.getElementById('report');
 const loading=document.getElementById('loading');
 const status=document.getElementById('status');
+const direct=document.getElementById('direct');
+direct.href=LATEST;
 function cacheBust(url){return `${url}?v=${Date.now()}`}
-async function metadata(){
+function showError(message){
+  frame.classList.remove('ready');
+  loading.classList.remove('hidden');
+  loading.innerHTML=`<div class="error"><strong>${message}</strong><br>God Father V8が正常終了すると、最新のActor-First分析がここへ自動公開されます。<br><a href="${LATEST}" target="_blank" rel="noopener noreferrer">公開ストレージを直接確認</a></div>`;
+}
+async function loadLatest(){
   try{
-    const r=await fetch(cacheBust(META),{cache:'no-store'});
-    if(!r.ok)throw new Error(`HTTP ${r.status}`);
-    const data=await r.json();
-    if(data.report_date){
-      const d=String(data.report_date);
-      status.textContent=`${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6,8)} / 最新V8 Actor-First分析`;
-    }else status.textContent='最新V8 Actor-First分析';
+    const metaResponse=await fetch(cacheBust(META),{cache:'no-store'});
+    if(!metaResponse.ok)throw new Error(`metadata HTTP ${metaResponse.status}`);
+    const data=await metaResponse.json();
+    if(data.product!=="JCSA V8 Actor-First Daily Threat Assessment")throw new Error('unexpected product metadata');
+    const d=String(data.report_date||'');
+    status.textContent=/^\d{8}$/.test(d)?`${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6,8)} / 最新V8 Actor-First分析`:'最新V8 Actor-First分析';
+
+    const reportUrl=data.latest_html||LATEST;
+    direct.href=reportUrl;
+    frame.addEventListener('load',()=>{
+      frame.classList.add('ready');
+      loading.classList.add('hidden');
+    },{once:true});
+    frame.src=cacheBust(reportUrl);
+
+    setTimeout(()=>{
+      if(!frame.classList.contains('ready'))showError('V8レポートの読み込みに時間がかかっています。');
+    },12000);
   }catch(e){
-    console.warn('V8 metadata unavailable',e);
-    status.textContent='最新V8 Actor-First分析';
+    console.warn('V8 publication unavailable',e);
+    status.textContent='V8公開結果はまだありません';
+    showError('最新V8レポートはまだ公開されていません。');
   }
 }
-frame.addEventListener('load',()=>loading.classList.add('hidden'),{once:true});
-frame.addEventListener('error',()=>{
-  loading.innerHTML=`<div class="error"><strong>V8レポートを読み込めませんでした。</strong><br>God Father V8が正常終了すると、このページは最新のActor-First分析へ自動更新されます。<br><a href="${LATEST}" target="_blank" rel="noopener noreferrer">公開ストレージを直接確認</a></div>`;
-});
-metadata();
-frame.src=cacheBust(LATEST);
-setTimeout(()=>{
-  if(!loading.classList.contains('hidden')){
-    loading.innerHTML=`<div class="error"><strong>V8レポートの公開待ちです。</strong><br>次回のGod Father V8正常終了後に自動公開されます。<br><a href="${LATEST}" target="_blank" rel="noopener noreferrer">公開ストレージを直接確認</a></div>`;
-  }
-},12000);
+loadLatest();
 </script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"4002fd0c317c4358bb24d5d647032f7a"}'></script>
