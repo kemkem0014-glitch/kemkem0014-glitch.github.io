@@ -4,48 +4,63 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>JCSA V7 Test</title>
+<meta name="robots" content="noindex,nofollow">
+<title>JCSA V8 Actor-First Daily Threat Assessment</title>
 <style>
-:root{--bg:#eef3f7;--paper:#fff;--ink:#071d50;--body:#294367;--muted:#687b91;--line:#d8e3ec;--shadow:0 10px 30px rgba(21,48,76,.08)}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--body);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK JP","Noto Sans JP","Yu Gothic UI",sans-serif;line-height:1.72}a{color:inherit}main{width:min(1280px,calc(100% - 28px));margin:auto;padding:22px 0 54px}.hidden{display:none!important}.hero{padding:22px;border-radius:20px;background:radial-gradient(circle at 18% 35%,rgba(37,167,228,.22),transparent 32%),linear-gradient(135deg,#061529,#082542 58%,#0b3856);box-shadow:0 14px 40px rgba(3,28,48,.2);color:#fff;margin-bottom:14px}.hero-inner{display:flex;align-items:center;gap:18px}.logo{width:clamp(110px,12vw,180px);height:auto}.ey{margin:0 0 5px;color:#63d0ff;font-size:.76rem;font-weight:900;letter-spacing:.14em}.hero h1{margin:0;font-size:clamp(2rem,4vw,3.2rem);line-height:1.05}.sub{margin:9px 0 0;color:#c9dbe8}.tags,.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.tag{padding:5px 10px;border:1px solid rgba(113,210,255,.34);border-radius:999px;background:rgba(13,68,102,.55);font-size:.74rem;font-weight:850}.tag.test{background:#68420b;border-color:#ffc46b}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:7px 13px;border:1px solid rgba(179,220,240,.42);border-radius:9px;background:rgba(255,255,255,.08);color:#fff;text-decoration:none;font-size:.83rem;font-weight:850}.btn.pdf{background:#fff;border-color:#fff;color:#103b60}.btn.primary{background:#1c8dcc;border-color:#1c8dcc}.statusline{margin-top:11px;padding-top:10px;border-top:1px solid rgba(180,218,238,.2);color:#bad0df;font-size:.82rem}.testbar{margin-bottom:12px;padding:10px 14px;border:1px solid #e0b057;border-radius:12px;background:#fff8e8;color:#694910;font-weight:850}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:19px;box-shadow:var(--shadow);margin-bottom:12px;overflow:visible}.section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:1px solid #e2eaf1;padding-bottom:10px;margin-bottom:12px}.section-head h2,.panel-head h2{margin:0;color:var(--ink);font-size:clamp(1.35rem,2.2vw,1.8rem)}.note{max-width:540px;color:var(--muted);font-size:.78rem;font-weight:700;text-align:right}.overview{margin:0;color:#17355e;font-size:1.02rem;font-weight:720}.dashboard{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;align-items:start}.panel{border:1.5px solid;border-radius:16px;padding:18px;box-shadow:var(--shadow);height:auto;overflow:visible}.impact{border-color:#45afe1;background:linear-gradient(180deg,#fbfeff,#edf8ff)}.forecast{border-color:#55c887;background:linear-gradient(180deg,#fbfffc,#effaf2)}.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-bottom:11px;margin-bottom:11px;border-bottom:1px solid rgba(55,103,151,.18)}.status{min-width:95px;padding:6px 9px;border:1px solid #74bfe4;border-radius:9px;background:#fff;text-align:center}.status b{display:block;font-size:.66rem;color:#526983}.status strong{display:block;color:#c45f00;font-size:.95rem}.lead{background:rgba(255,255,255,.82);border-radius:11px;padding:14px 15px;color:#17355e;font-weight:720;line-height:1.75;margin-bottom:10px;white-space:normal;overflow:visible}.ilist,.flist{display:grid;gap:8px}.impact-item{display:grid;grid-template-columns:34px 1fr;gap:9px;background:rgba(255,255,255,.78);border:1px solid rgba(90,130,160,.12);border-radius:10px;padding:11px}.impact-item b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#e8f5fd;color:#1768a0;font-size:.72rem}.impact-item span,.forecast-card p{font-size:.89rem}.forecast-card{background:rgba(255,255,255,.82);border:1px solid rgba(90,130,160,.12);border-radius:10px;padding:11px 12px}.forecast-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}.forecast-head .no{font-weight:900;color:#17624b}.pill{display:inline-block;margin-left:4px;padding:3px 7px;border-radius:6px;font-size:.68rem;font-weight:900}.pill.amber{background:#fff1d7;color:#90580a}.pill.blue{background:#e9f2ff;color:#1762a0}.forecast-card p{margin:0}.judgments{margin:0;padding-left:1.35rem}.judgments li{margin:.65rem 0}.events,.domains,.pmesii-grid,.twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}.event-card,.domain{border:1px solid #dbe6ef;border-radius:12px;padding:13px;background:#fff;overflow:visible}.event-top{display:flex;justify-content:space-between;gap:8px;align-items:center}.priority{font-size:.67rem;font-weight:900;padding:3px 8px;border-radius:999px}.priority.critical{background:#fee8e8;color:#a62d2d}.priority.high{background:#fff0da;color:#a45a00}.rel,.meta{font-size:.7rem;color:#708096;font-weight:700}.event-card h3,.domain h3{margin:8px 0 6px;color:#102c5e;font-size:1rem;line-height:1.45}.event-summary,.domain p{margin:0;font-size:.87rem}.event-reason{margin-top:8px;padding-top:8px;border-top:1px solid #e6edf3;font-size:.84rem;color:#405873}.event-reason b{display:block;color:#173c60}.pmesii-card{background:var(--tint);border:1px solid #d9e2eb;border-radius:13px;padding:14px;overflow:visible;min-height:0}.pmesii-head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid rgba(80,110,140,.18);padding-bottom:8px;margin-bottom:9px}.pmesii-head span{font-size:.72rem;color:#62758d;font-weight:850}.pmesii-head h3{margin:1px 0 0;color:#102c5e;font-size:1.05rem}.pmesii-head strong{color:#1762a0;font-size:1.15rem}.pmesii-assessment{margin:0;font-size:.9rem;line-height:1.72;white-space:normal;overflow:visible;text-overflow:clip;display:block;max-height:none}.twocol>section{background:#fff;border:1px solid var(--line);border-radius:13px;padding:14px}.twocol ul{margin:.4rem 0 0;padding-left:1.25rem}.twocol li{margin:.5rem 0}footer{margin-top:22px;text-align:center;color:var(--muted);font-size:.76rem}.muted{color:var(--muted)}@media(max-width:900px){.dashboard,.events,.domains,.pmesii-grid,.twocol{grid-template-columns:1fr}}@media(max-width:620px){main{width:min(100% - 16px,1280px);padding-top:8px}.hero{padding:13px}.hero-inner{align-items:flex-start;gap:10px}.logo{width:86px}.section-head,.panel-head{display:block}.note{text-align:left;margin-top:4px}.actions .btn{flex:1}.card,.panel{padding:13px}}
+html,body{height:100%;margin:0;background:#071525;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Yu Gothic UI",sans-serif}body{display:grid;grid-template-rows:auto 1fr;overflow:hidden}.bar{min-height:44px;display:flex;align-items:center;gap:10px;padding:7px 12px;background:#071525;color:#d9e8f3;border-bottom:1px solid #203a4d;box-sizing:border-box}.brand{font-weight:900;color:#fff;white-space:nowrap}.badge{font-size:.72rem;font-weight:900;padding:4px 8px;border-radius:999px;background:#123c55;color:#75d5ff}.status{font-size:.76rem;color:#9fb8c9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.links{display:flex;gap:7px}.links a{color:#dcebf5;text-decoration:none;font-size:.74rem;font-weight:800;padding:5px 8px;border:1px solid #31556b;border-radius:7px;white-space:nowrap}.links a:hover{background:#123148}.frame-wrap{position:relative;min-height:0;background:#eef3f7}.frame{width:100%;height:100%;border:0;display:block;background:#eef3f7}.loading{position:absolute;inset:0;display:grid;place-items:center;background:#eef3f7;color:#294367;font-weight:800;z-index:2}.loading.hidden{display:none}.error{max-width:680px;padding:24px;border:1px solid #d7e2ea;border-radius:14px;background:#fff;box-shadow:0 10px 30px rgba(20,40,60,.08);line-height:1.8}.error a{color:#1768a0}@media(max-width:700px){.bar{gap:6px;padding:6px 8px}.brand{font-size:.82rem}.badge{font-size:.64rem}.status{display:none}.links a{font-size:.66rem;padding:4px 6px}}
 </style>
 </head>
-<body><main>
-<section class="hero"><div class="hero-inner"><img class="logo" src="assets/jcsa-brush-logo.png" alt="JCSA"><div><p class="ey">DAILY CYBER INTELLIGENCE / V7 TEST</p><h1>Japan Cyber Situation Awareness</h1><p class="sub">V7分析を、全文を省略せず表示するテストページです。</p><div class="tags"><span class="tag test">TEST PAGE</span><span id="dateTag" class="tag">loading</span><span id="cyberTag" class="tag">Cyber -</span><span id="pmesiiTag" class="tag">PMESII -</span></div><div class="actions"><a id="pdfBtn" class="btn pdf" href="#" target="_blank" rel="noopener noreferrer">PDF取得</a><a class="btn primary" href="index.html">現行ページへ戻る</a></div><div id="status" class="statusline">V7評価を読み込んでいます…</div></div></div></section>
-<div class="testbar">V7 TEST — 本番 index.html / japan-cyber/latest は変更しません。文章は途中で省略しません。</div>
-<section class="card"><div class="section-head"><h2>今日のサイバー状況</h2><div class="note">トップレベルは日本へのサイバー影響に限定。非サイバー要因はPMESIIで分離。</div></div><p id="overview" class="overview"></p></section>
-<section class="dashboard"><section class="panel impact"><div class="panel-head"><h2>日本への影響</h2><div class="status"><b>サイバー警戒度</b><strong id="alert">-</strong></div></div><div id="executive" class="lead"></div><div id="impacts" class="ilist"></div></section><section class="panel forecast"><div class="panel-head"><h2>今後72時間の見積もり</h2><div class="status"><b>分析確度</b><strong id="confidence" style="color:#17624b">-</strong></div></div><div id="forecasts" class="flist"></div></section></section>
-<section class="card"><div class="section-head"><h2>サイバー主要判断</h2><div class="note">V7 Fusionの主要判断</div></div><ol id="judgments" class="judgments"></ol></section>
-<section class="card"><div class="section-head"><h2>主要サイバー事象</h2><div class="note">日本への波及経路を優先した上位事象</div></div><div id="events" class="events"></div></section>
-<section class="card"><div class="section-head"><h2>サイバー分野別状況</h2><div class="note">技術・運用上の主要な変化</div></div><div id="domains" class="domains"></div></section>
-<section class="card"><div class="section-head"><h2>PMESII — 周辺環境・日本への含意</h2><div class="note">6分野の評価本文を全文表示</div></div><div id="pmesii" class="pmesii-grid"></div></section>
-<section class="card"><div class="twocol"><section><h2>サイバー監視指標</h2><ul id="watch"></ul></section><section><h2>サイバー情報不足</h2><ul id="gaps"></ul></section></div></section>
-<footer>JCSA V7 Preview / isolated test publication</footer>
-</main>
+<body>
+<header class="bar">
+  <div class="brand">JCSA</div>
+  <div class="badge">V8 ACTOR-FIRST</div>
+  <div id="status" class="status">最新のV8分析を読み込んでいます…</div>
+  <nav class="links">
+    <a href="index.html">Main</a>
+    <a href="v7-preview.html">V7</a>
+  </nav>
+</header>
+<div class="frame-wrap">
+  <div id="loading" class="loading">V8 Actor-First Daily Threat Assessment を読み込んでいます…</div>
+  <iframe id="report" class="frame" title="JCSA V8 Actor-First Daily Threat Assessment"></iframe>
+</div>
 <script>
 "use strict";
 const BASE="https://hmnbalygfomelhjuscjm.supabase.co/storage/v1/object/public/public-news-reports";
-const LIVE_JSON=`${BASE}/v7-preview/latest/index.json`;
-const LIVE_PDF=`${BASE}/v7-preview/latest/report.pdf`;
-const FALLBACK="v7-preview-sample-20260915.zb64";
-const DIM=[['political','Political','政治・外交','#f6f0fb'],['military','Military','軍事','#eef4fb'],['economic','Economic','経済','#eff8ef'],['social','Social','社会','#fff5e6'],['information','Information','情報','#edf8ff'],['infrastructure','Infrastructure','インフラ','#f9eff2']];
-const $=id=>document.getElementById(id);const text=v=>String(v??'').replace(/\\n/g,' ').replace(/\r/g,' ').trim();
-function ja(v){const s=text(v),m={low:'低',medium:'中',high:'高',critical:'重大',very_high:'非常に高',direct:'直接',indirect:'間接'};return m[s.toLowerCase()]||s||'—'}
-function fmtDate(v){const s=text(v);return /^\d{8}$/.test(s)?`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6)}`:s||'latest'}
-function el(tag,cls,value){const n=document.createElement(tag);if(cls)n.className=cls;if(value!==undefined)n.textContent=text(value);return n}
-function fillList(root,items){root.replaceChildren();const rows=Array.isArray(items)?items:[];if(!rows.length){root.appendChild(el('li','muted','該当情報なし'));return}for(const x of rows)root.appendChild(el('li','',x))}
-function render(p,mode){$('overview').textContent=text(p.daily_overview_ja);$('executive').textContent=text(p.executive_assessment_ja);$('alert').textContent=ja(p.alert_level);$('confidence').textContent=text(p.confidence)||'—';$('dateTag').textContent=fmtDate(p.report_date);$('cyberTag').textContent=`Cyber ${p.cyber_core_event_count??'-'}`;$('pmesiiTag').textContent=`PMESII ${p.pmesii_context_event_count??'-'}`;
- const impacts=$('impacts');impacts.replaceChildren();(p.japan_impacts||[]).forEach((x,i)=>{const d=el('div','impact-item');d.append(el('b','',String(i+1).padStart(2,'0')),el('span','',x));impacts.appendChild(d)});
- const fs=$('forecasts');fs.replaceChildren();(p.outlook_72h||[]).forEach((x,i)=>{const a=el('article','forecast-card'),h=el('div','forecast-head'),no=el('span','no',String(i+1).padStart(2,'0')),badges=document.createElement('div');badges.append(el('span','pill amber',`蓋然性 ${ja(x.likelihood)}`),el('span','pill blue',`日本影響 ${ja(x.impact_on_japan)}`));h.append(no,badges);a.append(h,el('p','',x.development_ja));fs.appendChild(a)});
- fillList($('judgments'),p.key_judgments);
- const events=$('events');events.replaceChildren();(p.top_events||[]).forEach(x=>{const a=el('article','event-card'),top=el('div','event-top'),pri=el('span',`priority ${text(x.priority).toLowerCase()}`,text(x.priority).toUpperCase()||'EVENT'),rel=el('span','rel',`日本関連: ${ja(x.japan_relevance)}`);top.append(pri,rel);a.append(top,el('h3','',x.title_ja),el('p','event-summary',x.summary_ja));const r=el('div','event-reason');r.append(el('b','','日本への含意'),document.createTextNode(text(x.reason_ja)));a.append(r);events.appendChild(a)});
- const domains=$('domains');domains.replaceChildren();(p.domain_briefs||[]).forEach(x=>{const a=el('article','domain');a.append(el('h3','',x.domain),el('p','',x.summary_ja));domains.appendChild(a)});
- const pg=$('pmesii');pg.replaceChildren();const reports=p.pmesii||{},scores=p.pmesii_scores||{};for(const [key,en,jp,tint] of DIM){const r=reports[key]||{},a=el('article','pmesii-card');a.style.setProperty('--tint',tint);const h=el('div','pmesii-head'),left=document.createElement('div');left.append(el('span','',en),el('h3','',jp));h.append(left,el('strong','',`${scores[key]??'-'}/5`));a.append(h,el('p','pmesii-assessment',r.assessment_ja));const count=Array.isArray(r.selected_events)?r.selected_events.length:(r.selected_event_count??'—');a.append(el('div','meta',`Confidence: ${text(r.confidence)||'—'} / Selected events: ${count}`));pg.appendChild(a)}
- fillList($('watch'),p.watch_indicators);fillList($('gaps'),p.information_gaps);
- if(mode==='live'){$('pdfBtn').href=LIVE_PDF;$('pdfBtn').textContent='PDF取得';$('status').textContent=`${fmtDate(p.report_date)} JST / 最新V7テスト結果を表示中`;}else{$('pdfBtn').removeAttribute('href');$('pdfBtn').textContent='新PDFは次回V7実行後';$('status').textContent='9/15 V7サンプルを表示中。次回08:00 V7実行後に最新結果へ自動切替します。';}}
-async function getJson(url){const r=await fetch(`${url}?_=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json()}
-async function fallback(){const r=await fetch(`${FALLBACK}?_=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(`fallback HTTP ${r.status}`);const b64=(await r.text()).trim(),raw=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));const stream=new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate'));return JSON.parse(await new Response(stream).text())}
-(async()=>{try{try{render(await getJson(LIVE_JSON),'live')}catch(e){console.warn('live V7 unavailable; using fallback',e);render(await fallback(),'fallback')}}catch(e){console.error(e);$('status').textContent='V7テスト結果を読み込めませんでした。';}})();
-</script><!-- Cloudflare Web Analytics -->
+const LATEST=`${BASE}/v8/latest/threat_assessment.html`;
+const META=`${BASE}/v8/latest/web_publish.json`;
+const frame=document.getElementById('report');
+const loading=document.getElementById('loading');
+const status=document.getElementById('status');
+function cacheBust(url){return `${url}?v=${Date.now()}`}
+async function metadata(){
+  try{
+    const r=await fetch(cacheBust(META),{cache:'no-store'});
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    const data=await r.json();
+    if(data.report_date){
+      const d=String(data.report_date);
+      status.textContent=`${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6,8)} / 最新V8 Actor-First分析`;
+    }else status.textContent='最新V8 Actor-First分析';
+  }catch(e){
+    console.warn('V8 metadata unavailable',e);
+    status.textContent='最新V8 Actor-First分析';
+  }
+}
+frame.addEventListener('load',()=>loading.classList.add('hidden'),{once:true});
+frame.addEventListener('error',()=>{
+  loading.innerHTML=`<div class="error"><strong>V8レポートを読み込めませんでした。</strong><br>God Father V8が正常終了すると、このページは最新のActor-First分析へ自動更新されます。<br><a href="${LATEST}" target="_blank" rel="noopener noreferrer">公開ストレージを直接確認</a></div>`;
+});
+metadata();
+frame.src=cacheBust(LATEST);
+setTimeout(()=>{
+  if(!loading.classList.contains('hidden')){
+    loading.innerHTML=`<div class="error"><strong>V8レポートの公開待ちです。</strong><br>次回のGod Father V8正常終了後に自動公開されます。<br><a href="${LATEST}" target="_blank" rel="noopener noreferrer">公開ストレージを直接確認</a></div>`;
+  }
+},12000);
+</script>
+<!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"4002fd0c317c4358bb24d5d647032f7a"}'></script>
 <!-- End Cloudflare Web Analytics -->
-</body></html>
+</body>
+</html>
