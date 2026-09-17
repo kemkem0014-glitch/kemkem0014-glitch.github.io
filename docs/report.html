@@ -173,6 +173,8 @@ const name=params.get("name")||reportType||"ニュース";
 const dateValue=params.get("date")||"";
 const markdownUrl=params.get("md")||"";
 const pdfUrl=params.get("pdf")||"";
+const fromSearch=params.get("from")==="categories-search";
+const backUrl=params.get("back")||"";
 
 const $=id=>document.getElementById(id);
 const titleEl=$("title"),datePill=$("datePill"),countPill=$("countPill"),statusEl=$("status"),
@@ -241,6 +243,15 @@ function hashText(v){
 function anchorFor(url,title){
   return `article-${hashText(normalizedUrl(url)||cleanText(title))}`;
 }
+function backButtonLabel(){return fromSearch?"← 検索結果へ戻る":"↑ 本日の情勢に戻る"}
+function handleBackAction(){
+  if(fromSearch){
+    if(backUrl){location.href=backUrl;return}
+    if(document.referrer&&/categories\.html(?:$|\?)/.test(document.referrer)&&history.length>1){history.back();return}
+    location.href="categories.html";return;
+  }
+  clearArticleHighlight();
+}
 
 function applyArticleSearch(){
   const q=normalizeSearch(articleSearch.value),tokens=q?q.split(" ").filter(Boolean):[];
@@ -305,6 +316,24 @@ function clearArticleHighlight(){
   history.replaceState(null,"",`${location.pathname}${location.search}`);
   requestAnimationFrame(()=>analystPanel.scrollIntoView({behavior:"smooth",block:"start"}));
 }
+function highlightArticle(anchor){
+  if(!anchor)return;
+  if(articleSearch.value){articleSearch.value="";applyArticleSearch()}
+  document.querySelectorAll(".card.is-referenced").forEach(card=>card.classList.remove("is-referenced"));
+  const target=document.getElementById(anchor);
+  if(!target)return;
+  const section=target.closest(".section");
+  if(section)section.hidden=false;
+  target.hidden=false;
+  target.classList.add("is-referenced");
+  history.replaceState(null,"",`${location.pathname}${location.search}#${anchor}`);
+  target.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function focusHashTarget(){
+  const anchor=(location.hash||"").replace(/^#/,"");
+  if(anchor)highlightArticle(anchor);
+}
+window.addEventListener("hashchange",focusHashTarget);
 
 function renderArticles(articles){
   contentEl.replaceChildren();
@@ -348,9 +377,9 @@ function renderArticles(articles){
       if(a.source)metadata.appendChild(el("span","meta-item",a.source));
       if(a.score)metadata.appendChild(el("span","meta-item score",`SCORE ${a.score}`));
       top.appendChild(metadata);
-      const back=el("button","back-analysis","↑ 本日の情勢に戻る");
+      const back=el("button","back-analysis",backButtonLabel());
       back.type="button";
-      back.addEventListener("click",clearArticleHighlight);
+      back.addEventListener("click",handleBackAction);
       top.appendChild(back);
       card.appendChild(top);
 
@@ -383,6 +412,7 @@ function renderArticles(articles){
   }
   articleSearchPanel.hidden=false;
   applyArticleSearch();
+  requestAnimationFrame(focusHashTarget);
   return true;
 }
 
@@ -413,16 +443,7 @@ function addRefs(parent,refs){
       a.title=`Web掲載記事 ${entry.number} へ移動`;
       a.addEventListener("click",e=>{
         e.preventDefault();
-        if(entry.anchor){
-          articleSearch.value="";
-          applyArticleSearch();
-        }
-        document.querySelectorAll(".card.is-referenced").forEach(card=>card.classList.remove("is-referenced"));
-        const target=document.getElementById(entry.anchor);
-        if(!target)return;
-        target.classList.add("is-referenced");
-        history.replaceState(null,"",`${location.pathname}${location.search}#${entry.anchor}`);
-        target.scrollIntoView({behavior:"smooth",block:"start"});
+        highlightArticle(entry.anchor);
       });
     }else if(url){
       a.href=url;a.target="_blank";a.rel="noopener noreferrer";
@@ -577,6 +598,7 @@ async function load(){
 
   const assessment=await assessmentPromise;
   if(assessment)renderAnalystAssessment(assessment);
+  requestAnimationFrame(focusHashTarget);
 }
 
 load();
