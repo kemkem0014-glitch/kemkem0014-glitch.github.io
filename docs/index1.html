@@ -35,11 +35,21 @@ const loading=document.getElementById('loading');
 const status=document.getElementById('status');
 const direct=document.getElementById('direct');
 direct.href=LATEST;
-function cacheBust(url){return `${url}?v=${Date.now()}`}
+function cacheBust(url){return `${url}${url.includes('?')?'&':'?'}v=${Date.now()}`}
 function showError(message){
   frame.classList.remove('ready');
   loading.classList.remove('hidden');
   loading.innerHTML=`<div class="error"><strong>${message}</strong><br>God Father V8が正常終了すると、最新のActor-First分析がここへ自動公開されます。<br><a href="${LATEST}" target="_blank" rel="noopener noreferrer">公開ストレージを直接確認</a></div>`;
+}
+async function fetchUtf8Html(url){
+  const response=await fetch(cacheBust(url),{cache:'no-store'});
+  if(!response.ok)throw new Error(`report HTTP ${response.status}`);
+  const buffer=await response.arrayBuffer();
+  const text=new TextDecoder('utf-8',{fatal:false}).decode(buffer);
+  if(!/<meta\s+charset=["']?utf-8/i.test(text)){
+    console.warn('V8 report has no explicit UTF-8 meta charset; viewer decoded bytes as UTF-8.');
+  }
+  return text;
 }
 async function loadLatest(){
   try{
@@ -52,11 +62,12 @@ async function loadLatest(){
 
     const reportUrl=data.latest_html||LATEST;
     direct.href=reportUrl;
+    const htmlText=await fetchUtf8Html(reportUrl);
     frame.addEventListener('load',()=>{
       frame.classList.add('ready');
       loading.classList.add('hidden');
     },{once:true});
-    frame.src=cacheBust(reportUrl);
+    frame.srcdoc=htmlText;
 
     setTimeout(()=>{
       if(!frame.classList.contains('ready'))showError('V8レポートの読み込みに時間がかかっています。');
