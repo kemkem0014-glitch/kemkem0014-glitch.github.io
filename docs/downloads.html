@@ -52,5 +52,8 @@ function renderLatest(m,a){latestEl.replaceChildren();updatedEl.textContent=`更
 function renderHistory(h,current){historyEl.replaceChildren();let n=0;for(const d of (h.dates||[])){if(String(d.report_date||"")===String(current||""))continue;const reports=d.reports||[];if(!reports.length)continue;const det=document.createElement("details"),sum=document.createElement("summary"),grid=document.createElement("div");sum.textContent=fmt(d.report_date);grid.className="history-grid";for(const r of reports){const card=document.createElement("div");card.className="card";const h3=document.createElement("h3");h3.textContent=r.display_name||r.report_type;const assessmentUrl=`${BASE}/archive/${d.report_date}/assessment/${r.report_type}.json`;card.append(h3,actions([["PDF",r.pdf_url,true],["Markdown",r.markdown_url,false],["評価JSON",assessmentUrl,false]]));grid.appendChild(card)}det.append(sum,grid);historyEl.appendChild(det);n++}if(!n)historyEl.innerHTML='<p class="muted">過去のレポートはまだありません。</p>'}
 (async()=>{try{const [m,h,x,a]=await Promise.all([get(URLS.manifest),get(URLS.history).catch(()=>({dates:[]})),get(URLS.assets).catch(()=>({})),get(URLS.assessment).catch(()=>({}))]);renderBrief(x);renderLatest(m,a);renderHistory(h,m.report_date);statusEl.textContent="公開済みファイルを一覧表示しています。"}catch(e){console.error(e);statusEl.className="status error";statusEl.textContent="公開ファイル一覧の取得に失敗しました。"}})();
 </script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"4002fd0c317c4358bb24d5d647032f7a"}'></script>
+<!-- End Cloudflare Web Analytics -->
 </body>
 </html>

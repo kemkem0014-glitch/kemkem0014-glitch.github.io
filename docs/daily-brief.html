@@ -22,5 +22,8 @@ async function fetchJson(url){const u=new URL(url);u.searchParams.set("_",Date.n
 async function main(){try{const params=new URLSearchParams(location.search);let src=allowedReportUrl(params.get("src"));let assets=null;if(!src){assets=await fetchJson(ASSETS);src=allowedReportUrl(assets?.daily_brief?.html)}if(!src)throw new Error("HTML URLがありません");if(!assets)assets=await fetchJson(ASSETS).catch(()=>null);const pdf=allowedReportUrl(assets?.daily_brief?.pdf);if(pdf){pdfLink.href=pdf;pdfLink.hidden=false}const html=await fetchText(src);frame.srcdoc=html;frame.hidden=false;statusEl.hidden=true}catch(e){console.error(e);statusEl.textContent="全体要約を表示できませんでした。PDF版をご利用ください。";try{const assets=await fetchJson(ASSETS);const pdf=allowedReportUrl(assets?.daily_brief?.pdf);if(pdf){pdfLink.href=pdf;pdfLink.hidden=false}}catch(_){}}}
 main();
 </script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"4002fd0c317c4358bb24d5d647032f7a"}'></script>
+<!-- End Cloudflare Web Analytics -->
 </body>
 </html>

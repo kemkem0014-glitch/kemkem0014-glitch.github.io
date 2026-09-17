@@ -45,4 +45,7 @@ function render(p,mode){$('overview').textContent=text(p.daily_overview_ja);$('e
 async function getJson(url){const r=await fetch(`${url}?_=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json()}
 async function fallback(){const r=await fetch(`${FALLBACK}?_=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(`fallback HTTP ${r.status}`);const b64=(await r.text()).trim(),raw=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));const stream=new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate'));return JSON.parse(await new Response(stream).text())}
 (async()=>{try{try{render(await getJson(LIVE_JSON),'live')}catch(e){console.warn('live V7 unavailable; using fallback',e);render(await fallback(),'fallback')}}catch(e){console.error(e);$('status').textContent='V7テスト結果を読み込めませんでした。';}})();
-</script></body></html>
+</script><!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"4002fd0c317c4358bb24d5d647032f7a"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body></html>
