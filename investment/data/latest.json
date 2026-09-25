@@ -1,0 +1,768 @@
+{
+  "meta": {
+    "schema_version": "dashboard-v0.1",
+    "mode": "demo",
+    "date": "2026/09/25",
+    "generated_at": "2026-09-25 13:00 JST",
+    "scope": "US × SPACE",
+    "note": "UI試作用データ。実運用時はInvestment-by-AIの各ステージ出力で置換する。"
+  },
+  "summary": [
+    {
+      "key": "military",
+      "label": "軍事",
+      "count": 6,
+      "text": "宇宙領域での政府需要と衛星能力への投資を監視。軍事宇宙ニュースは企業への契約波及まで追跡します。"
+    },
+    {
+      "key": "gnss",
+      "label": "GNSS / PNT",
+      "count": 4,
+      "text": "測位・航法・時刻、妨害耐性、代替PNTの動きを監視。技術動向と契約機会を企業単位に接続します。"
+    },
+    {
+      "key": "investment",
+      "label": "投資・企業",
+      "count": 9,
+      "text": "政府契約、SEC開示、株価、金利環境を統合し、材料の新規性と企業業績への寄与を評価します。"
+    }
+  ],
+  "pipeline": [
+    {
+      "id": "01",
+      "label": "News scraping専門分析",
+      "detail": "Space assessment",
+      "status": "ok"
+    },
+    {
+      "id": "02",
+      "label": "SEC開示",
+      "detail": "8-K / 10-Q / 10-K",
+      "status": "ok"
+    },
+    {
+      "id": "03",
+      "label": "米政府契約",
+      "detail": "USAspending",
+      "status": "ok"
+    },
+    {
+      "id": "04",
+      "label": "市場データ",
+      "detail": "3か月株価",
+      "status": "ok"
+    },
+    {
+      "id": "05",
+      "label": "マクロ",
+      "detail": "金利 / USDJPY / 指数",
+      "status": "ok"
+    },
+    {
+      "id": "10",
+      "label": "Sector Bundle",
+      "detail": "入力統合",
+      "status": "ok"
+    },
+    {
+      "id": "11",
+      "label": "AI分析",
+      "detail": "OSINT→Red Team",
+      "status": "warn"
+    }
+  ],
+  "private_companies": [
+    "SpaceX",
+    "Blue Origin"
+  ],
+  "companies": [
+    {
+      "id": "rocket_lab",
+      "name": "Rocket Lab",
+      "ticker": "RKLB",
+      "currency": "USD",
+      "price": 48.2,
+      "change_3m": 14.8,
+      "signal_7d": "positive",
+      "signal_1m": "mixed",
+      "confidence": 78,
+      "gate": "PASS",
+      "article_count": 5,
+      "reason": "政府系ミッションと打上げ・衛星システム案件の継続が材料。短期は受注ニュースの反応度を監視。",
+      "risks": [
+        "契約の売上計上時期が不透明",
+        "株価上昇後のバリュエーション負担",
+        "打上げスケジュール遅延"
+      ],
+      "evidence": [
+        {
+          "id": "assessment:space",
+          "label": "News scraping Space統合評価"
+        },
+        {
+          "id": "sec:RKLB:10-Q",
+          "label": "SEC四半期開示"
+        },
+        {
+          "id": "contract:usa:RKLB",
+          "label": "米政府契約"
+        }
+      ],
+      "audit": [
+        {
+          "role": "OSINT",
+          "summary": "政府需要と商業宇宙の両方で企業露出を確認。"
+        },
+        {
+          "role": "Fundamental",
+          "summary": "受注は追い風だが、利益寄与時期は要確認。"
+        },
+        {
+          "role": "Causal",
+          "summary": "event→backlog→revenue→valuation の経路をPASS判定。"
+        },
+        {
+          "role": "Bear",
+          "summary": "期待先行と執行リスクを反対材料として提示。"
+        },
+        {
+          "role": "Red Team",
+          "summary": "根拠IDの整合性を確認しPASS。"
+        }
+      ],
+      "prices": [
+        {
+          "date": "07/01",
+          "close": 41.9
+        },
+        {
+          "date": "07/08",
+          "close": 42.6
+        },
+        {
+          "date": "07/15",
+          "close": 40.8
+        },
+        {
+          "date": "07/22",
+          "close": 43.1
+        },
+        {
+          "date": "07/29",
+          "close": 44
+        },
+        {
+          "date": "08/05",
+          "close": 45.2
+        },
+        {
+          "date": "08/12",
+          "close": 44.6
+        },
+        {
+          "date": "08/19",
+          "close": 46.3
+        },
+        {
+          "date": "08/26",
+          "close": 47.1
+        },
+        {
+          "date": "09/02",
+          "close": 46.7
+        },
+        {
+          "date": "09/09",
+          "close": 47.8
+        },
+        {
+          "date": "09/16",
+          "close": 49
+        },
+        {
+          "date": "09/23",
+          "close": 48.2
+        }
+      ]
+    },
+    {
+      "id": "planet_labs",
+      "name": "Planet Labs",
+      "ticker": "PL",
+      "currency": "USD",
+      "price": 12.4,
+      "change_3m": 8.1,
+      "signal_7d": "positive",
+      "signal_1m": "positive",
+      "confidence": 73,
+      "gate": "PASS",
+      "article_count": 4,
+      "reason": "政府・防衛向け地球観測需要を材料視。契約増加が継続収益へつながるかを監視。",
+      "risks": [
+        "政府案件への依存",
+        "競争激化",
+        "高解像度衛星更新の資本負担"
+      ],
+      "evidence": [
+        {
+          "id": "assessment:space",
+          "label": "Space情勢分析"
+        },
+        {
+          "id": "sec:PL:10-Q",
+          "label": "SEC四半期開示"
+        },
+        {
+          "id": "contract:usa:PL",
+          "label": "米政府契約"
+        }
+      ],
+      "audit": [
+        {
+          "role": "OSINT",
+          "summary": "地球観測・防衛需要との整合を確認。"
+        },
+        {
+          "role": "Fundamental",
+          "summary": "契約残と継続収益の比率を重視。"
+        },
+        {
+          "role": "Causal",
+          "summary": "政府需要→利用増→売上寄与の経路を評価。"
+        },
+        {
+          "role": "Red Team",
+          "summary": "競合と予算変動を主要反証条件に設定。"
+        }
+      ],
+      "prices": [
+        {
+          "date": "07/01",
+          "close": 11.5
+        },
+        {
+          "date": "07/08",
+          "close": 11.8
+        },
+        {
+          "date": "07/15",
+          "close": 11.3
+        },
+        {
+          "date": "07/22",
+          "close": 11.9
+        },
+        {
+          "date": "07/29",
+          "close": 12.2
+        },
+        {
+          "date": "08/05",
+          "close": 12
+        },
+        {
+          "date": "08/12",
+          "close": 12.7
+        },
+        {
+          "date": "08/19",
+          "close": 12.6
+        },
+        {
+          "date": "08/26",
+          "close": 12.9
+        },
+        {
+          "date": "09/02",
+          "close": 12.5
+        },
+        {
+          "date": "09/09",
+          "close": 12.8
+        },
+        {
+          "date": "09/16",
+          "close": 12.1
+        },
+        {
+          "date": "09/23",
+          "close": 12.4
+        }
+      ]
+    },
+    {
+      "id": "redwire",
+      "name": "Redwire",
+      "ticker": "RDW",
+      "currency": "USD",
+      "price": 15.7,
+      "change_3m": -4.6,
+      "signal_7d": "mixed",
+      "signal_1m": "positive",
+      "confidence": 66,
+      "gate": "UNKNOWN",
+      "article_count": 3,
+      "reason": "宇宙インフラ案件は追い風だが、短期株価には既存期待と収益性の不確実性が混在。",
+      "risks": [
+        "利益率の変動",
+        "案件進捗の遅延",
+        "統合コスト"
+      ],
+      "evidence": [
+        {
+          "id": "assessment:space",
+          "label": "Space統合評価"
+        },
+        {
+          "id": "sec:RDW:10-Q",
+          "label": "SEC四半期開示"
+        }
+      ],
+      "audit": [
+        {
+          "role": "OSINT",
+          "summary": "宇宙インフラ関連イベントを確認。"
+        },
+        {
+          "role": "Fundamental",
+          "summary": "売上成長に対し収益性の確認が必要。"
+        },
+        {
+          "role": "Causal",
+          "summary": "priced_in判定がUNKNOWNのため最終GateはUNKNOWN。"
+        }
+      ],
+      "prices": [
+        {
+          "date": "07/01",
+          "close": 16.5
+        },
+        {
+          "date": "07/08",
+          "close": 16.8
+        },
+        {
+          "date": "07/15",
+          "close": 16.2
+        },
+        {
+          "date": "07/22",
+          "close": 15.9
+        },
+        {
+          "date": "07/29",
+          "close": 16
+        },
+        {
+          "date": "08/05",
+          "close": 15.6
+        },
+        {
+          "date": "08/12",
+          "close": 15.8
+        },
+        {
+          "date": "08/19",
+          "close": 15.4
+        },
+        {
+          "date": "08/26",
+          "close": 15.2
+        },
+        {
+          "date": "09/02",
+          "close": 15.9
+        },
+        {
+          "date": "09/09",
+          "close": 15.5
+        },
+        {
+          "date": "09/16",
+          "close": 15.3
+        },
+        {
+          "date": "09/23",
+          "close": 15.7
+        }
+      ]
+    },
+    {
+      "id": "ast_spacemobile",
+      "name": "AST SpaceMobile",
+      "ticker": "ASTS",
+      "currency": "USD",
+      "price": 74.6,
+      "change_3m": 21.3,
+      "signal_7d": "mixed",
+      "signal_1m": "positive",
+      "confidence": 64,
+      "gate": "UNKNOWN",
+      "article_count": 4,
+      "reason": "衛星直接通信の展開進展を評価。一方、期待先行度と商用化スケジュールが短期変動要因。",
+      "risks": [
+        "期待先行の株価",
+        "商用化遅延",
+        "資金調達リスク"
+      ],
+      "evidence": [
+        {
+          "id": "assessment:space",
+          "label": "Space通信関連分析"
+        },
+        {
+          "id": "sec:ASTS:10-Q",
+          "label": "SEC四半期開示"
+        }
+      ],
+      "audit": [
+        {
+          "role": "OSINT",
+          "summary": "direct-to-device関連イベントを確認。"
+        },
+        {
+          "role": "Bull",
+          "summary": "商用展開加速を上振れ要因として整理。"
+        },
+        {
+          "role": "Bear",
+          "summary": "資本負担と商用化時期を下振れ要因として整理。"
+        },
+        {
+          "role": "Red Team",
+          "summary": "priced-inの評価不足を指摘。"
+        }
+      ],
+      "prices": [
+        {
+          "date": "07/01",
+          "close": 61.5
+        },
+        {
+          "date": "07/08",
+          "close": 63.2
+        },
+        {
+          "date": "07/15",
+          "close": 65.8
+        },
+        {
+          "date": "07/22",
+          "close": 64.9
+        },
+        {
+          "date": "07/29",
+          "close": 68
+        },
+        {
+          "date": "08/05",
+          "close": 70.2
+        },
+        {
+          "date": "08/12",
+          "close": 69.5
+        },
+        {
+          "date": "08/19",
+          "close": 72.1
+        },
+        {
+          "date": "08/26",
+          "close": 73.4
+        },
+        {
+          "date": "09/02",
+          "close": 76
+        },
+        {
+          "date": "09/09",
+          "close": 75.1
+        },
+        {
+          "date": "09/16",
+          "close": 73.9
+        },
+        {
+          "date": "09/23",
+          "close": 74.6
+        }
+      ]
+    },
+    {
+      "id": "intuitive_machines",
+      "name": "Intuitive Machines",
+      "ticker": "LUNR",
+      "currency": "USD",
+      "price": 10.8,
+      "change_3m": -7.7,
+      "signal_7d": "neutral",
+      "signal_1m": "mixed",
+      "confidence": 59,
+      "gate": "UNKNOWN",
+      "article_count": 2,
+      "reason": "月面案件の将来受注余地はあるが、短期はミッション進捗と契約タイミングへの依存が大きい。",
+      "risks": [
+        "ミッション失敗リスク",
+        "契約タイミングの不確実性",
+        "売上の案件集中"
+      ],
+      "evidence": [
+        {
+          "id": "assessment:space",
+          "label": "月・宇宙探査関連分析"
+        },
+        {
+          "id": "sec:LUNR:10-Q",
+          "label": "SEC四半期開示"
+        }
+      ],
+      "audit": [
+        {
+          "role": "OSINT",
+          "summary": "月面インフラ関連ニュースを確認。"
+        },
+        {
+          "role": "Fundamental",
+          "summary": "案件集中度が高く、継続性の検証が必要。"
+        },
+        {
+          "role": "Causal",
+          "summary": "キャッシュフローへの伝播がUNKNOWN。"
+        }
+      ],
+      "prices": [
+        {
+          "date": "07/01",
+          "close": 11.7
+        },
+        {
+          "date": "07/08",
+          "close": 11.9
+        },
+        {
+          "date": "07/15",
+          "close": 11.2
+        },
+        {
+          "date": "07/22",
+          "close": 11.5
+        },
+        {
+          "date": "07/29",
+          "close": 11.1
+        },
+        {
+          "date": "08/05",
+          "close": 10.9
+        },
+        {
+          "date": "08/12",
+          "close": 11.4
+        },
+        {
+          "date": "08/19",
+          "close": 10.8
+        },
+        {
+          "date": "08/26",
+          "close": 10.6
+        },
+        {
+          "date": "09/02",
+          "close": 10.9
+        },
+        {
+          "date": "09/09",
+          "close": 10.7
+        },
+        {
+          "date": "09/16",
+          "close": 10.5
+        },
+        {
+          "date": "09/23",
+          "close": 10.8
+        }
+      ]
+    },
+    {
+      "id": "blacksky",
+      "name": "BlackSky",
+      "ticker": "BKSY",
+      "currency": "USD",
+      "price": 22.1,
+      "change_3m": 5.4,
+      "signal_7d": "positive",
+      "signal_1m": "mixed",
+      "confidence": 68,
+      "gate": "PASS",
+      "article_count": 3,
+      "reason": "政府向け地理空間インテリジェンス需要が支援材料。契約継続性と収益化を重点監視。",
+      "risks": [
+        "政府予算への依存",
+        "競合増加",
+        "衛星更新投資"
+      ],
+      "evidence": [
+        {
+          "id": "assessment:space",
+          "label": "ISR・地球観測分析"
+        },
+        {
+          "id": "contract:usa:BKSY",
+          "label": "米政府契約"
+        },
+        {
+          "id": "sec:BKSY:10-Q",
+          "label": "SEC四半期開示"
+        }
+      ],
+      "audit": [
+        {
+          "role": "OSINT",
+          "summary": "ISR需要との直接的な関連を確認。"
+        },
+        {
+          "role": "Fundamental",
+          "summary": "政府案件の受注継続を評価。"
+        },
+        {
+          "role": "Causal",
+          "summary": "契約→売上→評価の経路をPASS。"
+        },
+        {
+          "role": "Red Team",
+          "summary": "契約更新停止を主要反証条件に設定。"
+        }
+      ],
+      "prices": [
+        {
+          "date": "07/01",
+          "close": 21
+        },
+        {
+          "date": "07/08",
+          "close": 20.6
+        },
+        {
+          "date": "07/15",
+          "close": 21.3
+        },
+        {
+          "date": "07/22",
+          "close": 21.7
+        },
+        {
+          "date": "07/29",
+          "close": 21.4
+        },
+        {
+          "date": "08/05",
+          "close": 21.9
+        },
+        {
+          "date": "08/12",
+          "close": 22.5
+        },
+        {
+          "date": "08/19",
+          "close": 22
+        },
+        {
+          "date": "08/26",
+          "close": 22.4
+        },
+        {
+          "date": "09/02",
+          "close": 21.8
+        },
+        {
+          "date": "09/09",
+          "close": 22.2
+        },
+        {
+          "date": "09/16",
+          "close": 22.5
+        },
+        {
+          "date": "09/23",
+          "close": 22.1
+        }
+      ]
+    }
+  ],
+  "news": [
+    {
+      "category": "military",
+      "category_label": "軍事",
+      "source": "Space specialist analysis",
+      "date": "09/25",
+      "title": "米軍宇宙関連需要を注視",
+      "summary": "政府需要の継続が宇宙インフラ・ISR・打上げ企業の受注環境に与える影響を追跡。",
+      "company": ""
+    },
+    {
+      "category": "gnss",
+      "category_label": "GNSS/PNT",
+      "source": "GNSS analysis",
+      "date": "09/25",
+      "title": "代替PNT・妨害耐性への関心が継続",
+      "summary": "GNSS妨害・スプーフィング耐性、LEO-PNTや補完技術の需要拡大可能性を監視。",
+      "company": ""
+    },
+    {
+      "category": "investment",
+      "category_label": "投資",
+      "source": "SEC / Contracts",
+      "date": "09/25",
+      "title": "政府契約と企業開示を投資材料として統合",
+      "summary": "単発ニュースではなく、契約額・開示・株価・マクロを同じ企業単位で評価する。",
+      "company": "Rocket Lab"
+    },
+    {
+      "category": "investment",
+      "category_label": "投資",
+      "source": "Market",
+      "date": "09/25",
+      "title": "宇宙株の3か月モメンタムに差",
+      "summary": "上昇銘柄でも期待先行度を分離し、AIシグナルと価格モメンタムを別々に表示。",
+      "company": "AST SpaceMobile"
+    },
+    {
+      "category": "military",
+      "category_label": "軍事",
+      "source": "News scraping",
+      "date": "09/24",
+      "title": "宇宙ISR需要と民間地球観測企業の接点を評価",
+      "summary": "政府・防衛需要が商用地球観測企業の契約機会へ波及する経路を確認。",
+      "company": "Planet Labs"
+    },
+    {
+      "category": "investment",
+      "category_label": "投資",
+      "source": "Fundamental",
+      "date": "09/24",
+      "title": "Redwireは収益性確認を優先",
+      "summary": "売上成長材料だけでなく、利益率・案件統合コストを反対材料として併記。",
+      "company": "Redwire"
+    },
+    {
+      "category": "gnss",
+      "category_label": "GNSS/PNT",
+      "source": "News scraping",
+      "date": "09/24",
+      "title": "測位・時刻インフラの冗長性を継続監視",
+      "summary": "GNSSに依存するシステムの代替時刻・航法技術の商用需要を確認する。",
+      "company": ""
+    },
+    {
+      "category": "investment",
+      "category_label": "投資",
+      "source": "Red Team",
+      "date": "09/23",
+      "title": "ニュース材料と株価織り込みを分離",
+      "summary": "強いニュースでも既に価格へ反映済みなら、短期シグナルを自動的に強気へしない。",
+      "company": ""
+    }
+  ]
+}
