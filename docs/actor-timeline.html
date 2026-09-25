@@ -106,10 +106,12 @@ function mitreUrl(ref){const v=String(ref||"");let m=v.match(/^MITRE:(G\d{4})$/i
 function nvdUrl(ref){const m=String(ref||"").match(/(?:NVD:)?(CVE-\d{4}-\d{4,7})/i);return m?"https://nvd.nist.gov/vuln/detail/"+m[1].toUpperCase():""}
 function evidenceAnchor(ref){const value=String(ref||"").trim();if(!value)return document.createTextNode("");const a=document.createElement("a");a.className="chip ref link";a.textContent=value;const internal=(value.startsWith("NEWS:")||value.startsWith("STATE:")||value.startsWith("NVD:"));if(internal){a.href="#"+evidenceId(value);a.addEventListener("click",()=>{const target=document.getElementById(evidenceId(value));if(target){target.open=true;setTimeout(()=>target.scrollIntoView({behavior:"smooth",block:"center"}),0)}})}else{const url=mitreUrl(value)||nvdUrl(value);if(url){a.href=url;a.target="_blank";a.rel="noopener noreferrer"}else a.href="#"+evidenceId(value)}return a}
 function evidenceChips(values){const wrap=document.createElement("div");wrap.className="chips";for(const value of (Array.isArray(values)?values:[])){if(String(value||"").trim())wrap.appendChild(evidenceAnchor(value))}return wrap}
+function linkedEvidenceText(value){const frag=document.createDocumentFragment();const s=String(value??"");const re=/(NEWS:A\d+|STATE:S\d+|NVD:CVE-\d{4}-\d{4,7}|MITRE:(?:G\d{4}|T\d{4}(?:\.\d{3})?)|\bT\d{4}(?:\.\d{3})?\b)/gi;let last=0,m;while((m=re.exec(s))){if(m.index>last)frag.appendChild(document.createTextNode(s.slice(last,m.index)));const raw=m[0],upper=raw.toUpperCase();if(/^T\d{4}/.test(upper)){const parts=upper.split(".");const a=document.createElement("a");a.href="https://attack.mitre.org/techniques/"+parts[0]+"/"+(parts[1]?parts[1]+"/":"");a.target="_blank";a.rel="noopener noreferrer";a.textContent=raw;a.className="inline-link";frag.appendChild(a)}else{const a=evidenceAnchor(raw);a.classList.add("inline-link");frag.appendChild(a)}last=m.index+raw.length}if(last<s.length)frag.appendChild(document.createTextNode(s.slice(last)));return frag}
+function setLinkedText(el,value,fallback="—"){el.replaceChildren();const s=String(value??"").trim();el.appendChild(linkedEvidenceText(s||fallback))}
 function ttpChips(values){const wrap=document.createElement("div");wrap.className="chips";for(const value of (Array.isArray(values)?values:[])){const v=String(value||"").trim();if(!v)continue;const a=document.createElement("a");a.className="chip link";a.textContent=v;const m=v.match(/^(T\d{4})(?:\.(\d{3}))?$/i);if(m){a.href="https://attack.mitre.org/techniques/"+m[1].toUpperCase()+"/"+(m[2]?m[2]+"/":"");a.target="_blank";a.rel="noopener noreferrer"}else a.href="#";wrap.appendChild(a)}return wrap}
-function evidenceBox(label,content){const box=document.createElement("div");box.className="evidence-box";const b=document.createElement("b");b.textContent=label;box.appendChild(b);if(content instanceof Node)box.appendChild(content);else{const p=document.createElement("div");p.className="evidence-text";p.textContent=text(content,"記載なし");box.appendChild(p)}return box}
+function evidenceBox(label,content){const box=document.createElement("div");box.className="evidence-box";const b=document.createElement("b");b.textContent=label;box.appendChild(b);if(content instanceof Node)box.appendChild(content);else{const p=document.createElement("div");p.className="evidence-text";setLinkedText(p,content,"記載なし");box.appendChild(p)}return box}
 function evidenceDetails(items){const d=document.createElement("details");d.className="evidence";const s=document.createElement("summary");s.textContent="判断根拠を見る";d.appendChild(s);const body=document.createElement("div");body.className="evidence-body";const grid=document.createElement("div");grid.className="evidence-grid";if(currentAnalysisMethods.length)grid.appendChild(evidenceBox("分析手法",chips(currentAnalysisMethods)));for(const item of items){if(!item)continue;grid.appendChild(evidenceBox(item.label,item.node||item.value))}body.appendChild(grid);d.appendChild(body);return d}
-function miniCard(title,meta,body,url,evidenceItems=[]){const box=document.createElement("div");box.className="mini";const head=document.createElement("div");head.className="mini-head";const t=document.createElement("div");t.className="mini-title";if(url){const a=document.createElement("a");a.href=url;a.target="_blank";a.rel="noopener noreferrer";a.textContent=title;head.appendChild(a)}else{t.textContent=title;head.appendChild(t)}if(meta.badge)head.appendChild(badge(meta.badge));box.appendChild(head);const m=document.createElement("div");m.className="meta";if(meta.source)m.appendChild(document.createTextNode(meta.source));if(meta.ref){if(m.childNodes.length)m.appendChild(document.createTextNode(" · "));m.appendChild(evidenceAnchor(meta.ref))}if(meta.extra){if(m.childNodes.length)m.appendChild(document.createTextNode(" · "));m.appendChild(document.createTextNode(meta.extra))}box.appendChild(m);if(body){const p=document.createElement("p");p.textContent=body;box.appendChild(p)}if(evidenceItems.length)box.appendChild(evidenceDetails(evidenceItems));return box}
+function miniCard(title,meta,body,url,evidenceItems=[]){const box=document.createElement("div");box.className="mini";const head=document.createElement("div");head.className="mini-head";const t=document.createElement("div");t.className="mini-title";if(url){const a=document.createElement("a");a.href=url;a.target="_blank";a.rel="noopener noreferrer";a.textContent=title;head.appendChild(a)}else{t.textContent=title;head.appendChild(t)}if(meta.badge)head.appendChild(badge(meta.badge));box.appendChild(head);const m=document.createElement("div");m.className="meta";if(meta.source)m.appendChild(document.createTextNode(meta.source));if(meta.ref){if(m.childNodes.length)m.appendChild(document.createTextNode(" · "));m.appendChild(evidenceAnchor(meta.ref))}if(meta.extra){if(m.childNodes.length)m.appendChild(document.createTextNode(" · "));m.appendChild(document.createTextNode(meta.extra))}box.appendChild(m);if(body){const p=document.createElement("p");setLinkedText(p,body);box.appendChild(p)}if(evidenceItems.length)box.appendChild(evidenceDetails(evidenceItems));return box}
 function setRiskColors(threat,intent){
   const tc=$("threatCard"),ic=$("intentCard");
   tc.className="kpi";
@@ -127,12 +129,12 @@ function renderAssessment(a){
   if(methods.length)currentAnalysisMethods=methods;
   const intentLikelihood=a.intent_to_japan&&a.intent_to_japan.likelihood;
   $("threat").textContent=text(a.overall_actor_threat)+"/5";$("activity").textContent=text(a.activity_status);$("intent").textContent=text(intentLikelihood);$("confidence").textContent=text(a.confidence);setRiskColors(a.overall_actor_threat,intentLikelihood);
-  $("analysisTitle").textContent=text(a.canonical_name)+" / V8分析";$("dailySummary").textContent=text(a.daily_summary_ja);$("threatJudgment").textContent=text(a.threat_judgment_ja);
+  $("analysisTitle").textContent=text(a.canonical_name)+" / V8分析";setLinkedText($("dailySummary"),a.daily_summary_ja);setLinkedText($("threatJudgment"),a.threat_judgment_ja);
   const sc=a.state_sponsor_context||{},sr=$("sponsorContext");sr.replaceChildren();
   if(sc&&Object.keys(sc).length){
     const head=document.createElement("div");head.className="mini";
     const ht=document.createElement("div");ht.className="mini-title";ht.textContent=[text(sc.sponsor_country,"支援国家不明"),text(sc.sponsor_org,"")].filter(Boolean).join(" / ");head.appendChild(ht);
-    const p1=document.createElement("p");p1.textContent=text(sc.strategic_context_ja,"戦略情勢の評価なし");head.appendChild(p1);
+    const p1=document.createElement("p");setLinkedText(p1,sc.strategic_context_ja,"戦略情勢の評価なし");head.appendChild(p1);
     head.appendChild(evidenceDetails([
       {label:"Actorとの結び付き",value:sc.actor_linkage_ja},
       {label:"日本への含意",value:sc.japan_implications_ja},
@@ -194,7 +196,7 @@ function renderAssessment(a){
     ))
   }
 
-  const intent=a.intent_to_japan||{},id=$("intentDetail");id.replaceChildren();setLargeRating("intentRating",intent.likelihood);const ip=document.createElement("p");ip.textContent=text(intent.judgment_ja);id.appendChild(ip);
+  const intent=a.intent_to_japan||{},id=$("intentDetail");id.replaceChildren();setLargeRating("intentRating",intent.likelihood);const ip=document.createElement("p");setLinkedText(ip,intent.judgment_ja);id.appendChild(ip);
   id.appendChild(evidenceDetails([
     {label:"判断",value:intent.judgment_ja},
     {label:"Drivers",node:chips(intent.drivers)},
@@ -203,7 +205,7 @@ function renderAssessment(a){
     {label:"Confidence",value:intent.confidence}
   ]));
 
-  const j=a.japan_scenario||{},jr=$("japanScenario");jr.replaceChildren();setLargeRating("japanRating",j.applicability);const jp=document.createElement("p");jp.textContent=text(j.scenario_ja);jr.appendChild(jp);
+  const j=a.japan_scenario||{},jr=$("japanScenario");jr.replaceChildren();setLargeRating("japanRating",j.applicability);const jp=document.createElement("p");setLinkedText(jp,j.scenario_ja);jr.appendChild(jp);
   jr.appendChild(evidenceDetails([
     {label:"判断理由",value:j.rationale_ja},
     {label:"高レベル経路",node:chips(j.high_level_pathway_ja)},
@@ -221,14 +223,14 @@ function renderAssessment(a){
     const head=document.createElement("div");head.className="audit-step-head";
     const method=document.createElement("div");method.className="audit-method";method.textContent=String(step.step||"")+"．"+text(step.method);
     head.appendChild(method);head.appendChild(badge(step.confidence));
-    const q=document.createElement("div");q.className="audit-q";q.textContent=text(step.question_ja);
-    const result=document.createElement("div");result.className="audit-result";result.textContent=text(step.finding_ja);
-    const impact=document.createElement("div");impact.className="audit-impact";impact.textContent="判断への影響： "+text(step.impact_on_judgment_ja);
+    const q=document.createElement("div");q.className="audit-q";setLinkedText(q,step.question_ja);
+    const result=document.createElement("div");result.className="audit-result";setLinkedText(result,step.finding_ja);
+    const impact=document.createElement("div");impact.className="audit-impact";impact.appendChild(document.createTextNode("判断への影響： "));impact.appendChild(linkedEvidenceText(text(step.impact_on_judgment_ja)));
     box.append(head,q,result,impact);
     if(Array.isArray(step.evidence_refs)&&step.evidence_refs.length){const lab=document.createElement("div");lab.className="section-label";lab.textContent="Evidence";box.append(lab,evidenceChips(step.evidence_refs))}
     auditRoot.appendChild(box);
   }
-  $("mostLikely").textContent=text(a.most_likely_72h_ja);$("mostDangerous").textContent=text(a.most_dangerous_72h_ja);mitreLinkedList($("watchIndicators"),a.watch_indicators);list($("intelGaps"),a.intelligence_gaps);
+  setLinkedText($("mostLikely"),a.most_likely_72h_ja);setLinkedText($("mostDangerous"),a.most_dangerous_72h_ja);mitreLinkedList($("watchIndicators"),a.watch_indicators);list($("intelGaps"),a.intelligence_gaps);
 }
 function collectRefs(a){return [...(a.related_events||[]).flatMap(x=>x&&x.evidence_ref?[x.evidence_ref]:[]),...(a.new_vulnerability_matches||[]).flatMap(x=>x&&Array.isArray(x.evidence_refs)?x.evidence_refs:[]),...((a.state_sponsor_context&&Array.isArray(a.state_sponsor_context.evidence_refs))?a.state_sponsor_context.evidence_refs:[]),...((a.intent_to_japan&&Array.isArray(a.intent_to_japan.evidence_refs))?a.intent_to_japan.evidence_refs:[]),...(Array.isArray(a.analysis_audit_log)?a.analysis_audit_log.flatMap(x=>Array.isArray(x&&x.evidence_refs)?x.evidence_refs:[]):[])].filter((v,i,arr)=>v&&arr.indexOf(v)===i)}
 function buildEvidenceIndex(input){evidenceIndex={};if(!input||typeof input!=="object")return;for(const n of (input.daily_news_candidates||[])){if(n&&n.evidence_ref)evidenceIndex[n.evidence_ref]=n}for(const n of (input.state_context_candidates||[])){if(n&&n.evidence_ref)evidenceIndex[n.evidence_ref]=n}const vi=input.daily_vulnerability_intelligence||{};for(const n of (vi.published_today||[])){if(n&&n.evidence_ref)evidenceIndex[n.evidence_ref]=n}for(const n of (vi.ttp_compatible_candidates||[])){if(n&&n.evidence_ref)evidenceIndex[n.evidence_ref]={...(evidenceIndex[n.evidence_ref]||{}),...n}}}
