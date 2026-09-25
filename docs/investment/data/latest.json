@@ -1,11 +1,11 @@
 {
   "meta": {
-    "schema_version": "dashboard-v0.1",
+    "schema_version": "dashboard-v0.2",
     "mode": "demo",
     "date": "2026/09/25",
     "generated_at": "2026-09-25 13:00 JST",
     "scope": "US × SPACE",
-    "note": "UI試作用データ。実運用時はInvestment-by-AIの各ステージ出力で置換する。"
+    "note": "UI試作用DEMOデータ。7日競合仮説はACH表示確認用の仮データであり、実分析結果ではない。"
   },
   "summary": [
     {
@@ -183,6 +183,39 @@
           "date": "09/23",
           "close": 48.2
         }
+      ],
+      "probabilities_7d": {
+        "up": 58,
+        "flat": 27,
+        "down": 15
+      },
+      "probability_method": "weighted_ach_softmax_v0.1",
+      "probability_calibrated": false,
+      "ach_matrix": [
+        {
+          "evidence_id": "assessment:space",
+          "weight": 3,
+          "up": 2,
+          "flat": 0,
+          "down": -1,
+          "rationale": "政府宇宙需要の継続は受注機会の増加と整合する。"
+        },
+        {
+          "evidence_id": "sec:RKLB:10-Q",
+          "weight": 2,
+          "up": 1,
+          "flat": 0,
+          "down": -1,
+          "rationale": "事業進捗は上向き仮説を支えるが、収益化時期には不確実性が残る。"
+        },
+        {
+          "evidence_id": "contract:usa:RKLB",
+          "weight": 3,
+          "up": 2,
+          "flat": -1,
+          "down": -2,
+          "rationale": "新規政府契約は上向き仮説への識別力が高い。"
+        }
       ]
     },
     {
@@ -288,6 +321,39 @@
           "date": "09/23",
           "close": 12.4
         }
+      ],
+      "probabilities_7d": {
+        "up": 55,
+        "flat": 29,
+        "down": 16
+      },
+      "probability_method": "weighted_ach_softmax_v0.1",
+      "probability_calibrated": false,
+      "ach_matrix": [
+        {
+          "evidence_id": "assessment:space",
+          "weight": 2,
+          "up": 2,
+          "flat": 0,
+          "down": -1,
+          "rationale": "地球観測需要の拡大は上昇仮説と整合。"
+        },
+        {
+          "evidence_id": "sec:PL:10-Q",
+          "weight": 2,
+          "up": 1,
+          "flat": 1,
+          "down": -1,
+          "rationale": "継続収益は下支え要因だが短期価格反応は限定され得る。"
+        },
+        {
+          "evidence_id": "contract:usa:PL",
+          "weight": 3,
+          "up": 2,
+          "flat": -1,
+          "down": -2,
+          "rationale": "政府案件は上昇仮説を強く支持。"
+        }
       ]
     },
     {
@@ -384,6 +450,31 @@
         {
           "date": "09/23",
           "close": 15.7
+        }
+      ],
+      "probabilities_7d": {
+        "up": 34,
+        "flat": 41,
+        "down": 25
+      },
+      "probability_method": "weighted_ach_softmax_v0.1",
+      "probability_calibrated": false,
+      "ach_matrix": [
+        {
+          "evidence_id": "assessment:space",
+          "weight": 2,
+          "up": 1,
+          "flat": 1,
+          "down": 0,
+          "rationale": "宇宙インフラ需要は追い風だが短期価格への識別力は限定的。"
+        },
+        {
+          "evidence_id": "sec:RDW:10-Q",
+          "weight": 3,
+          "up": 0,
+          "flat": 1,
+          "down": 1,
+          "rationale": "収益性と統合コストの不確実性が上昇仮説を弱める。"
         }
       ]
     },
@@ -486,6 +577,31 @@
           "date": "09/23",
           "close": 74.6
         }
+      ],
+      "probabilities_7d": {
+        "up": 43,
+        "flat": 32,
+        "down": 25
+      },
+      "probability_method": "weighted_ach_softmax_v0.1",
+      "probability_calibrated": false,
+      "ach_matrix": [
+        {
+          "evidence_id": "assessment:space",
+          "weight": 2,
+          "up": 2,
+          "flat": 0,
+          "down": -1,
+          "rationale": "直接通信の展開進展は上昇仮説と整合。"
+        },
+        {
+          "evidence_id": "sec:ASTS:10-Q",
+          "weight": 3,
+          "up": 0,
+          "flat": 1,
+          "down": 1,
+          "rationale": "商用化時期と資本負担が短期上昇の反証材料。"
+        }
       ]
     },
     {
@@ -582,6 +698,31 @@
         {
           "date": "09/23",
           "close": 10.8
+        }
+      ],
+      "probabilities_7d": {
+        "up": 28,
+        "flat": 39,
+        "down": 33
+      },
+      "probability_method": "weighted_ach_softmax_v0.1",
+      "probability_calibrated": false,
+      "ach_matrix": [
+        {
+          "evidence_id": "assessment:space",
+          "weight": 2,
+          "up": 1,
+          "flat": 1,
+          "down": 0,
+          "rationale": "月面需要は長期材料だが短期株価には中立寄り。"
+        },
+        {
+          "evidence_id": "sec:LUNR:10-Q",
+          "weight": 3,
+          "up": -1,
+          "flat": 1,
+          "down": 2,
+          "rationale": "案件集中とミッション依存が下落仮説への整合性を高める。"
         }
       ]
     },
@@ -688,6 +829,39 @@
           "date": "09/23",
           "close": 22.1
         }
+      ],
+      "probabilities_7d": {
+        "up": 52,
+        "flat": 31,
+        "down": 17
+      },
+      "probability_method": "weighted_ach_softmax_v0.1",
+      "probability_calibrated": false,
+      "ach_matrix": [
+        {
+          "evidence_id": "assessment:space",
+          "weight": 2,
+          "up": 2,
+          "flat": 0,
+          "down": -1,
+          "rationale": "ISR需要は事業需要と直接整合する。"
+        },
+        {
+          "evidence_id": "contract:usa:BKSY",
+          "weight": 3,
+          "up": 2,
+          "flat": -1,
+          "down": -2,
+          "rationale": "政府契約は上昇仮説を強く支持。"
+        },
+        {
+          "evidence_id": "sec:BKSY:10-Q",
+          "weight": 2,
+          "up": 1,
+          "flat": 1,
+          "down": -1,
+          "rationale": "開示は上向きだが契約継続性の確認が必要。"
+        }
       ]
     }
   ],
@@ -725,7 +899,7 @@
       "source": "Market",
       "date": "09/25",
       "title": "宇宙株の3か月モメンタムに差",
-      "summary": "上昇銘柄でも期待先行度を分離し、AIシグナルと価格モメンタムを別々に表示。",
+      "summary": "上昇銘柄でも期待先行度を分離し、ACH競合仮説と価格モメンタムを別々に表示。",
       "company": "AST SpaceMobile"
     },
     {
