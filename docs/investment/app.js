@@ -350,8 +350,8 @@ function renderPipeline() {
   `;
 
   const mode = state.data?.meta?.mode || "unknown";
-  const modeLabel = mode === "demo" ? "DEMO DATA" : "LIVE";
-  const modeClass = mode === "demo" ? "warn" : "ok";
+  const modeLabel = mode === "demo" ? "DEMO DATA" : mode === "trial" ? "LIVE TRIAL" : "LIVE";
+  const modeClass = mode === "demo" || mode === "trial" ? "warn" : "ok";
   $("#heroStatus").innerHTML = `
     <span class="status-badge ${modeClass}">${modeLabel}</span>
     <span class="status-badge">US × SPACE</span>
