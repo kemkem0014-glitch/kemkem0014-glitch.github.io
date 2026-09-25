@@ -154,13 +154,35 @@ button{color:inherit}
 .price strong{display:block;color:var(--ink);font-size:.92rem}
 .price span{font-size:.7rem;font-weight:900}
 .pos{color:var(--positive)!important}.neg{color:var(--negative)!important}.mix{color:var(--mixed)!important}
-.spark-wrap{height:90px;margin:7px 0 3px}
+.spark-wrap{height:132px;margin:7px 0 3px}
 .sparkline{width:100%;height:100%;overflow:visible}
+.chart-label,.chart-date,.chart-value{font-family:inherit;fill:#75879a}
+.chart-label{font-size:9px}
+.chart-date{font-size:9px}
+.chart-value{font-size:9px;font-weight:800;fill:#40546d}
+.chart-summary{display:flex;justify-content:space-between;gap:8px;margin:1px 0 10px;font-size:.62rem;color:var(--muted)}
+.drawer-chart{height:160px}
 .company-reason{font-size:.78rem;line-height:1.5;min-height:3.6em;margin:7px 0 10px;color:#5c7187}
 .signal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .signal-cell{border-radius:8px;background:#f1f5f9;padding:7px;text-align:center}
 .signal-cell span{display:block;font-size:.61rem;color:var(--muted);margin-bottom:2px}
 .signal-cell b{font-size:.72rem;color:var(--ink)}
+.probability-title{margin:8px 0 7px;font-size:.7rem;font-weight:900;color:var(--ink)}
+.probability-title small{font-size:.58rem;color:var(--muted);font-weight:700}
+.hypothesis-bars{display:grid;gap:8px}
+.hypothesis-row{display:grid;grid-template-columns:72px minmax(90px,1fr) 50px;gap:8px;align-items:center}
+.hypothesis-label{font-size:.7rem;font-weight:800;color:#526a81}
+.hypothesis-track{height:10px;border-radius:999px;background:#edf2f6;overflow:hidden}
+.hypothesis-track i{display:block;height:100%;border-radius:999px}
+.hypothesis-track i.up{background:#3f9072}
+.hypothesis-track i.flat{background:#d2a340}
+.hypothesis-track i.down{background:#c36565}
+.hypothesis-row b{text-align:right;font-size:.72rem;color:var(--ink)}
+.hypothesis-bars.compact{gap:5px}
+.hypothesis-bars.compact .hypothesis-row{grid-template-columns:62px minmax(70px,1fr) 45px}
+.hypothesis-bars.compact .hypothesis-track{height:7px}
+.probability-panel{border:1px solid var(--line);border-radius:12px;padding:12px;margin:12px 0;background:#fbfdff}
+.probability-method{font-size:.61rem;color:var(--muted);margin-top:9px;line-height:1.45}
 .card-foot{display:flex;align-items:center;justify-content:space-between;gap:9px;border-top:1px solid var(--line-2);padding-top:10px;margin-top:10px}
 .card-foot span{font-size:.66rem;color:var(--muted)}
 .card-foot button{border:0;background:transparent;color:var(--blue);font-size:.68rem;font-weight:900;cursor:pointer;padding:0}
@@ -210,7 +232,22 @@ th{font-size:.65rem;color:#6e8195;letter-spacing:.04em;background:#f8fafc}
 td strong{color:var(--ink)}
 tbody tr{cursor:pointer}
 tbody tr:hover{background:#f8fbfe}
-.analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.analysis-note{margin:7px 0 0;font-size:.72rem;line-height:1.55;color:var(--muted);max-width:760px}
+.analysis-grid{display:grid;grid-template-columns:1fr;gap:16px}
+.audit-card{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:17px}
+.ach-card-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.ach-card h4{margin:17px 0 8px;font-size:.78rem;color:var(--ink)}
+.ach-wrap{border:1px solid var(--line-2);border-radius:10px;overflow:hidden}
+.ach-legend{padding:8px 10px;background:#f7f9fb;font-size:.61rem;color:var(--muted);border-bottom:1px solid var(--line-2)}
+.ach-table-wrap{overflow:auto}
+.ach-table{min-width:760px}
+.ach-table th,.ach-table td{padding:8px 9px;font-size:.66rem;vertical-align:top}
+.ach-table code{font-size:.62rem;color:#526a81}
+.ach-score{display:inline-grid;place-items:center;min-width:28px;padding:3px 5px;border-radius:6px;font-weight:900}
+.ach-score.support{background:var(--positive-bg);color:var(--positive)}
+.ach-score.conflict{background:var(--negative-bg);color:var(--negative)}
+.ach-score.neutral{background:var(--neutral-bg);color:var(--neutral)}
+.ach-total{margin-top:12px;padding-top:10px;border-top:1px solid var(--line-2);font-size:.68rem;font-weight:900;color:#526a81}
 .audit-card{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:17px}
 .audit-card h3{margin:0;color:var(--ink);font-size:.92rem}
 .audit-meta{font-size:.68rem;color:var(--muted);margin:4px 0 12px}
@@ -239,6 +276,7 @@ tbody tr:hover{background:#f8fbfe}
 .drawer-section{padding:16px 0;border-bottom:1px solid var(--line-2)}
 .drawer-section h3{font-size:.8rem;color:var(--ink);margin:0 0 9px}
 .drawer-section p,.drawer-section li{font-size:.76rem;line-height:1.6}
+.drawer-note{color:var(--muted);font-size:.68rem!important}
 .drawer-section ul{margin:0;padding-left:17px}
 .metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
 .metric{border-radius:9px;background:#f3f6f9;padding:9px;text-align:center}
