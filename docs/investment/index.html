@@ -85,7 +85,7 @@
               <h2>注目上場企業</h2>
             </div>
             <div class="section-tools">
-              <button class="chip active" data-sort="signal">AIシグナル順</button>
+              <button class="chip active" data-sort="up">7日上昇確率順</button>
               <button class="chip" data-sort="change">3か月騰落順</button>
               <button class="chip" data-sort="mentions">関連記事順</button>
             </div>
@@ -134,7 +134,7 @@
           <table>
             <thead>
               <tr>
-                <th>企業</th><th>ティッカー</th><th>7日</th><th>1か月</th><th>3か月</th><th>確度</th><th>Gate</th>
+                <th>企業</th><th>ティッカー</th><th>上昇</th><th>横ばい</th><th>下落</th><th>3か月</th><th>Gate</th>
               </tr>
             </thead>
             <tbody id="companyTable"></tbody>
@@ -164,7 +164,7 @@
         <div class="section-head">
           <div>
             <div class="section-kicker">AI ANALYSIS</div>
-            <h2>分析監査ログ</h2>
+            <h2>競合仮説分析（ACH）</h2><p class="analysis-note">上昇・横ばい・下落の3仮説を、同じ証拠集合で比較します。表示するのは監査可能な証拠評価であり、モデル内部の逐語的な思考ではありません。</p>
           </div>
         </div>
         <div class="analysis-grid" id="analysisGrid"></div>
@@ -192,8 +192,5 @@
   </template>
 
   <script src="./app.js" defer></script>
-<!-- Cloudflare Web Analytics -->
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"4002fd0c317c4358bb24d5d647032f7a"}'></script>
-<!-- End Cloudflare Web Analytics -->
 </body>
 </html>
