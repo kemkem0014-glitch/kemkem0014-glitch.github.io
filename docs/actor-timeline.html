@@ -18,7 +18,7 @@ main{width:min(1220px,calc(100% - 28px));margin:auto;padding:20px 0 54px}
 .panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:17px 18px;box-shadow:var(--shadow);margin-bottom:12px}.panel h2{margin:0 0 8px;color:var(--ink);font-size:1.2rem}.panel h3{margin:0 0 7px;color:#183c5c;font-size:.98rem}.lead{font-size:1rem;color:#1e3d58;font-weight:750}.muted{color:var(--muted)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mini{border:1px solid #dbe5ec;border-radius:11px;padding:13px;background:#fbfdfe}.mini+.mini{margin-top:8px}.mini-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.mini-title{font-weight:850;color:#173b59}.meta{font-size:.72rem;color:#8090a0}.badge{display:inline-flex;padding:3px 8px;border-radius:999px;background:#edf5fa;color:#275d7d;font-size:.68rem;font-weight:900}.badge.high{background:#fae9e9;color:#9d3439}.badge.medium{background:#fff4da;color:#8d5b0c}.badge.low{background:#e9f6ef;color:#287154}.section-label{margin:12px 0 4px;color:#718398;font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.05em}.compact-list{margin:6px 0 0;padding-left:1.2rem}.compact-list li{margin:4px 0}.forecast{border-left:4px solid #2996ca;background:#f2f9fd;border-radius:0 9px 9px 0;padding:10px 12px;margin:8px 0}.forecast.danger{border-left-color:#bd5559;background:#fff6f6}
 .timeline-controls{display:grid;grid-template-columns:1fr 1fr .9fr auto auto;gap:8px;align-items:end;margin-bottom:12px}.timeline-controls label{display:block;color:var(--muted);font-size:.7rem;font-weight:900;margin-bottom:4px}.input,.select{width:100%;min-height:42px;border:1px solid #bdccd8;border-radius:8px;background:#fff;color:var(--ink);padding:8px 10px}.btn{min-height:42px;border:1px solid #167db8;border-radius:8px;background:#167db8;color:#fff;padding:8px 13px;font-weight:850;cursor:pointer}.btn.secondary{background:#fff;color:#33556e;border-color:#bdccd8}
 .timeline{position:relative}.timeline:before{content:"";position:absolute;left:109px;top:8px;bottom:8px;width:2px;background:linear-gradient(var(--cyan),#bdd2df)}.row{display:grid;grid-template-columns:88px 42px minmax(0,1fr);position:relative;margin-bottom:12px}.date{padding:12px 10px 0 0;text-align:right;color:#567086;font-size:.76rem;font-weight:850}.node{display:flex;justify-content:center;padding-top:17px}.dot{width:12px;height:12px;border-radius:50%;background:#1588c4;border:3px solid #e7f7fc;box-shadow:0 0 0 2px #1588c4;z-index:1}.event{border:1px solid #d5e0e8;border-left:4px solid #1a8fc8;border-radius:10px;background:#fff;overflow:hidden}.event summary{list-style:none;cursor:pointer;padding:12px 14px}.event summary::-webkit-details-marker{display:none}.event-title{color:var(--ink);font-weight:850}.event-meta{display:flex;gap:7px 12px;flex-wrap:wrap;margin-top:5px;color:var(--muted);font-size:.7rem}.event-body{padding:0 14px 13px;border-top:1px solid #e3ebf0;background:#fbfdfe}.article{padding:10px 0;border-bottom:1px solid #e8eef3}.article:last-child{border-bottom:0}.article-title{font-size:.84rem;color:#274760;font-weight:750}.group-card{border:1px solid #d5e0e8;border-left:4px solid #1a8fc8;border-radius:10px;background:#fff;padding:12px 14px}.empty{padding:24px;border:1px dashed #c2d1dc;border-radius:10px;background:#fbfdfe;color:var(--muted);text-align:center}
-footer{margin-top:20px;text-align:center;color:var(--muted);font-size:.72rem}
+.evidence{margin-top:10px;border:1px solid #d8e3eb;border-radius:10px;background:#f8fbfd;overflow:hidden}.evidence summary{cursor:pointer;list-style:none;padding:9px 11px;color:#145f87;font-size:.78rem;font-weight:900}.evidence summary::-webkit-details-marker{display:none}.evidence summary:before{content:"＋";display:inline-block;width:1.2em}.evidence[open] summary:before{content:"−"}.evidence-body{padding:0 11px 11px;border-top:1px solid #e3ebf1}.evidence-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:10px}.evidence-box{background:#fff;border:1px solid #e0e8ee;border-radius:8px;padding:9px 10px}.evidence-box b{display:block;color:#4d667a;font-size:.67rem;letter-spacing:.04em;margin-bottom:4px}.chips{display:flex;flex-wrap:wrap;gap:5px}.chip{display:inline-flex;padding:2px 7px;border-radius:999px;background:#eaf3f8;color:#255f7d;font-size:.67rem;font-weight:850}.chip.ref{background:#edf0f7;color:#45556d}.evidence-text{margin:5px 0 0;font-size:.79rem;color:#38536a}.audit-note{margin:8px 0 0;padding:8px 10px;border-left:3px solid #7fa9c2;background:#f7fafc;color:#63788a;font-size:.72rem}footer{margin-top:20px;text-align:center;color:var(--muted);font-size:.72rem}
 @media(max-width:820px){.actor-bar{grid-template-columns:1fr}.kpis,.grid2{grid-template-columns:1fr 1fr}.timeline-controls{grid-template-columns:1fr 1fr}.timeline-controls .wide{grid-column:1/-1}.timeline:before{left:19px}.row{grid-template-columns:42px minmax(0,1fr)}.date{grid-column:2;text-align:left;padding:0 0 4px}.node{grid-column:1;grid-row:1/3;padding-top:23px}.event,.group-card{grid-column:2}}
 @media(max-width:560px){main{width:min(100% - 16px,1220px);padding-top:8px}.hero{padding:14px;border-radius:13px}.hero h1{font-size:1.6rem}.kpis,.grid2{grid-template-columns:1fr}.tabs{position:sticky;top:0;z-index:5}.panel{padding:13px}}
 </style>
@@ -48,7 +48,7 @@ footer{margin-top:20px;text-align:center;color:var(--muted);font-size:.72rem}
     <div class="kpi"><b>対日INTENT</b><strong id="intent">—</strong><small>likelihood</small></div>
     <div class="kpi"><b>確度</b><strong id="confidence">—</strong><small>confidence</small></div>
   </section>
-  <section class="panel"><h2 id="analysisTitle">Actor別 V8分析</h2><p id="dailySummary" class="lead">—</p><div class="section-label">本日の判断</div><p id="threatJudgment">—</p></section>
+  <section class="panel"><h2 id="analysisTitle">Actor別 V8分析</h2><p id="dailySummary" class="lead">—</p><div class="section-label">本日の判断</div><p id="threatJudgment">—</p><div id="overallEvidence"></div><div class="audit-note">ここに表示するのは、V8が出力した監査可能な判断根拠です。モデル内部の逐語的な思考過程ではありません。</div></section>
   <div class="grid2">
     <section class="panel"><h2>本日の関連事象</h2><div id="relatedEvents"></div></section>
     <section class="panel"><h2>新規脆弱性 × TTP</h2><div id="vulnerabilities"></div></section>
@@ -93,14 +93,83 @@ function badgeClass(v){const s=String(v||"").toLowerCase();if(["high","very_high
 function badge(v){const span=document.createElement("span");span.className="badge "+badgeClass(v);span.textContent=text(v);return span}
 function list(root,items,empty="記載なし"){root.replaceChildren();const values=(Array.isArray(items)?items:[]).filter(x=>String(x??"").trim());if(!values.length){root.appendChild(Object.assign(document.createElement("p"),{className:"muted",textContent:empty}));return}const ul=document.createElement("ul");ul.className="compact-list";for(const x of values){const li=document.createElement("li");li.textContent=String(x);ul.appendChild(li)}root.appendChild(ul)}
 function safeUrl(v){try{const u=new URL(String(v||""));return ["http:","https:"].includes(u.protocol)?u.href:""}catch(_){return ""}}
-function miniCard(title,meta,body,url){const box=document.createElement("div");box.className="mini";const head=document.createElement("div");head.className="mini-head";const t=document.createElement("div");t.className="mini-title";if(url){const a=document.createElement("a");a.href=url;a.target="_blank";a.rel="noopener noreferrer";a.textContent=title;head.appendChild(a)}else{t.textContent=title;head.appendChild(t)}if(meta.badge)head.appendChild(badge(meta.badge));box.appendChild(head);const m=document.createElement("div");m.className="meta";m.textContent=[meta.source,meta.ref,meta.extra].filter(Boolean).join(" · ");box.appendChild(m);if(body){const p=document.createElement("p");p.textContent=body;box.appendChild(p)}return box}
+function chips(values,kind=""){const wrap=document.createElement("div");wrap.className="chips";for(const value of (Array.isArray(values)?values:[])){if(!String(value||"").trim())continue;const s=document.createElement("span");s.className="chip "+kind;s.textContent=String(value);wrap.appendChild(s)}return wrap}
+function evidenceBox(label,content){const box=document.createElement("div");box.className="evidence-box";const b=document.createElement("b");b.textContent=label;box.appendChild(b);if(content instanceof Node)box.appendChild(content);else{const p=document.createElement("div");p.className="evidence-text";p.textContent=text(content,"記載なし");box.appendChild(p)}return box}
+function evidenceDetails(items){const d=document.createElement("details");d.className="evidence";const s=document.createElement("summary");s.textContent="判断根拠を見る";d.appendChild(s);const body=document.createElement("div");body.className="evidence-body";const grid=document.createElement("div");grid.className="evidence-grid";for(const item of items){if(!item)continue;grid.appendChild(evidenceBox(item.label,item.node||item.value))}body.appendChild(grid);d.appendChild(body);return d}
+function miniCard(title,meta,body,url,evidenceItems=[]){const box=document.createElement("div");box.className="mini";const head=document.createElement("div");head.className="mini-head";const t=document.createElement("div");t.className="mini-title";if(url){const a=document.createElement("a");a.href=url;a.target="_blank";a.rel="noopener noreferrer";a.textContent=title;head.appendChild(a)}else{t.textContent=title;head.appendChild(t)}if(meta.badge)head.appendChild(badge(meta.badge));box.appendChild(head);const m=document.createElement("div");m.className="meta";m.textContent=[meta.source,meta.ref,meta.extra].filter(Boolean).join(" · ");box.appendChild(m);if(body){const p=document.createElement("p");p.textContent=body;box.appendChild(p)}if(evidenceItems.length)box.appendChild(evidenceDetails(evidenceItems));return box}
 function renderAssessment(a){
   $("threat").textContent=text(a.overall_actor_threat)+"/5";$("activity").textContent=text(a.activity_status);$("intent").textContent=text(a.intent_to_japan&&a.intent_to_japan.likelihood);$("confidence").textContent=text(a.confidence);
   $("analysisTitle").textContent=text(a.canonical_name)+" / V8分析";$("dailySummary").textContent=text(a.daily_summary_ja);$("threatJudgment").textContent=text(a.threat_judgment_ja);
-  const er=$("relatedEvents");er.replaceChildren();const events=(a.related_events||[]).filter(x=>x&&x.relation_type!=="not_related");if(!events.length)er.innerHTML='<p class="muted">有意な関連事象は確認されていません。</p>';else for(const e of events){er.appendChild(miniCard(text(e.title_ja,"無題"),{badge:e.relation_type,source:e.source,ref:e.evidence_ref},text(e.rationale_ja),safeUrl(e.url)))}
-  const vr=$("vulnerabilities");vr.replaceChildren();const vulns=Array.isArray(a.new_vulnerability_matches)?a.new_vulnerability_matches:[];if(!vulns.length)vr.innerHTML='<p class="muted">報告対象となる脆弱性整合はありません。</p>';else for(const v of vulns){vr.appendChild(miniCard(text(v.cve_id),{badge:v.compatibility,extra:"CVSS "+text(v.cvss_score,"-")+" / "+text(v.severity)},text(v.rationale_ja),""))}
-  const intent=a.intent_to_japan||{},id=$("intentDetail");id.replaceChildren();id.appendChild(badge(intent.likelihood));const ip=document.createElement("p");ip.textContent=text(intent.judgment_ja);id.appendChild(ip);const dl=document.createElement("div");dl.className="section-label";dl.textContent="Drivers";id.appendChild(dl);const droot=document.createElement("div");id.appendChild(droot);list(droot,intent.drivers);const cl=document.createElement("div");cl.className="section-label";cl.textContent="Constraints";id.appendChild(cl);const croot=document.createElement("div");id.appendChild(croot);list(croot,intent.constraints);
-  const j=a.japan_scenario||{},jr=$("japanScenario");jr.replaceChildren();jr.appendChild(badge(j.applicability));const jp=document.createElement("p");jp.textContent=text(j.scenario_ja);jr.appendChild(jp);const rl=document.createElement("div");rl.className="section-label";rl.textContent="判断理由";jr.appendChild(rl);const rp=document.createElement("p");rp.textContent=text(j.rationale_ja);jr.appendChild(rp);const ol=document.createElement("div");ol.className="section-label";ol.textContent="Observable indicators";jr.appendChild(ol);const oroot=document.createElement("div");jr.appendChild(oroot);list(oroot,j.observable_indicators);
+
+  const allRefs=[...(a.related_events||[]).flatMap(x=>x&&x.evidence_ref?[x.evidence_ref]:[]),...(a.new_vulnerability_matches||[]).flatMap(x=>x&&Array.isArray(x.evidence_refs)?x.evidence_refs:[]),...((a.intent_to_japan&&Array.isArray(a.intent_to_japan.evidence_refs))?a.intent_to_japan.evidence_refs:[])].filter((v,i,arr)=>v&&arr.indexOf(v)===i);
+  const allTtps=[...(a.related_events||[]).flatMap(x=>Array.isArray(x&&x.matched_ttp_ids)?x.matched_ttp_ids:[]),...(a.new_vulnerability_matches||[]).flatMap(x=>Array.isArray(x&&x.matched_ttp_ids)?x.matched_ttp_ids:[])].filter((v,i,arr)=>v&&arr.indexOf(v)===i);
+  const allSoftware=(a.related_events||[]).flatMap(x=>Array.isArray(x&&x.matched_software)?x.matched_software:[]).filter((v,i,arr)=>v&&arr.indexOf(v)===i);
+  $("overallEvidence").replaceChildren(evidenceDetails([
+    {label:"総合判断",value:a.threat_judgment_ja},
+    {label:"Evidence refs",node:chips(allRefs,"ref")},
+    {label:"整合TTP",node:chips(allTtps)},
+    {label:"既知Software",node:chips(allSoftware)},
+    {label:"Confidence",value:a.confidence}
+  ]));
+
+  const er=$("relatedEvents");er.replaceChildren();const events=(a.related_events||[]).filter(x=>x&&x.relation_type!=="not_related");
+  if(!events.length)er.innerHTML='<p class="muted">有意な関連事象は確認されていません。</p>';
+  else for(const e of events){
+    er.appendChild(miniCard(
+      text(e.title_ja,"無題"),
+      {badge:e.relation_type,source:e.source,ref:e.evidence_ref},
+      text(e.rationale_ja),
+      safeUrl(e.url),
+      [
+        {label:"判断理由",value:e.rationale_ja},
+        {label:"Attribution",value:e.attribution_status_ja},
+        {label:"Evidence ref",node:chips(e.evidence_ref?[e.evidence_ref]:[],"ref")},
+        {label:"整合TTP",node:chips(e.matched_ttp_ids)},
+        {label:"既知Software",node:chips(e.matched_software)},
+        {label:"Confidence",value:e.confidence}
+      ]
+    ))
+  }
+
+  const vr=$("vulnerabilities");vr.replaceChildren();const vulns=Array.isArray(a.new_vulnerability_matches)?a.new_vulnerability_matches:[];
+  if(!vulns.length)vr.innerHTML='<p class="muted">報告対象となる脆弱性整合はありません。</p>';
+  else for(const v of vulns){
+    vr.appendChild(miniCard(
+      text(v.cve_id),
+      {badge:v.compatibility,extra:"CVSS "+text(v.cvss_score,"-")+" / "+text(v.severity)},
+      text(v.rationale_ja),
+      "",
+      [
+        {label:"判断理由",value:v.rationale_ja},
+        {label:"整合TTP",node:chips(v.matched_ttp_ids)},
+        {label:"Evidence refs",node:chips(v.evidence_refs,"ref")},
+        {label:"Actorでの悪用状況",value:v.actor_exploitation_status},
+        {label:"日本での存在",value:v.japan_presence},
+        {label:"Known exploited",value:v.known_exploited_catalog?"Yes":"No"}
+      ]
+    ))
+  }
+
+  const intent=a.intent_to_japan||{},id=$("intentDetail");id.replaceChildren();id.appendChild(badge(intent.likelihood));const ip=document.createElement("p");ip.textContent=text(intent.judgment_ja);id.appendChild(ip);
+  id.appendChild(evidenceDetails([
+    {label:"判断",value:intent.judgment_ja},
+    {label:"Drivers",node:chips(intent.drivers)},
+    {label:"Constraints",node:chips(intent.constraints)},
+    {label:"Evidence refs",node:chips(intent.evidence_refs,"ref")},
+    {label:"Confidence",value:intent.confidence}
+  ]));
+
+  const j=a.japan_scenario||{},jr=$("japanScenario");jr.replaceChildren();jr.appendChild(badge(j.applicability));const jp=document.createElement("p");jp.textContent=text(j.scenario_ja);jr.appendChild(jp);
+  jr.appendChild(evidenceDetails([
+    {label:"判断理由",value:j.rationale_ja},
+    {label:"高レベル経路",node:chips(j.high_level_pathway_ja)},
+    {label:"必要条件",node:chips(j.required_conditions)},
+    {label:"阻害要因",node:chips(j.blockers)},
+    {label:"観測指標",node:chips(j.observable_indicators)},
+    {label:"日本での露出",value:j.japan_exposure_status},
+    {label:"Confidence",value:j.confidence}
+  ]));
+
   $("mostLikely").textContent=text(a.most_likely_72h_ja);$("mostDangerous").textContent=text(a.most_dangerous_72h_ja);list($("watchIndicators"),a.watch_indicators);list($("intelGaps"),a.intelligence_gaps);
 }
 function mondayOf(dateStr){const d=new Date(dateStr+"T00:00:00Z");const day=(d.getUTCDay()+6)%7;d.setUTCDate(d.getUTCDate()-day);return d.toISOString().slice(0,10)}
