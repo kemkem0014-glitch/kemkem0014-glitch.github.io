@@ -76,5 +76,8 @@ function render(){const events=currentEvents();const root=$("timeline");if(!even
 async function load(){try{const u=new URL(DATA);u.searchParams.set("_",Date.now());const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);payload=await r.json();$("kActor").textContent=payload.actor||"Handala";$("aliases").textContent=(payload.aliases||[]).slice(0,4).join(" / ");render()}catch(e){console.error(e);$("status").className="status error";$("status").textContent="公開JSONをまだ取得できません。生成Workflowの完了後に自動表示されます。";$("timeline").innerHTML='<div class="empty">Handala線表データを準備中です。</div>'}}
 $("apply").addEventListener("click",render);$("grain").addEventListener("change",render);$("all").addEventListener("click",()=>{$("start").value="";$("end").value="";render()});load();
 </script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"4002fd0c317c4358bb24d5d647032f7a"}'></script>
+<!-- End Cloudflare Web Analytics -->
 </body>
 </html>
