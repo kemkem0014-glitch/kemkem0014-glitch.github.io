@@ -1,4 +1,5 @@
-const DATA_URL = "./data/latest.json";
+const LIVE_DATA_URL = "https://hmnbalygfomelhjuscjm.supabase.co/storage/v1/object/public/public-news-reports/investment/space/latest.json";
+const FALLBACK_DATA_URL = "./data/latest.json";
 
 let state = {
   data: null,
@@ -535,19 +536,40 @@ function renderAll() {
   renderAnalysis();
 }
 
+async function fetchDashboardData(url) {
+  const response = await fetch(`${url}?v=${Date.now()}`, { cache: "no-store" });
+  if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
+  return await response.json();
+}
+
 async function loadData() {
+  let liveError = null;
   try {
-    const response = await fetch(`${DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    state.data = await response.json();
+    state.data = await fetchDashboardData(LIVE_DATA_URL);
     renderAll();
+    return;
   } catch (error) {
-    console.error("dashboard data load failed", error);
+    liveError = error;
+    console.warn("live dashboard data unavailable; using snapshot", error);
+  }
+
+  try {
+    state.data = await fetchDashboardData(FALLBACK_DATA_URL);
+    if (state.data?.meta) {
+      state.data.meta.mode = state.data.meta.mode === "live" ? "trial" : state.data.meta.mode;
+      state.data.meta.note = [
+        state.data.meta.note || "",
+        "公開ライブデータを取得できなかったため、保存済みスナップショットを表示中。"
+      ].filter(Boolean).join(" ");
+    }
+    renderAll();
+  } catch (fallbackError) {
+    console.error("dashboard data load failed", fallbackError);
     document.body.innerHTML = `
       <main style="max-width:760px;margin:80px auto;padding:24px;font-family:sans-serif">
         <h1>Dashboard data could not be loaded</h1>
-        <p>${escapeHtml(error.message)}</p>
-        <p><code>dashboard/data/latest.json</code> を確認してください。</p>
+        <p>Live: ${escapeHtml(liveError?.message || "unknown")}</p>
+        <p>Snapshot: ${escapeHtml(fallbackError.message)}</p>
       </main>
     `;
   }
