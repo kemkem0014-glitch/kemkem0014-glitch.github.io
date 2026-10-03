@@ -1,62 +1,65 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light dark">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <title>レポート・アーカイブ</title>
-  <style>
-    :root{color-scheme:light dark;--bg:#eef3f7;--paper:#fff;--text:#17212b;--muted:#63727e;--line:#d3dde3;--accent:#087cab;--accent2:#055f82;--soft:#e8f4f8;--shadow:0 8px 24px rgba(25,47,66,.07);--error:#b42318}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic UI","Noto Sans JP",sans-serif;line-height:1.65}
-    main{width:min(1100px,calc(100% - 28px));margin:auto;padding:28px 0 64px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.btn{display:inline-flex;align-items:center;min-height:38px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--text);text-decoration:none;font-size:.84rem;font-weight:700}.btn:hover{border-color:var(--accent);color:var(--accent)}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-    header,.panel{background:var(--paper);border-radius:14px;box-shadow:var(--shadow)}header{padding:clamp(22px,4vw,36px);margin-bottom:22px}.eyebrow{margin:0 0 6px;color:var(--accent);font-size:.75rem;font-weight:800;letter-spacing:.13em}h1{margin:0;font-size:clamp(1.9rem,4vw,2.8rem)}.muted{color:var(--muted)}.section-title{margin:30px 0 12px;padding:10px 14px;border-radius:7px;background:var(--accent);color:#fff;font-size:1.05rem}
-    .panel{padding:18px;border:1px solid var(--line)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{padding:16px;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;background:var(--paper)}.card h2,.card h3{margin:0 0 9px}.code{margin:0 0 3px;color:var(--muted);font:700 .72rem ui-monospace,SFMono-Regular,Menlo,monospace}.actions{display:flex;gap:8px;flex-wrap:wrap}.small{font-size:.82rem;color:var(--muted)}details{margin-bottom:10px;border:1px solid var(--line);border-radius:10px;background:var(--paper);overflow:hidden}summary{padding:13px 15px;cursor:pointer;font-weight:800}.history-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0 12px 12px}.status.error{color:var(--error)}footer{margin-top:28px;text-align:center;color:var(--muted);font-size:.8rem}
-    @media(max-width:760px){.grid,.history-grid{grid-template-columns:1fr}.page{width:min(100% - 18px,1100px)}}
-    @media(prefers-color-scheme:dark){:root{--bg:#0d1420;--paper:#151f2e;--text:#edf3fb;--muted:#a5b3c7;--line:#2d3a4d;--accent:#3c91c7;--accent2:#90c9ed;--soft:#17344a;--shadow:none;--error:#ffb4ab}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>過去レポート・アーカイブ</title>
+<style>
+:root{--bg:#f3f6f9;--surface:#fff;--ink:#10284e;--body:#314763;--muted:#6c7b8d;--line:#d9e3ec;--blue:#2378b9;--soft:#eef7fc;--shadow:0 8px 24px rgba(26,52,78,.07);--error:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--body);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic UI","Noto Sans JP",sans-serif;line-height:1.6}
+main{width:min(1120px,calc(100% - 28px));margin:auto;padding:28px 0 56px}
+.hero{background:linear-gradient(135deg,#061529 0%,#082542 58%,#0b3856 100%);border-radius:20px;padding:24px;box-shadow:0 14px 40px rgba(3,28,48,.2);margin-bottom:22px;color:#fff}
+.hero-row{display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap}.eyebrow{margin:0 0 5px;color:#63d0ff;font-size:.76rem;font-weight:900;letter-spacing:.14em}h1{margin:0;font-size:clamp(2rem,4vw,3.15rem);line-height:1.05}.lead{margin:9px 0 0;color:#c9dbe8}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:8px 14px;border:1px solid #bfcddd;border-radius:9px;background:#fff;color:#173657;text-decoration:none;font:inherit;font-size:.88rem;font-weight:800;cursor:pointer}.btn.primary{background:#1677b8;border-color:#1677b8;color:#fff}.hero .btn{border-color:rgba(179,220,240,.42);background:rgba(255,255,255,.09);color:#fff}
+.selector{padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:var(--shadow);margin-bottom:22px}.selector h2{margin:0 0 10px;color:var(--ink);font-size:1.12rem}.selector-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.selector label{font-weight:850;color:var(--ink)}.date-select{min-width:260px;min-height:46px;padding:10px 13px;border:1px solid #bfcddd;border-radius:9px;background:#fff;color:var(--ink);font:inherit}.status{margin:9px 0 0;color:var(--muted);font-size:.84rem}.status.error{color:var(--error)}
+.group{margin-top:22px}.group-title{display:flex;align-items:center;gap:9px;margin:0 0 10px;color:var(--ink);font-size:1.18rem}.group-title:before{content:"";width:5px;height:1.3em;border-radius:4px;background:#56b6db}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:17px 18px;box-shadow:var(--shadow);min-width:0}.code{margin:0;color:var(--muted);font:700 .72rem ui-monospace,SFMono-Regular,Menlo,monospace}.card h3{margin:3px 0 7px;color:var(--ink);font-size:1.05rem}.desc{margin:0 0 12px;color:#526579;font-size:.86rem}.empty{padding:18px;border:1px dashed #c7d3df;border-radius:10px;background:#fff;color:var(--muted)}footer{margin-top:30px;text-align:center;color:var(--muted);font-size:.8rem}
+@media(max-width:720px){main{width:min(100% - 18px,1120px);padding-top:14px}.hero{padding:16px;border-radius:14px}.grid{grid-template-columns:1fr}.date-select{width:100%;min-width:0}.selector-row{align-items:stretch}.btn{width:100%}}
+</style>
 </head>
-<body>
-<main>
-  <nav class="toolbar"><a class="btn" href="index.html">トップへ戻る</a></nav>
-  <header>
-    <p class="eyebrow">REPORT ARCHIVE</p>
-    <h1>レポート・アーカイブ</h1>
-    <p id="updated" class="muted">最新情報を確認しています…</p>
-    <p id="status" class="muted"></p>
-  </header>
+<body><main>
+<section class="hero">
+  <div class="hero-row">
+    <div>
+      <p class="eyebrow">PAST REPORT ARCHIVE</p>
+      <h1>過去レポート</h1>
+      <p class="lead">過去の日付を選び、カテゴリごとのレポートを現在と同じWeb形式で閲覧できます。</p>
+    </div>
+    <div class="actions"><a class="btn" href="categories.html">最新カテゴリへ戻る</a><a class="btn" href="index.html">日本向け評価へ戻る</a></div>
+  </div>
+</section>
 
-  <h2 class="section-title">本日の全体要約</h2>
-  <section id="dailyBrief" class="panel"><p class="muted">読み込み中…</p></section>
+<section class="selector" aria-label="過去レポートの日付選択">
+  <h2>1. 日付を選択</h2>
+  <div class="selector-row">
+    <label for="historyDate">対象日</label>
+    <select id="historyDate" class="date-select"><option value="">日付を選択</option></select>
+  </div>
+  <p id="historyStatus" class="status">履歴を読み込んでいます…</p>
+</section>
 
-  <h2 class="section-title">最新カテゴリ別レポート</h2>
-  <section id="latest" class="grid"><p class="muted">読み込み中…</p></section>
-
-  <h2 class="section-title">過去のレポート</h2>
-  <p class="muted">各日付を開くと、当日のMarkdownを現在と同じWebレイアウトで閲覧できます。PDF・Markdownは補助資料として残しています。</p>
-  <section id="history"><p class="muted">履歴を読み込み中…</p></section>
-
-  <footer>Web閲覧を主導線とし、PDF、Markdown、公開評価JSONもあわせて利用できます。</footer>
+<div id="historyGroups"><p class="empty">日付を選ぶとカテゴリが表示されます。</p></div>
+<footer>このページは過去レポートのWeb閲覧専用です。</footer>
 </main>
 <script>
 "use strict";
 const BASE="https://hmnbalygfomelhjuscjm.supabase.co/storage/v1/object/public/public-news-reports";
-const URLS={manifest:`${BASE}/latest/index.json`,history:`${BASE}/latest/history.json`,assets:`${BASE}/latest/v5-assets.json`,assessment:`${BASE}/latest/assessment/index.json`};
-const latestEl=document.getElementById("latest"),historyEl=document.getElementById("history"),briefEl=document.getElementById("dailyBrief"),updatedEl=document.getElementById("updated"),statusEl=document.getElementById("status");
-function fmt(v){const s=String(v||"");return /^\d{8}$/.test(s)?`${s.slice(0,4)}年${s.slice(4,6)}月${s.slice(6,8)}日`:s||"不明"}
-function safe(v){try{const u=new URL(String(v||""),location.href);return ["http:","https:"].includes(u.protocol)?u.href:""}catch(_){return ""}}
-function btn(label,url,primary=false,newTab=false){const href=safe(url);if(!href)return null;const a=document.createElement("a");a.className=`btn${primary?" primary":""}`;a.textContent=label;a.href=href;if(newTab){a.target="_blank";a.rel="noopener noreferrer"}return a}
-function actions(items){const d=document.createElement("div");d.className="actions";for(const item of items){const a=btn(item[0],item[1],item[2],item[3]);if(a)d.appendChild(a)}return d}
+const HISTORY=`${BASE}/latest/history.json`,MANIFEST=`${BASE}/latest/index.json`;
+const GROUPS=[{name:"各国",types:["cyber_iran","cyber_china","cyber_russia","cyber_north_korea"]},{name:"テック",types:["space","cyber_tech"]},{name:"軍事・防衛",types:["cyber_military"]}];
+const historyDate=document.getElementById("historyDate"),historyStatus=document.getElementById("historyStatus"),historyGroups=document.getElementById("historyGroups");
+let historyByDate=new Map(),currentDate="";
+function safeUrl(v){try{const u=new URL(String(v||""));return ["http:","https:"].includes(u.protocol)?u.href:""}catch(_){return ""}}
+function fmtDate(v){const s=String(v||"");return /^\d{8}$/.test(s)?`${s.slice(0,4)}年${s.slice(4,6)}月${s.slice(6,8)}日`:s||"不明"}
 function reportDisplayName(r){const rt=String(r?.report_type||"");if(rt==="cyber_tech")return "サイバー・テック";return String(r?.display_name||rt||"レポート")}
-function reportPageUrl(r,date,isLatest=false){const p=new URLSearchParams();p.set("type",String(r?.report_type||""));p.set("name",reportDisplayName(r));p.set("date",String(date||""));const md=safe(isLatest?(r?.latest_markdown_url||r?.markdown_url):r?.markdown_url),pdf=safe(isLatest?(r?.latest_pdf_url||r?.pdf_url):r?.pdf_url);if(md)p.set("md",md);if(pdf)p.set("pdf",pdf);return `report.html?${p.toString()}`}
-async function get(url){const u=new URL(url);u.searchParams.set("_",Date.now());const r=await fetch(u,{cache:"no-store",headers:{Accept:"application/json"}});if(!r.ok)throw new Error(`${r.status}: ${u}`);return r.json()}
-function renderBrief(assets){briefEl.replaceChildren();const b=assets&&assets.daily_brief?assets.daily_brief:{};const h=document.createElement("h2");h.textContent="全体評価・72時間見通し要約";const p=document.createElement("p");p.className="small";p.textContent="まずWeb版で読むのがおすすめです。PDF・JSONも必要に応じて利用できます。";briefEl.append(h,p,actions([["Webで読む",b.html,true,false],["全体要約PDF",b.pdf,false,true],["要約JSON",b.json,false,true],["全体評価JSON",assets.assessment_index,false,true]]))}
-function renderLatest(m,a){latestEl.replaceChildren();updatedEl.textContent=`更新対象日: ${fmt(m.report_date)}`;const cats=a&&a.categories?a.categories:{};for(const r of (m.reports||[])){const rt=String(r.report_type||"");const c=cats[rt]||{};const card=document.createElement("article");card.className="card";const code=document.createElement("p");code.className="code";code.textContent=rt;const h=document.createElement("h2");h.textContent=reportDisplayName(r);const p=document.createElement("p");p.className="small";p.textContent=c.assessment?`評価 Lv.${c.assessment_level||"-"}/5 / 確度 ${c.confidence||"—"}`:"Web版ではMarkdownを読みやすいカード形式で表示します。";const assessmentUrl=`${BASE}/archive/${m.report_date}/assessment/${rt}.json`;card.append(code,h,p,actions([["ウェブで読む",reportPageUrl(r,m.report_date,true),true,false],["PDF",r.latest_pdf_url||r.pdf_url,false,true],["Markdown",r.latest_markdown_url||r.markdown_url,false,true],["評価JSON",assessmentUrl,false,true]]));latestEl.appendChild(card)}if(!(m.reports||[]).length)latestEl.innerHTML='<p class="muted">最新レポートがありません。</p>'}
-function renderHistory(h,current){historyEl.replaceChildren();let n=0;for(const d of (h.dates||[])){if(String(d.report_date||"")===String(current||""))continue;const reports=d.reports||[];if(!reports.length)continue;const det=document.createElement("details"),sum=document.createElement("summary"),grid=document.createElement("div");sum.textContent=`${fmt(d.report_date)} — ${reports.length}カテゴリ`;grid.className="history-grid";for(const r of reports){const card=document.createElement("div");card.className="card";const h3=document.createElement("h3");h3.textContent=reportDisplayName(r);const p=document.createElement("p");p.className="small";p.textContent=`${fmt(d.report_date)}のレポートを現在と同じWeb形式で表示できます。`;const assessmentUrl=`${BASE}/archive/${d.report_date}/assessment/${r.report_type}.json`;card.append(h3,p,actions([["ウェブで読む",reportPageUrl(r,d.report_date,false),true,false],["PDF",r.pdf_url,false,true],["Markdown",r.markdown_url,false,true],["評価JSON",assessmentUrl,false,true]]));grid.appendChild(card)}det.append(sum,grid);historyEl.appendChild(det);n++}if(!n)historyEl.innerHTML='<p class="muted">過去のレポートはまだありません。</p>'}
-(async()=>{try{const [m,h,x,a]=await Promise.all([get(URLS.manifest),get(URLS.history).catch(()=>({dates:[]})),get(URLS.assets).catch(()=>({})),get(URLS.assessment).catch(()=>({}))]);renderBrief(x);renderLatest(m,a);renderHistory(h,m.report_date);statusEl.textContent="Web閲覧を中心に、公開済みレポートとダウンロード資料を一覧表示しています。"}catch(e){console.error(e);statusEl.className="status error";statusEl.textContent="公開ファイル一覧の取得に失敗しました。"}})();
+function reportPageUrl(r,date){const p=new URLSearchParams();p.set("type",String(r?.report_type||""));p.set("name",reportDisplayName(r));p.set("date",String(date||""));const md=safeUrl(r?.markdown_url),pdf=safeUrl(r?.pdf_url);if(md)p.set("md",md);if(pdf)p.set("pdf",pdf);return `report.html?${p.toString()}`}
+function makeWebBtn(r,date){const a=document.createElement("a");a.className="btn primary";a.textContent="ウェブで読む";a.href=reportPageUrl(r,date);return a}
+async function getJson(url){const u=new URL(url);u.searchParams.set("_",Date.now());const r=await fetch(u,{cache:"no-store",headers:{Accept:"application/json"}});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json()}
+function populate(history){historyByDate.clear();historyDate.replaceChildren();const blank=document.createElement("option");blank.value="";blank.textContent="日付を選択";historyDate.appendChild(blank);for(const item of (history?.dates||[])){const date=String(item?.report_date||""),reports=Array.isArray(item?.reports)?item.reports:[];if(!/^\d{8}$/.test(date)||date===currentDate||!reports.length)continue;historyByDate.set(date,item);const o=document.createElement("option");o.value=date;o.textContent=fmtDate(date);historyDate.appendChild(o)}historyStatus.textContent=historyByDate.size?`${historyByDate.size}日分の過去レポートを閲覧できます。`:"過去レポートはまだありません。"}
+function renderDate(){const date=historyDate.value;historyGroups.replaceChildren();if(!date){historyStatus.textContent=historyByDate.size?`${historyByDate.size}日分の過去レポートを閲覧できます。`:"過去レポートはまだありません。";const p=document.createElement("p");p.className="empty";p.textContent="日付を選ぶとカテゴリが表示されます。";historyGroups.appendChild(p);return}const item=historyByDate.get(date);if(!item){historyStatus.textContent="指定日のレポートが見つかりません。";return}const reports=Array.isArray(item.reports)?item.reports:[];historyStatus.textContent=`${fmtDate(date)}：カテゴリを選んで「ウェブで読む」を押してください。`;const used=new Set();for(const g of GROUPS){const matches=reports.filter(r=>g.types.includes(String(r.report_type||"")));matches.forEach(r=>used.add(String(r.report_type||"")));if(!matches.length)continue;const section=document.createElement("section");section.className="group";const h=document.createElement("h2");h.className="group-title";h.textContent=g.name;const grid=document.createElement("div");grid.className="grid";for(const r of matches){const card=document.createElement("article");card.className="card";const code=document.createElement("p");code.className="code";code.textContent=String(r.report_type||"");const title=document.createElement("h3");title.textContent=reportDisplayName(r);const desc=document.createElement("p");desc.className="desc";desc.textContent=`${fmtDate(date)}のレポート`;card.append(code,title,desc,makeWebBtn(r,date));grid.appendChild(card)}section.append(h,grid);historyGroups.appendChild(section)}const other=reports.filter(r=>!used.has(String(r.report_type||"")));if(other.length){const section=document.createElement("section");section.className="group";const h=document.createElement("h2");h.className="group-title";h.textContent="その他";const grid=document.createElement("div");grid.className="grid";for(const r of other){const card=document.createElement("article");card.className="card";const title=document.createElement("h3");title.textContent=reportDisplayName(r);const desc=document.createElement("p");desc.className="desc";desc.textContent=`${fmtDate(date)}のレポート`;card.append(title,desc,makeWebBtn(r,date));grid.appendChild(card)}section.append(h,grid);historyGroups.appendChild(section)}}
+historyDate.addEventListener("change",renderDate);
+(async()=>{try{const [history,manifest]=await Promise.all([getJson(HISTORY),getJson(MANIFEST).catch(()=>({}))]);currentDate=String(manifest?.report_date||"");populate(history);if(historyDate.options.length>1){historyDate.selectedIndex=1;renderDate()}}catch(e){console.error(e);historyStatus.className="status error";historyStatus.textContent="過去レポートの取得に失敗しました。";historyGroups.innerHTML='<p class="empty">時間を置いて再読み込みしてください。</p>'}})();
 </script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"4002fd0c317c4358bb24d5d647032f7a"}'></script>
 <!-- End Cloudflare Web Analytics -->
-</body>
-</html>
+</body></html>
