@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="robots" content="noindex,nofollow">
+<title>JCSA V9 日本向けサイバー将来影響評価</title>
+<style>
+html,body{height:100%;margin:0;background:#071525;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Yu Gothic UI",sans-serif}body{display:grid;grid-template-rows:auto 1fr;overflow:hidden}.bar{min-height:44px;display:flex;align-items:center;gap:10px;padding:7px 12px;background:#071525;color:#d9e8f3;border-bottom:1px solid #203a4d;box-sizing:border-box}.brand{font-weight:900;color:#fff;white-space:nowrap}.badge{font-size:.72rem;font-weight:900;padding:4px 8px;border-radius:999px;background:#123c55;color:#75d5ff;white-space:nowrap}.status{font-size:.76rem;color:#9fb8c9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.links{display:flex;gap:7px}.links a{color:#dcebf5;text-decoration:none;font-size:.74rem;font-weight:800;padding:5px 8px;border:1px solid #31556b;border-radius:7px;white-space:nowrap}.links a:hover{background:#123148}.frame-wrap{position:relative;min-height:0;background:#f6f7f9}.frame{width:100%;height:100%;border:0;display:none;background:#f6f7f9}.frame.ready{display:block}.loading{position:absolute;inset:0;display:grid;place-items:center;background:#f6f7f9;color:#294367;font-weight:800;z-index:2}.loading.hidden{display:none}.error{max-width:680px;margin:20px;padding:24px;border:1px solid #d7e2ea;border-radius:14px;background:#fff;line-height:1.8}.error a{color:#1768a0}@media(max-width:700px){.bar{gap:6px;padding:6px 8px}.brand{font-size:.82rem}.badge{font-size:.64rem}.status{display:none}.links a{font-size:.66rem;padding:4px 6px}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="brand">JCSA</div>
+  <div class="badge">V9 JAPAN CYBER</div>
+  <div id="status" class="status">最新のV9評価を確認しています…</div>
+  <nav class="links">
+    <a href="index.html">Main</a>
+    <a href="index1.html">V8</a>
+    <a id="archive" href="#" target="report">Archive</a>
+    <a id="direct" href="#" target="_blank" rel="noopener noreferrer">Direct</a>
+  </nav>
+</header>
+<div class="frame-wrap">
+  <div id="loading" class="loading">V9 日本向けサイバー将来影響評価を読み込んでいます…</div>
+  <iframe id="report" name="report" class="frame" title="JCSA V9 日本向けサイバー将来影響評価"></iframe>
+</div>
+<script>
+"use strict";
+// レポート本体は Cloudflare Worker（R2）から配信。このページは枠だけで、毎日の更新は不要。
+const WORKER="https://japan-cyber-v9.ai-reference-ea65c33f.workers.dev";
+const frame=document.getElementById('report');
+const loading=document.getElementById('loading');
+const status=document.getElementById('status');
+document.getElementById('direct').href=`${WORKER}/`;
+document.getElementById('archive').href=`${WORKER}/archive`;
+function showError(message){
+  frame.classList.remove('ready');
+  loading.classList.remove('hidden');
+  loading.innerHTML=`<div class="error"><strong>${message}</strong><br>Japan Cyber V9 のワークフローが正常終了すると、最新の評価がここに表示されます。<br><a href="${WORKER}/" target="_blank" rel="noopener noreferrer">Cloudflare 上のレポートを直接開く</a></div>`;
+}
+async function loadStatus(){
+  try{
+    const r=await fetch(`${WORKER}/api/latest?v=${Date.now()}`,{cache:'no-store'});
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    const d=await r.json();
+    const day=String(d.report_date||'');
+    const n=(d.analyses||[]).length;
+    status.textContent=/^\d{8}$/.test(day)?`${day.slice(0,4)}-${day.slice(4,6)}-${day.slice(6,8)} ／ 分析 ${n}件 ／ 仮説は「増える・横ばい・減る」`:'最新V9評価';
+  }catch(e){
+    status.textContent='最新V9評価';
+  }
+}
+frame.addEventListener('load',()=>{frame.classList.add('ready');loading.classList.add('hidden');});
+frame.src=`${WORKER}/?v=${Date.now()}`;
+setTimeout(()=>{if(!frame.classList.contains('ready'))showError('V9レポートの読み込みに時間がかかっています。');},15000);
+loadStatus();
+</script>
+</body>
+</html>
