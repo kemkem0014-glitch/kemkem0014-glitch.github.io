@@ -137,6 +137,9 @@ function hypothesisProbabilities(company) {
 }
 
 function hypothesisBars(company, compact = false) {
+  if (company.analysis_status && !hasProbabilities(company)) {
+    return `<div class="empty-state barometer-empty"><span>${escapeHtml(achEmptyReason(company))}</span></div>`;
+  }
   const p = hypothesisProbabilities(company);
   const rows = [
     ["up", "↑ 上昇", p.up],
@@ -156,6 +159,82 @@ function hypothesisBars(company, compact = false) {
   `;
 }
 
+const ROLE_LABELS = {
+  osint: "OSINT", fundamental: "財務", causal: "因果", bull: "上昇シナリオ",
+  flat: "横ばいシナリオ", bear: "下落シナリオ", ach: "ACH", red_team: "Red Team",
+};
+
+function achEmptyReason(company) {
+  const st = company.analysis_status || {};
+  const raw = String(st.ach_empty_reason || "");
+  if (!raw) return "ACHの分析結果がまだありません。";
+  if (raw.startsWith("ACH role failed")) return `ACHロールが失敗しました（${raw.replace(/^ACH role failed\s*\(?|\)$/g, "")}）。時間切れの場合は待ち時間・対象社数の調整が必要です。`;
+  if (raw.includes("no ACH row matched")) return "ACH行列はありましたが、根拠IDが一致する行がなく支持率を計算できませんでした。";
+  if (raw.includes("no matrix") || raw.includes("empty")) return "ACHの出力に評価行列が含まれていませんでした。";
+  return raw;
+}
+
+function hasProbabilities(company) {
+  const p = hypothesisProbabilities(company);
+  return p.up + p.flat + p.down > 0;
+}
+
+function roleStatusChips(company) {
+  const st = company.analysis_status;
+  if (!st || !Array.isArray(st.roles)) return "";
+  const label = { ok: "完了", failed: "失敗", not_run: "未実行" };
+  return `
+    <div class="role-status">
+      <div class="role-status-head">分析ロール ${st.roles_completed}/${st.roles_total} 完了 · ACH使用行 ${st.ach_rows_used ?? 0}${st.ach_rows_rejected ? `（除外 ${st.ach_rows_rejected}）` : ""}</div>
+      <div class="role-chips">
+        ${st.roles.map((r) => `<span class="role-chip ${escapeHtml(r.status)}" title="${escapeHtml(r.error || "")}">${escapeHtml(ROLE_LABELS[r.role] || r.role)} · ${label[r.status] || r.status}</span>`).join("")}
+      </div>
+      ${st.gate_reason ? `<p class="drawer-note">Gate理由：${escapeHtml(st.gate_reason)}</p>` : ""}
+    </div>
+  `;
+}
+
+function listOrDash(items) {
+  return (items || []).length ? `<ul>${items.map((x) => `<li>${escapeHtml(x)}</li>`).join("")}</ul>` : "<p class=\"muted\">—</p>";
+}
+
+function scenarioCases(company) {
+  const cases = company.hypothesis_cases;
+  if (!cases) return "";
+  const cols = [["up", "↑ 上昇シナリオ"], ["flat", "→ 横ばいシナリオ"], ["down", "↓ 下落シナリオ"]];
+  return `
+    <div class="scenario-grid">
+      ${cols.map(([key, title]) => {
+        const c = cases[key] || {};
+        return `
+          <div class="scenario-col ${key}">
+            <b>${title}</b>
+            <p>${escapeHtml(c.summary || "分析結果なし")}</p>
+            <span class="scenario-sub">理由</span>${listOrDash(c.reasons)}
+            <span class="scenario-sub">反証条件（これが起きたら仮説は誤り）</span>${listOrDash(c.falsification_criteria)}
+          </div>`;
+      }).join("")}
+    </div>
+  `;
+}
+
+function causalChecks(company) {
+  const c = company.causal;
+  if (!c) return "";
+  const names = { temporal: "時間順序", mechanism: "経路の妥当性", exposure: "企業への影響度", alternatives: "代替説明の排除", priced_in: "織り込み済みか" };
+  const keys = Object.keys(names);
+  const checks = c.checks || {};
+  const red = company.red_team || {};
+  return `
+    <div class="check-grid">
+      ${keys.map((k) => `<div class="check-item"><span>${names[k]}</span><b class="${gateClass(checks[k])}">${escapeHtml(checks[k] || "—")}</b></div>`).join("")}
+      <div class="check-item"><span>Red Team判定</span><b class="${gateClass(red.verdict)}">${escapeHtml(red.verdict || "—")}</b></div>
+    </div>
+    ${(c.edges || []).length ? `<p class="drawer-note">因果経路：${c.edges.map((e) => escapeHtml(`${e.source}→${e.target}`)).join(" / ")}</p>` : ""}
+    ${(red.reasons || []).length ? `<span class="scenario-sub">Red Teamの指摘</span>${listOrDash(red.reasons)}` : ""}
+  `;
+}
+
 function achScoreClass(score) {
   const n = Number(score);
   if (n >= 1) return "support";
@@ -171,7 +250,7 @@ function achScoreLabel(score) {
 function achTable(company) {
   const rows = company.ach_matrix || [];
   if (!rows.length) {
-    return '<div class="empty-state"><span>ACH行列はまだありません。</span></div>';
+    return `<div class="empty-state"><span>${escapeHtml(company.analysis_status ? achEmptyReason(company) : "ACH行列はまだありません。")}</span></div>`;
   }
   return `
     <div class="ach-wrap">
@@ -387,7 +466,11 @@ function renderAnalysis() {
             ${company.probability_calibrated ? "校正済み" : "未校正（試行）"}
           </div>
         </div>
+        ${roleStatusChips(company)}
+        ${company.hypothesis_cases ? `<h4>3シナリオ比較</h4>${scenarioCases(company)}` : ""}
+        ${company.causal ? `<h4>因果チェック / Red Team</h4>${causalChecks(company)}` : ""}
         <h4>ACH 証拠比較表</h4>
+        ${company.ach_summary ? `<p class="drawer-note">${escapeHtml(company.ach_summary)}</p>` : ""}
         ${achTable(company)}
         <h4>分析監査ログ</h4>
         <div class="audit-timeline">
@@ -398,7 +481,7 @@ function renderAnalysis() {
             </div>
           `).join("") || '<div class="audit-item"><p>監査ログはまだありません。</p></div>'}
         </div>
-        <div class="ach-total">UP ${p.up.toFixed(1)}% / FLAT ${p.flat.toFixed(1)}% / DOWN ${p.down.toFixed(1)}%</div>
+        ${hasProbabilities(company) ? `<div class="ach-total">UP ${p.up.toFixed(1)}% / FLAT ${p.flat.toFixed(1)}% / DOWN ${p.down.toFixed(1)}%</div>` : ""}
       </article>
     `;
   }).join("") : $("#emptyTemplate").innerHTML;
@@ -424,6 +507,12 @@ function openCompany(id) {
         <div class="metric"><span>校正</span><b>${company.probability_calibrated ? "済" : "未"}</b></div>
       </div>
     </section>
+
+    ${company.analysis_status ? `<section class="drawer-section"><h3>分析の実行状況</h3>${roleStatusChips(company)}</section>` : ""}
+
+    ${company.hypothesis_cases ? `<section class="drawer-section"><h3>3シナリオ比較</h3>${scenarioCases(company)}</section>` : ""}
+
+    ${company.causal ? `<section class="drawer-section"><h3>因果チェック / Red Team</h3>${causalChecks(company)}</section>` : ""}
 
     <section class="drawer-section">
       <h3>本日の材料</h3>
