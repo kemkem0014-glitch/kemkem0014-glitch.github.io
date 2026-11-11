@@ -27,6 +27,24 @@ html,body{height:100%;margin:0;background:#071525;font-family:-apple-system,Blin
 </div>
 <script>
 "use strict";
+
+function addMobileBackToTopToFrame(html) {
+  if (!/<body\b[^>]*>/i.test(html)) return html;
+  const controls = [
+    '<style>',
+    '.jcsa-frame-top{display:none}',
+    '@media screen and (max-width:767px){',
+    '.jcsa-frame-top{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom, 0px));z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;width:54px;height:54px;border-radius:50%;background:#0b3856;color:#fff!important;box-shadow:0 5px 18px rgba(3,28,48,.3);text-decoration:none!important;font:700 22px/1.1 system-ui,sans-serif;}',
+    '.jcsa-frame-top small{font-size:10px;}',
+    '}',
+    '@media print{.jcsa-frame-top{display:none!important}}',
+    '</style>',
+    '<span id="jcsa-embedded-top" aria-hidden="true"></span>',
+    '<a class="jcsa-frame-top" href="#jcsa-embedded-top" aria-label="ページの先頭へ戻る">↑<small>上へ</small></a>'
+  ].join('');
+  return html.replace(/<body\b[^>]*>/i, tag => tag + controls);
+}
+
 const BASE="https://hmnbalygfomelhjuscjm.supabase.co/storage/v1/object/public/public-news-reports";
 const LATEST=`${BASE}/v8/latest/threat_assessment.html`;
 const META=`${BASE}/v8/latest/web_publish.json`;
@@ -67,7 +85,7 @@ async function loadLatest(){
       frame.classList.add('ready');
       loading.classList.add('hidden');
     },{once:true});
-    frame.srcdoc=htmlText;
+    frame.srcdoc=addMobileBackToTopToFrame(htmlText);
 
     setTimeout(()=>{
       if(!frame.classList.contains('ready'))showError('V8レポートの読み込みに時間がかかっています。');
