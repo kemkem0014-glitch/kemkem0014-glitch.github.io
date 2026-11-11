@@ -15,11 +15,29 @@
   <iframe id="frame" title="本日の全体要約" sandbox="allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation" hidden></iframe>
 <script>
 "use strict";
+
+function addMobileBackToTopToFrame(html) {
+  if (!/<body\b[^>]*>/i.test(html)) return html;
+  const controls = [
+    '<style>',
+    '.jcsa-frame-top{display:none}',
+    '@media screen and (max-width:767px){',
+    '.jcsa-frame-top{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom, 0px));z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;width:54px;height:54px;border-radius:50%;background:#0b3856;color:#fff!important;box-shadow:0 5px 18px rgba(3,28,48,.3);text-decoration:none!important;font:700 22px/1.1 system-ui,sans-serif;}',
+    '.jcsa-frame-top small{font-size:10px;}',
+    '}',
+    '@media print{.jcsa-frame-top{display:none!important}}',
+    '</style>',
+    '<span id="jcsa-embedded-top" aria-hidden="true"></span>',
+    '<a class="jcsa-frame-top" href="#jcsa-embedded-top" aria-label="ページの先頭へ戻る">↑<small>上へ</small></a>'
+  ].join('');
+  return html.replace(/<body\b[^>]*>/i, tag => tag + controls);
+}
+
 const BASE="https://hmnbalygfomelhjuscjm.supabase.co/storage/v1/object/public/public-news-reports";const ASSETS=`${BASE}/latest/v5-assets.json`;const statusEl=document.getElementById("status"),frame=document.getElementById("frame"),pdfLink=document.getElementById("pdfLink");
 function allowedReportUrl(value){try{const u=new URL(String(value||""));return u.protocol==="https:"&&u.hostname==="hmnbalygfomelhjuscjm.supabase.co"&&u.pathname.startsWith("/storage/v1/object/public/public-news-reports/")?u.href:""}catch(_){return ""}}
 async function fetchText(url){const u=new URL(url);u.searchParams.set("_",Date.now());const r=await fetch(u.href,{cache:"no-store"});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.text()}
 async function fetchJson(url){const u=new URL(url);u.searchParams.set("_",Date.now());const r=await fetch(u.href,{cache:"no-store",headers:{Accept:"application/json"}});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json()}
-async function main(){try{const params=new URLSearchParams(location.search);let src=allowedReportUrl(params.get("src"));let assets=null;if(!src){assets=await fetchJson(ASSETS);src=allowedReportUrl(assets?.daily_brief?.html)}if(!src)throw new Error("HTML URLがありません");if(!assets)assets=await fetchJson(ASSETS).catch(()=>null);const pdf=allowedReportUrl(assets?.daily_brief?.pdf);if(pdf){pdfLink.href=pdf;pdfLink.hidden=false}const html=await fetchText(src);frame.srcdoc=html;frame.hidden=false;statusEl.hidden=true}catch(e){console.error(e);statusEl.textContent="全体要約を表示できませんでした。PDF版をご利用ください。";try{const assets=await fetchJson(ASSETS);const pdf=allowedReportUrl(assets?.daily_brief?.pdf);if(pdf){pdfLink.href=pdf;pdfLink.hidden=false}}catch(_){}}}
+async function main(){try{const params=new URLSearchParams(location.search);let src=allowedReportUrl(params.get("src"));let assets=null;if(!src){assets=await fetchJson(ASSETS);src=allowedReportUrl(assets?.daily_brief?.html)}if(!src)throw new Error("HTML URLがありません");if(!assets)assets=await fetchJson(ASSETS).catch(()=>null);const pdf=allowedReportUrl(assets?.daily_brief?.pdf);if(pdf){pdfLink.href=pdf;pdfLink.hidden=false}const html=await fetchText(src);frame.srcdoc=addMobileBackToTopToFrame(html);frame.hidden=false;statusEl.hidden=true}catch(e){console.error(e);statusEl.textContent="全体要約を表示できませんでした。PDF版をご利用ください。";try{const assets=await fetchJson(ASSETS);const pdf=allowedReportUrl(assets?.daily_brief?.pdf);if(pdf){pdfLink.href=pdf;pdfLink.hidden=false}}catch(_){}}}
 main();
 </script>
 <!-- Cloudflare Web Analytics -->
