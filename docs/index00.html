@@ -84,8 +84,37 @@ footer{margin-top:16px;color:#6b7c92;text-align:center;font-size:.75rem;line-hei
 @media(max-width:760px){main.page{width:min(100% - 20px,1220px);padding-top:10px}.sitehero{padding:20px 17px;border-radius:15px}.brandmark{width:59px;height:59px;font-size:1.0rem;border-radius:12px}.brandline{gap:12px}.sitehero h1{font-size:1.28rem}.sitehero .eyebrow{font-size:.57rem}.sitehero .lead{font-size:.81rem}.toplinks{gap:6px;margin-top:18px}.toplinks a{padding:7px 10px;font-size:.73rem;min-height:36px}.lead-grid{grid-template-columns:1fr}.section-card{padding:16px 13px;border-radius:13px}.section-card h2{font-size:1.18rem}.prob-grid{gap:6px}.mini-kpis,.verdict{padding:15px}.prob-item{padding:10px 7px}.prob-item strong{font-size:.7rem}.prob-item .number{font-size:1.48rem}.section-card li{font-size:.83rem}.section-card table{font-size:.75rem}.hyp{padding:13px 12px}.hyp .p{font-size:1.35rem}.jumpnav a{font-size:.75rem;padding:7px 9px}.backtop{right:13px;bottom:14px}}
 @media print{body{background:white}main.page{width:100%;padding:0}.sitehero{box-shadow:none;print-color-adjust:exact}.section-card,.verdict,.mini-kpis{box-shadow:none;break-inside:avoid}.backtop,.toplinks,.jumpnav{display:none}}
 
+
+/* First-screen I&W / 72-hour executive snapshot. Full analysis remains below. */
+.priority-brief{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 12px}
+.priority-card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px 19px 14px;min-width:0;display:flex;flex-direction:column;gap:6px}
+.priority-card.iw{border-top:4px solid #d78b33}.priority-card.forecast{border-top:4px solid #3f9bbf}
+.priority-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.priority-title{margin:0;font-size:1.08rem;font-weight:900;color:#102e50;line-height:1.35}
+.priority-pill{background:#fff3e5;color:#a15a0e;padding:3px 9px;font-size:.74rem;font-weight:900;border-radius:999px;white-space:nowrap}
+.priority-pill.blue{background:#e8f5fd;color:#176c9f}
+.priority-line{font-size:.82rem;line-height:1.5;color:#405b76;margin:0}
+.priority-line strong{color:#163b60;font-weight:900}
+.priority-link{margin-top:auto;display:inline-flex;align-items:center;align-self:flex-start;color:#1768a4;font-size:.8rem;text-decoration:none;font-weight:900;padding-top:1px}
+.priority-link:hover{text-decoration:underline}
+@media(max-width:760px){main.page{display:flex;flex-direction:column}main.page > *{order:4}main.page > .sitehero{order:0}main.page > .priority-brief{order:1}main.page > .lead-grid{order:2}main.page > .jumpnav{order:3}main.page > footer{order:5}.priority-brief{grid-template-columns:1fr;gap:9px}.priority-card{padding:13px 15px;gap:5px}.priority-title{font-size:1rem}.priority-line{font-size:.79rem}}
+@media print{.priority-card{box-shadow:none;break-inside:avoid}}
 </style></head><body><main class="page" id="page-top"><header class="sitehero"><div class="brandline"><div class="brandmark" aria-hidden="true">JCSA</div><div><p class="eyebrow">JAPAN CYBER SITUATION AWARENESS</p><h1>日本向けサイバー脅威評価</h1><p class="lead">V11 ・ 2026年11月11日 ・ 72時間見通し</p></div></div><nav class="toplinks" aria-label="サイトナビゲーション"><a href="index.html">トップページ</a><a href="categories.html">各国・宇宙・テック</a><a href="actor-timeline.html">Actor Intelligence</a><a href="downloads.html">過去レポート</a></nav></header>
 <div class="lead-grid"><section class="verdict"><p class="kicker">本日の優勢仮説 ／ 72時間の脅威動向</p><h2>H2：概ね横ばい（85%）</h2><p class="text">日本での不正アクセス・脆弱性事案は続く一方、日本の政府・防衛・重要インフラへの新たな攻撃連鎖を示す証拠は、今回の分析対象に含まれていません。</p><div class="alert-label">兆候（I&amp;W）上の警戒水準：上昇</div><p class="text">「横ばい」は監視不要を意味しません。第三者クラウド・IAM、境界装置、メール基盤、SAP、仮想化・バックアップ基盤の監視を重視します。</p></section><section class="mini-kpis"><p class="kicker">3仮説の相対支持度</p><div class="prob-grid"><div class="prob-item"><strong>H1 上昇</strong><span class="number">15%</span><div class="track"><div class="fill" style="width:15%"></div></div></div><div class="prob-item"><strong>H2 横ばい</strong><span class="number">85%</span><div class="track"><div class="fill" style="width:85%"></div></div></div><div class="prob-item"><strong>H3 低下</strong><span class="number">0%</span><div class="track"><div class="fill" style="width:0%"></div></div></div></div><p class="metricnote">根拠記事に対するACH評価をベイズ更新したモデル内の相対値です。現実の攻撃発生確率ではなく、0%表示も可能性が完全にないことを意味しません。</p></section></div>
+<div class="priority-brief" aria-label="I&Wと72時間見積もりの要点">
+<section class="priority-card iw" aria-labelledby="brief-iw-title">
+ <div class="priority-top"><h2 id="brief-iw-title" class="priority-title">兆候（I&amp;W）</h2><span class="priority-pill">警戒水準：上昇</span></div>
+ <p class="priority-line"><strong>重点監視：</strong>第三者クラウド・IAM、境界装置・メール基盤、SAP、仮想化・バックアップ基盤。</p>
+ <p class="priority-line"><strong>確認状況：</strong>政府・防衛・重要インフラでの新たな侵害連鎖は未確認。確度は中程度。</p>
+ <a class="priority-link" href="#section-indicators">I&amp;Wの詳細と判定を見る ›</a>
+</section>
+<section class="priority-card forecast" aria-labelledby="brief-forecast-title">
+ <div class="priority-top"><h2 id="brief-forecast-title" class="priority-title">72時間の見積もり</h2><span class="priority-pill blue">最可能：H2 横ばい</span></div>
+ <p class="priority-line"><strong>24時間：</strong>国内既存事案の追加確認と、未修正資産への攻撃試行を注視。</p>
+ <p class="priority-line"><strong>72時間：</strong>警戒水準は高止まり。共通侵害指標が確認されればH1（上昇）を再評価。</p>
+ <a class="priority-link" href="#section-forecast">24時間・72時間の詳細見積もりを見る ›</a>
+</section>
+</div>
 <nav class="jumpnav" aria-label="ページ内目次"><a href="#section-hypotheses">仮説と証拠</a><a href="#section-indicators">兆候（I&amp;W）</a><a href="#section-forecast">72時間見通し</a><a href="#section-requirements">監視項目</a><a href="#section-rebuttal">反証</a><a href="#section-method">分析過程</a></nav>
 <section class="section-card" id="section-intro"><p class='muted reportmeta'>20261111 作成 2026-11-11T22:36:31+00:00</p><div class='guide'>この資料は、当日のニュースから日本へのサイバー攻撃・影響の可能性を3つの仮説で比べたものです。結論は示していません。確率は、根拠記事の評価からベイズ更新で計算した目安で、記事の量や内容がそのまま正しいことを意味しません。各仮説を開くと、支える証拠・反する証拠と元の記事を確認できます。分析は、相手の基礎評価（SWOT）→作戦環境（PMESII）→相手視点の意図→日本側の露出→ACH→兆候（I&amp;W）→72時間予測→反証、の順に行っています。</div><details><summary>前提条件</summary><ul><li>評価対象は当日選定された記事のみです。同じ出来事の記事はまとめ、報道件数は参考情報として示しています。</li><li>現在の出来事の根拠はニュース記事だけです。根拠文書（教範・脅威評価など）は分析の枠組みと背景知識として使い、そこに書かれた出来事を現在の事実としては扱っていません。</li><li>事前確率は3仮説とも等しい（各1/3）として計算しています。</li><li>ACHの評価を尤度比に置き換えています（強く整合2.0／整合1.4／中立1.0／不整合0.6／強く不整合0.3）。</li><li>情報源の信頼度（A〜F）で証拠の重みを下げています（A=1.0〜E=0.3、判断不能F=0.5）。</li><li>同じ出来事の複数の証拠は平均して1件として扱い、報道件数の多さで確率が動かないようにしています。</li><li>各証拠を互いに独立とみなしています。実際には関連し合うため、確率は目安です。</li><li>アクターの基礎評価（SWOT）は週単位で作成し、同じ週の間は再利用しています。</li><li>反証の段は主分析と同じモデルで実行しています（独立性は限定的です）。</li></ul><p class='muted'>分析モデル: openai/gpt-5.6-luna ／ 反証モデル: openai/gpt-5.6-luna</p><details><summary>記事選定の内訳</summary><pre>{
  &quot;date&quot;: &quot;20261111&quot;,
